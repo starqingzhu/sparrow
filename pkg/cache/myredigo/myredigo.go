@@ -48,6 +48,10 @@ func NewRedisClient(server, password string, db int) *RedisClient {
 	}
 }
 
+func (r *RedisClient) String() string {
+	return fmt.Sprintf("%v", r.pool.Stats())
+}
+
 // 定义针对具体业务的方法
 func (rc *RedisClient) SetValue(key, value string) error {
 	conn := rc.pool.Get()
@@ -71,8 +75,64 @@ func (rc *RedisClient) GetValue(key string) (string, error) {
 	return value, nil
 }
 
+func (rc *RedisClient) SAdd(key, value string) (int64, error) {
+	conn := rc.pool.Get()
+	defer conn.Close()
+
+	var ret int64
+	reply, err := conn.Do("SADD", key, value)
+	log.Printf("SAdd key:%s, value:%s, reply:%d, err:%v\n", key, value, reply, err)
+	if err != nil {
+		return ret, fmt.Errorf("failed to set value for key %s: %w", key, err)
+	}
+
+	ret = reply.(int64)
+
+	return ret, err
+}
+
+func (rc *RedisClient) SCard(key string) (int64, error) {
+	conn := rc.pool.Get()
+	defer conn.Close()
+
+	var ret int64
+	reply, err := conn.Do("SCARD", key)
+	log.Printf("SCARD key:%s, reply:%d, err:%v\n", key, reply, err)
+	if err != nil {
+		return ret, fmt.Errorf("failed to set value for key %s: %w", key, err)
+	}
+
+	ret = reply.(int64)
+
+	return ret, err
+}
+
+func (rc *RedisClient) SPop(key, val string) (int64, error) {
+	conn := rc.pool.Get()
+	defer conn.Close()
+
+	var ret int64
+	reply, err := conn.Do("SCARD", key)
+	log.Printf("SPop key:%s, reply:%d, err:%v\n", key, reply, err)
+	if err != nil {
+		return ret, fmt.Errorf("failed to set value for key %s: %w", key, err)
+	}
+
+	ret = reply.(int64)
+
+	return ret, err
+}
+
 func Init() {
 	redisClient := NewRedisClient("127.0.0.1:6379", "123456", 0)
+
+	if redisClient == nil {
+		panic("redis connect nil")
+	}
+
+	fmt.Println("redisClient:", redisClient.String())
+
+	//string
 	if err := redisClient.SetValue("name", "jackson"); err != nil {
 		log.Fatal(err)
 	}
@@ -82,27 +142,19 @@ func Init() {
 	}
 	fmt.Println(value)
 
-	//conn, err := redis.Dial("tcp", "127.0.0.1:6379", redis.DialPassword("123456"))
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
-	//defer conn.Close()
-	//
-	//// 设置键值对
-	//_, err = conn.Do("SET", "key", "value")
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
-	//// 读取键值对
-	//value, err := redis.String(conn.Do("GET", "key"))
-	//if err != nil {
-	//	panic(err)
-	//}
-	//fmt.Println(value)
-	//
-	//// 关闭 Redis 连接
-	//conn.Do("QUIT")
+	//set
+	var sKey = "sname"
+	//var retInt64 int64
+	var setArr = []string{"s1", "s2", "s3", "s4"}
+	for _, m := range setArr {
+		_, err = redisClient.SAdd(sKey, m)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	_, err = redisClient.SCard(sKey)
+	//zset
+	//list
+	//hash
 
 }

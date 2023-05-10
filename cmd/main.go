@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"sparrow/pkg/cache/myredigo"
+	"sparrow/pkg/cache/redis"
 )
 
 func main() {
 	fmt.Println("enter.........")
-	myredigo.Init()
+	redis.Init()
 }

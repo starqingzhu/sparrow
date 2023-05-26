@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/gomodule/redigo v1.8.9
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.3
 	go.uber.org/zap v1.24.0
 )
 

@@ -8,21 +8,6 @@ import (
 	"time"
 )
 
-/*
-Go语言中有很多Redis客户端库可以使用，下面我将简要介绍几个常用的Go Redis客户端库进行对比：
-
-Redigo
-Redigo 是目前最流行的 Go Redis 客户端库之一，具有易用性、灵活性和高效性等特点。它是一个轻量级的 Redis 客户端，提供了连接池、发布订阅模式、管道操作、事务等丰富的功能。它的文档清晰易懂，支持多种 Redis 数据类型（string、hash、list、set、zset）的操作，并提供了一些辅助函数。
-
-Go-Redis
-Go-Redis 是另一个常用的 Go Redis 客户端库，与 Redigo 相比有更好的可读性，更好的面向对象设计和更高的性能。Go-Redis 提供了丰富的 API，包括字符串、哈希表、列表、集合、有序集合等 Redis 数据类型的操作、事务处理、分布式锁、发布订阅模式等功能。Go-Redis 连接池的实现基于 netpoll 和 eventloop 机制，可高效地管理连接池。
-
-Radix.v2
-Radix.v2 是另一个开源的 Redis 客户端库，主要特点是快速、简洁和易于使用。它支持主从复制、Sentinel、Cluster 等 Redis 集群模式，并提供了丰富的 API，包括字符串、哈希表、列表、集合、有序集合等 Redis 数据类型的操作、事务处理、分布式锁等功能。Radix.v2 通过 context 实现了全自动连接池和超时机制，并使用类似于 Go 通道的机制优化了阻塞式 Redis 命令的执行。
-
-以上三个 Go Redis 客户端库都是高质量的开源工具，各自具有优点，可以根据具体应用场景选择适合的库进行使用。
-*/
-
 type (
 	RedisConfig struct {
 		RedisAddrs       string        `default:"localhost:6379" cfg:"redis_addrs" json:"redis_addrs"`

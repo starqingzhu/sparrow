@@ -1,0 +1,19 @@
+缓存
+    redis（?）
+
+日志
+    zap（?）
+
+存储
+    mysql
+
+序列化/反序列化
+    protobuf
+
+网络
+    tcp
+    http
+
+内存池
+
+协程池

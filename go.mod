@@ -3,6 +3,7 @@ module sparrow
 go 1.20
 
 require (
+	github.com/go-sql-driver/mysql v1.7.1
 	github.com/gomodule/redigo v1.8.9
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
@@ -12,7 +13,6 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/go-sql-driver/mysql v1.7.1 // indirect
 	github.com/jonboulle/clockwork v0.4.0 // indirect
 	github.com/lestrrat-go/strftime v1.0.6 // indirect
 	github.com/pkg/errors v0.9.1 // indirect

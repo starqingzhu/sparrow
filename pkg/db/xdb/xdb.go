@@ -4,24 +4,16 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	//_ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"sparrow/pkg/log/zaplog"
 )
 
-/*
-username = "root"
-password = "123456"
-network  = "tcp"
-server   = "localhost"
-port     = 3306
-database = "test"
-*/
 type (
 	XDbConf struct {
 		User         string `json:"user"`
 		Password     string `json:"password"`
-		Server       string `json:"server"`
+		ServerIp     string `json:"serverip"`
 		Port         int32  `json:"port"`
 		DataBase     string `json:"database"`
 		MaxOpenConns int64  `json:"maxopenconns"`
@@ -33,6 +25,8 @@ type (
 	}
 )
 
+var Main *XDB
+
 func Init(conf *XDbConf) (*XDB, error) {
 	if conf == nil {
 		errStr := "xdb init error, conf is nil"
@@ -41,7 +35,7 @@ func Init(conf *XDbConf) (*XDB, error) {
 	}
 	// 构建 DSN
 	dsn := fmt.Sprintf("%s:%s@%s(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		conf.User, conf.Password, "tcp", conf.Server, conf.Port, conf.DataBase)
+		conf.User, conf.Password, "tcp", conf.ServerIp, conf.Port, conf.DataBase)
 
 	// 连接数据库
 	db, err := sqlx.Connect("mysql", dsn)
@@ -54,7 +48,9 @@ func Init(conf *XDbConf) (*XDB, error) {
 	db.SetMaxOpenConns(100)
 	db.SetMaxIdleConns(16)
 
-	return &XDB{db}, nil
+	Main = &XDB{db}
+
+	return Main, nil
 }
 
 // QueryRow 封装查询单行数据的方法

@@ -11,15 +11,6 @@ type XDBTestSuite struct {
 	r *xdb.XDB
 }
 
-/*
-	User         string `json:"user"`
-	Password     string `json:"password"`
-	Server       string `json:"server"`
-	Port         int32  `json:"port"`
-	DataBase     string `json:"database"`
-	MaxOpenConns int64  `json:"maxopenconns"`
-	MaxIdleConns int64  `json:"maxidleconns"`
-*/
 // run before the tests in the suite are run.
 func (suite *XDBTestSuite) SetupSuite() {
 	suite.T().Log("before all tests")
@@ -38,7 +29,7 @@ func (suite *XDBTestSuite) SetupSuite() {
 
 func (suite *XDBTestSuite) TearDownSuite() {
 	suite.T().Log("after all test")
-	suite.r.DB.Close()
+	suite.r.Close()
 }
 
 func (suite *XDBTestSuite) SetupTest() {

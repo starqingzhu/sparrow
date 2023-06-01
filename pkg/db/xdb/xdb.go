@@ -1,7 +1,6 @@
 package xdb
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
@@ -53,44 +52,50 @@ func Init(conf *XDbConf) (*XDB, error) {
 	return Main, nil
 }
 
-// QueryRow 封装查询单行数据的方法
-func (db *XDB) QueryRow(query string, args ...interface{}) *sqlx.Row {
-	return db.DB.QueryRowx(query, args...)
-}
-
-// Query 封装查询多行数据的方法
-func (db *XDB) Query(query string, args ...interface{}) ([]map[string]interface{}, error) {
-	rows, err := db.DB.Queryx(query, args...)
-	if err != nil {
-		zaplog.LoggerSugar.Errorf("xdb query error, err:%s, query:%s, args:%v", err.Error(), query, args)
-		return nil, err
+func (db *XDB) Close() {
+	if db != nil {
+		db.Close()
 	}
-	defer rows.Close()
-
-	result := make([]map[string]interface{}, 0)
-	columns, _ := rows.Columns()
-	for rows.Next() {
-		row := make(map[string]interface{})
-		dest := make([]interface{}, len(columns))
-		for i := range dest {
-			dest[i] = &dest[i]
-		}
-
-		if err = rows.Scan(dest...); err != nil {
-			zaplog.LoggerSugar.Errorf("xdb scan error, err:%s, query:%s, args:%v, dest:%v", err.Error(),
-				query, args, dest)
-			return nil, err
-		}
-		for i, column := range columns {
-			row[column] = dest[i].(interface{}).(*string)
-		}
-		result = append(result, row)
-	}
-
-	return result, err
 }
 
-// Exec 封装执行 SQL 语句的方法
-func (db *XDB) Exec(query string, args ...interface{}) (sql.Result, error) {
-	return db.DB.Exec(query, args...)
-}
+//// QueryRow 封装查询单行数据的方法
+//func (db *XDB) QueryRow(query string, args ...interface{}) *sqlx.Row {
+//	return db.DB.QueryRowx(query, args...)
+//}
+//
+//// Query 封装查询多行数据的方法
+//func (db *XDB) Query(query string, args ...interface{}) ([]map[string]interface{}, error) {
+//	rows, err := db.DB.Queryx(query, args...)
+//	if err != nil {
+//		zaplog.LoggerSugar.Errorf("xdb query error, err:%s, query:%s, args:%v", err.Error(), query, args)
+//		return nil, err
+//	}
+//	defer rows.Close()
+//
+//	result := make([]map[string]interface{}, 0)
+//	columns, _ := rows.Columns()
+//	for rows.Next() {
+//		row := make(map[string]interface{})
+//		dest := make([]interface{}, len(columns))
+//		for i := range dest {
+//			dest[i] = &dest[i]
+//		}
+//
+//		if err = rows.Scan(dest...); err != nil {
+//			zaplog.LoggerSugar.Errorf("xdb scan error, err:%s, query:%s, args:%v, dest:%v", err.Error(),
+//				query, args, dest)
+//			return nil, err
+//		}
+//		for i, column := range columns {
+//			row[column] = dest[i].(interface{}).(*string)
+//		}
+//		result = append(result, row)
+//	}
+//
+//	return result, err
+//}
+//
+//// Exec 封装执行 SQL 语句的方法
+//func (db *XDB) Exec(query string, args ...interface{}) (sql.Result, error) {
+//	return db.DB.Exec(query, args...)
+//}

@@ -1,39 +1,41 @@
 package xdb
 
-//func (suite *XDBTestSuite) TestXdbUserQuery() {
-//
-//	querySql := "select * from user"
-//	var users []tbstruct.User
-//
-//	rows, err := suite.r.DB.Query(querySql)
-//	suite.Nil(err)
-//
-//	//rows.Scan(&users)
-//	for rows.Next() {
-//		var user tbstruct.User
-//		arr := getObjMemAddrArr(&user)
-//		rows.Scan(arr...)
-//		users = append(users, user)
-//		suite.T().Log(user)
-//	}
-//	rows.Close()
-//
-//	suite.r.DB.Select(&users, querySql)
-//
-//}
-//
-//func getObjMemAddrArr(p *tbstruct.User) []interface{} {
-//
-//	ret := make([]interface{}, 0)
-//	value := reflect.ValueOf(p)
-//	typ := reflect.TypeOf(p)
-//
-//	for i := 0; i < typ.NumField(); i++ {
-//		//field := typ.Field(i)
-//		filedValue := value.Field(i)
-//
-//		ret = append(ret, filedValue.UnsafePointer())
-//	}
-//
-//	return nil
-//}
+import (
+	"sparrow/internal/table/tbstruct"
+)
+
+func (suite *XDBTestSuite) TestXdbUserQuery() {
+
+	querySql := "select * from user"
+	var users []*tbstruct.User
+
+	// 方案1 xdb查询
+	rows, err := suite.r.Queryx(querySql)
+	suite.Nil(err)
+	for rows.Next() {
+		user := &tbstruct.User{}
+		rows.StructScan(user)
+		users = append(users, user)
+	}
+
+	// 方案2 官方接口查询
+	//rows, err := suite.r.Query(querySql)
+	//suite.Nil(err)
+	//
+	//for rows.Next() {
+	//	var user tbstruct.User
+	//	arr, err1 := tbstruct.GetObjMemAddrArr(&user)
+	//	suite.Nil(err1)
+	//	rows.Scan(arr...)
+	//	users = append(users, user)
+	//	suite.T().Log(user)
+	//}
+
+	rows.Close()
+
+	// 方案3 xdb接口
+	//err = suite.r.Select(&users, querySql)
+	//suite.Nil(err)
+	suite.T().Log(users)
+
+}

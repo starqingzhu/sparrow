@@ -1,2 +1,3 @@
 cmd/main.exe
 test/output/*
+.idea/*

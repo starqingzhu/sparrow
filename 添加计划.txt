@@ -5,10 +5,10 @@
     zap（?）
 
 存储
-    mysql
+    mysql（?）目前使用xdb
 
 序列化/反序列化
-    protobuf
+    protobuf（?）
 
 网络
     tcp
@@ -17,3 +17,4 @@
 内存池
 
 协程池
+    gpool

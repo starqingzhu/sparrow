@@ -1,0 +1,18 @@
+在 Go 中，有很多可以用于实现 WebSocket 的第三方库。以下是其中的几个：
+
+github.com/gorilla/websocket
+gorilla/websocket 是一个流行的 WebSocket 库，提供了高度定制化的配置选项，并且支持基于事件的 API 来处理 WebSocket 连接。此外，它还提供了跨域请求和子协议支持。
+
+github.com/fasthttp/websocket
+fasthttp/websocket 是一个快速的 WebSocket 库，使用纯 Go 实现。它对低内存占用和高吞吐量进行了优化，并支持自定义读写超时时间。
+
+github.com/graarh/golang-socketio
+golang-socketio 是一个 WebSocket 库，提供了类似于 Socket.IO 的 API 接口，并支持多种传输方式，例如 WebSockets、XHR 长轮询和 HTTP 传输。
+
+github.com/kataras/neffos
+neffos 是一个基于 gorilla/websocket 开发的高层次的 WebSocket 库，提供了简单易用的 API 接口和 WebSocket 连接进入和离开的事件处理机制。此外，它还提供了可扩展的消息类型系统和基于 namespace 的房间管理器。
+
+github.com/nhooyr/websocket
+nhooyr/websocket 是一个轻量级的 WebSocket 库，支持多种传输方式并且已经被广泛地使用在许多 Go 项目中。此外，它还支持超时和 Ping/Pong 控制。
+
+这些第三方库都提供了不同的功能和优化，您可以根据项目需求自行选择。

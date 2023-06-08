@@ -13,6 +13,8 @@
 ÍøÂç
     tcp
     http
+    https
+    webscoket
 
 ÄÚ´æ³Ø
 

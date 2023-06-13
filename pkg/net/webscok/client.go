@@ -15,7 +15,7 @@ type (
 )
 
 // addr:"localhost:8080"
-func Init(addr string) (*WebClient, error) {
+func Client(addr string) (*WebClient, error) {
 	u := url.URL{Scheme: "ws", Host: addr, Path: "/ws"}
 	var err error
 

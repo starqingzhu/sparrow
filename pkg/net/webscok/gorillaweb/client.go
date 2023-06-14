@@ -1,4 +1,4 @@
-package webscok
+package gorillaweb
 
 import (
 	"github.com/gorilla/websocket"

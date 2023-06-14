@@ -1,7 +1,7 @@
 package websocket
 
 import (
-	"sparrow/pkg/net/webscok"
+	"sparrow/pkg/net/webscok/gorillaweb"
 	"testing"
 	"time"
 )
@@ -9,7 +9,7 @@ import (
 func TestClient(t *testing.T) {
 	//var addr = "192.168.59.35:9102"
 	var addr = "127.0.0.1:8000"
-	webClient, err := webscok.Client(addr)
+	webClient, err := gorillaweb.Client(addr)
 	if err != nil {
 		panic("init failed")
 	}

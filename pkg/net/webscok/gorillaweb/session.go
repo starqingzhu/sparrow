@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/websocket"
 	"sparrow/pkg/log/zaplog"
 	"sync"
+	"time"
 )
 
 type (
@@ -17,7 +18,13 @@ type (
 
 		mutex    sync.Mutex
 		isClosed bool
+
+		//读写回调
+		readCb CallBackRead
 	}
+
+	// 函数签名
+	CallBackRead func(data []byte, err error)
 )
 
 func InitConnection(c *websocket.Conn) (conn *Connection, err error) {
@@ -39,7 +46,27 @@ func (c *Connection) ReadMessage() (data []byte, err error) {
 		err = errors.New("connection is closed")
 
 	}
-	zaplog.LoggerSugar.Infof("read data:%s, addr:%s", string(data), c.Conn.RemoteAddr().String())
+	if c.readCb != nil && err != nil {
+		c.readCb(data, err)
+	}
+	zaplog.LoggerSugar.Infof("read data:%s, addr:%s, err:%v", string(data), c.Conn.RemoteAddr().String(), err)
+	return
+}
+
+func (c *Connection) ReadMessageTimeout(d time.Duration) (data []byte, err error) {
+	select {
+	case data = <-c.inChan:
+	case <-c.closeChan:
+		err = errors.New("connection is closed")
+	case <-time.After(d * time.Millisecond):
+		err = errors.New("timeout")
+		return nil, err
+
+	}
+	if c.readCb != nil && err != nil {
+		c.readCb(data, err)
+	}
+	zaplog.LoggerSugar.Infof("read data:%s, addr:%s, err:%v", string(data), c.Conn.RemoteAddr().String(), err)
 	return
 }
 
@@ -49,6 +76,7 @@ func (c *Connection) WriteMessage(data []byte) (err error) {
 	case <-c.closeChan:
 		err = errors.New("connection is closed")
 	}
+
 	zaplog.LoggerSugar.Infof("write data:%s, addr:%s", string(data), c.Conn.RemoteAddr().String())
 	return
 }

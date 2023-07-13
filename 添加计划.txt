@@ -1,22 +1,22 @@
-����
-    redis��?��
+缓存
+    redis（✓）
 
-��־
-    zap��?��
+日志
+    zap（✓）
 
-�洢
-    mysql��?��Ŀǰʹ��xdb
+存储
+    mysql（✓）目前使用xdb
 
-���л�/�����л�
-    protobuf��?��
+序列化/反序列化
+    protobuf（✓）
 
-����
+网络
     tcp
     http
     https
-    webscoket
+    webscoket（✓）
 
-�ڴ��
+内存池
 
-Э�̳�
+协程池
     gpool

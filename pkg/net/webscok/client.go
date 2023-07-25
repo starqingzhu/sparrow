@@ -52,13 +52,13 @@ func (w *WebClient) WriteTextMessage(messageBody []byte) error {
 
 func (w *WebClient) WriteBinaryMessage(messageBody []byte) error {
 	err := w.Conn.WriteMessage(websocket.BinaryMessage, messageBody)
-	zaplog.LoggerSugar.Infof("send msg:[%p], err:%v", err)
+	//zaplog.LoggerSugar.Infof("send msg:[%p], err:%v", err)
 	return err
 }
 
 func (w *WebClient) ReadMessage() (messageType int, p []byte, err error) {
 	messageType, p, err = w.Conn.ReadMessage()
 
-	zaplog.LoggerSugar.Infof("recv messageType:%d, msg:[%s], err:%v", messageType, p, err)
+	//zaplog.LoggerSugar.Infof("recv messageType:%d, msg:[%s], err:%v", messageType, p, err)
 	return
 }

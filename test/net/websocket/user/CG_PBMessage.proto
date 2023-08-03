@@ -1,0 +1,2818 @@
+syntax = "proto2";
+
+option go_package = "./pb/";
+//#client ask login
+//@CG
+message CG_LOGIN
+{
+	//登录基本数据
+	required int32	GameVersion 	= 1;	//游戏大版本号
+	required int32	ProgramVersion 	= 2;	//代码版本号
+	required int32	MaxPacketId	= 3;	//最大消息包ID
+	required string	Account 	= 4;	//登陆账号
+	optional int32  sex = 5;            // 性别
+}
+
+//#client login result
+//@GC
+message GC_LOGIN_RET
+{
+	enum LOGINRESULT
+	{
+		SUCCESS = 1;
+		ACCOUNTVERIFYFAIL = 2;
+		ALREADYLOGIN = 3;
+		GAMEFINISH = 4;		//游戏结束
+		PACKETNOTMATCH = 5;
+		VERSIONNOTMATCH = 6;
+	}
+	required int32 	Result 		= 1;
+	required string Account 	= 2;
+	required uint64	PlayerGuid 	= 3;
+	required string PlayerName 	= 4;
+	required int32 	PlayerId 	= 5;
+	required int32  ServerId 	= 6;
+}
+
+//#client reconnect
+//@CG
+message CG_RECONNECT
+{
+	//断线重连
+	required 	string 		Account 	= 1;
+	required 	int32		ObjId 		= 2;
+}
+
+//#client reconnect ret
+//@GC
+message GC_RECONNECT_RET
+{
+	enum LOGINRESULT
+	{
+		SUCCESS		= 1;
+		GAMEFINISH	= 2;
+		OTHERRESON	= 3;
+	}
+	//断线重连
+	required 	int32 		Result 	= 1;
+}
+
+
+//#client connected heartbeat
+//@CG
+message CG_CONNECTED_HEARTBEAT
+{
+	required int32 IsResponse = 1;
+}
+
+//#server connected heartbeat
+//@GC
+message GC_CONNECTED_HEARTBEAT
+{
+	required int64 ServerTime = 1;
+}
+
+//#Server Syn Attr
+//@GC
+message GC_SYN_ATTR
+{
+	required int32	ObjId 			= 1;	// ObjId
+	repeated int32	Index 			= 2;	// 属性索引
+	repeated int32	AttrValue 		= 3;	// 属性值
+	optional string	Name 			= 4;	// 名字
+	optional int32	Countdowntime 	= 5;	// 倒计时时间
+}
+
+//#Player Move
+//@CG
+message CG_MOVE
+
+{
+	required int32 MvType	 	= 1;	//移动类型
+	required int32 PosXOrDir 	= 2;	//点的X坐标乘以100 方向*10000
+	required int32 PosY 		= 3;	//点的Y坐标乘以100
+	required int32 PosZ 		= 4;	//点的Z坐标乘以100
+}
+
+//#Notify Character Move
+//@GC
+message GC_MOVE
+{
+	required int32	ObjId 			= 1;	//objid
+	required int32	PosCount 		= 2;	//点的个数
+	repeated int32	PosserialOrDir	= 3;	//路径序号
+	repeated int32	MvType 			= 4;	//移动类型
+	repeated int32 	PosX			= 5;	//点的X坐标乘以100
+	repeated int32	PosZ 			= 6;	//点的Z坐标乘以100
+}
+
+//#Notify Character Stop
+//@GC
+message GC_STOP
+{
+	required int32 Objid 		= 1;	//objid
+	required int32 Posserial 	= 2;	//路径序号
+	required int32 PosX 		= 3;	//点的X坐标乘以100
+	required int32 PosZ 		= 4;	//点的Z坐标乘以100
+}
+
+//#check pos by client
+//@GC
+message GC_CHECK_POS
+{
+	required int32 PosX 		= 1;	//点的X坐标乘以100
+	required int32 PosZ 		= 2;	//点的Z坐标乘以100
+}
+
+//#send gm command
+//@CG
+message CG_GMCOMMAND
+{
+	required string CmdStr 	= 1;	// 命令
+}
+
+//#Enter Scene
+//@GC
+message GC_ENTER_SCENE
+{
+	required int32 ObjId 		= 1;	//objId
+	required int32 SceneClass 	= 2;	//sceneclass
+	required int32 SceneInst 	= 3;	//sceneinst
+	optional int32 ScenePlayType = 4;	//playtype
+}
+
+//#Client Enter Scene OK
+//@CG
+message CG_ENTER_SCENE_OK
+{
+	required int32 IsOK = 1;	//IsOK or Failed
+}
+
+//@CG
+message CG_LEAVE_GAME
+{
+}
+
+//@GC
+message GC_LEAVE_GAME
+{
+	enum LEAVE_TYPE
+	{
+		lt_self_leave = 1;
+		lt_level_out = 2;
+	}
+    required int32 leaveType = 1;
+}
+
+message D_ItemData
+{
+    optional int32 itemId = 1;
+    optional int32 num = 2;
+};
+
+message D_KillerData
+{
+    optional int32 objType = 1;
+    optional int32 sexOrConfigId = 2;
+    optional string name = 3;
+};
+
+//@GC
+message GC_GAME_FINISH
+{
+	enum FINISH_TYPE
+	{
+		ft_finished = 1;
+		ft_self_leave = 2;
+		ft_level_out = 	3;
+		ft_to_freeroom = 4;
+		ft_resure = 5;	//家园复活
+	}
+	required int32 finishType = 1;
+    optional int32 rank = 2;
+    optional int32 total = 3;       // 总人数
+    optional int32 killNum = 4;     // 击杀数
+    optional int32 hurtValue = 5;   // 伤害总数
+    optional int32 createNum = 6;   // 制造
+    optional int32 existTime = 7;   // 生存时间
+    optional int32 exp = 8;
+    optional int32 money = 9;
+    repeated D_ItemData items = 10;  // 获取的物品
+    optional D_KillerData killer = 11;
+    optional D_ItemData	awardItem = 12;
+    optional int32 expRate = 13;
+    optional int32 goldRate = 14;
+    optional int32 rankIntegral = 15; //排名积分
+    optional int32 killersIntegral = 16; //杀人积分
+    optional int32 aliveIntegral = 17; //生存积分
+    optional int32 totalIntegral = 18; //总积分
+	optional uint64 matchId	= 19;	// match的GUID
+	optional int32 expweekcard = 20;
+	optional int32 goldweekcard = 21;
+}
+
+message D_FashionInfo
+{
+	required int32 cfgId = 1;
+	required int32 pos = 2;
+	required uint64 guid = 3;    // guid
+	required int32 enhancelv = 4;
+};
+
+//#Create Player
+//@GC
+message GC_CREATE_PLAYER
+{
+	required int32 ObjId 		= 1;	// objid
+	required uint64 Guid 		= 2;	// Player的GUID
+	required int32 SceneClass 	= 3;	// 场景在SceneDefine的ID
+	required int32 SceneInst 	= 4;	// 场景在Server上的ID
+	required int32 DataId 		= 5;	// 模型在rolebase中的ID
+	required int32 PosX 		= 6;	// Obj的坐标X
+	required int32 PosZ 		= 7;	// Obj的坐标Z
+	required string Name 		= 8;	// 名字
+	required int32 Facedir 		= 9;	// 朝向
+	required int32 IsDie		= 10;	// 是否死亡
+	required int32 MoveSpeed	= 11;	// 移动速度
+    required int32 Sex          = 12;       // sex
+    required string	headIcon	= 13;	//头像
+    repeated D_FashionInfo fashions = 14;
+    optional string	clientCfg 	= 15;
+	required int32 Career       = 16;//玩家职业
+}
+
+//#Delete Player
+//@GC
+message GC_DELETE_OBJ
+{
+	required int32 ObjId 	= 1; //ServerID
+	optional int32 DelType = 2;		//删除类型（目前只有monster有用）
+}
+
+//#tel to server use skill
+//@GC
+message CG_USE_SKILL
+{
+	required int32 SkillId 		= 1;	//skill id
+	required int32 TargetId	 	= 2;	//target id
+	required int32 FaceDir	 	= 3;	//朝向
+	optional int32 SelfPosX 	= 4;	//自己点的X坐标乘以100
+	optional int32 SelfPosZ 	= 5;	//自己的Z坐标乘以100
+	optional int32 PosX 		= 6;	//点的X坐标乘以100
+	optional int32 PosZ 		= 7;	//点的Z坐标乘以100
+	optional int32 dirType      = 8;
+    optional int64 timestamp    = 9;
+}
+
+//#broad cast use skill
+//@GC
+message GC_USE_SKILL
+{
+	required int32 ObjId 		= 1;	//obj id
+	required int32 TargetId	 	= 2;	//target id
+	required int32 SkillId 		= 3;	//skill id
+	required int32 FaceDir	 	= 4;	//朝向
+	required int32 Result		= 5;	//结果
+	optional int32 SelfPosX 	= 6;	//自己点的X坐标乘以100
+	optional int32 SelfPosZ 	= 7;	//自己的Z坐标乘以100
+	optional int32 PosX 		= 8;	//目标点的X坐标乘以100
+	optional int32 PosZ 		= 9;	//目标点的Z坐标乘以100
+	optional int32 dirType      = 10;
+}
+
+//@GC
+message GC_SKILL_BREAK
+{
+    required int32 objId = 1;
+    required int32 PosX = 2;
+    required int32 PoxZ = 3;
+	required int32 FaceDir = 4;	//朝向
+	required int32 skillId = 5;
+}
+
+//@CG
+message CG_SKILL_FINISH
+{
+    required int32 PosX = 1;
+    required int32 PoxZ = 2;
+	required int32 FaceDir	 	= 3;	//朝向
+};
+//@GC
+message GC_SKILL_FINISH
+{
+    required int32 objId = 1;
+    required int32 PosX = 2;
+    required int32 PoxZ = 3;
+	required int32 FaceDir	 	= 4;	//朝向
+};
+
+//@GC
+message GC_NOTIFY_CD
+{
+    optional int32 skillId = 1;
+    optional int32 totalTime = 2;        // 剩余总时间（毫秒）
+    optional int32 curTime = 3;          // 剩余当前时间（毫秒）
+};
+
+//@GC
+message GC_NOTIFY_SKILL_DIS
+{
+    optional int32 skillId = 1;
+    optional int32 diffSkillDis = 2;    // 正数增加，负数减少
+}
+
+message MGS_DamageData
+{
+    enum DamageType
+    {
+        damage_type_hurt = 1;           // 伤害
+        damage_type_god = 2;            // 无敌
+    };
+    required int32 type = 1;	//伤害类行
+    optional int32 value = 2;	//伤害数值
+    optional int32 critMult = 3;	//暴击倍数
+    optional int32 hitEffectId = 4; //命中特效
+    optional int32 skillId = 5;		//技能Id
+};
+
+//#Send DamageBoard Info to client
+//@GC
+message GC_DAMAGE_INFO
+{
+	required int32 selfObjid		= 1;	// objID
+	optional int32 sendObjId		= 2;   //伤害者objid
+	required MGS_DamageData damageData = 3;
+}
+
+//#Send BeHit Info to client
+//@GC
+message GC_BE_HIT_INFO
+{
+	required	int32	ObjId			= 1;	// objID
+	required 	int32	Type			= 2;	// 被击类型
+	optional	int64	ExistTime		= 3;	// 持续时间
+	optional	int32	SkillId			= 4;	// 被击技能id
+	optional	int32	AttackerObjId	= 5;	// 攻击者ObjId
+	optional	int32	Height			= 6;	// 击飞高度
+	optional	int32	PosX			= 7;	// 目标点X
+	optional	int32	PosZ			= 8;	// 目标点Z
+    optional    int32   passiveSkillID  = 9;    // 被动技能ID
+}
+
+//@GC
+message GC_TRANSFORM
+{
+    optional int32 objId = 1;
+    optional int32 percent = 2;       // 变形比例
+};
+
+//#game send die to client
+//@GC
+message GC_DIE
+{
+	required int32 reviveAnsiTime = 1;
+	optional D_KillerData killer = 2;
+}
+
+//#send Ask Relive
+//@CG
+message CG_ASK_RELIVE
+{
+	required int32 type 		= 1;	//复活类型
+}
+//#Server Syn Skill Info
+
+//@GC
+message GC_SYN_SKILLINFO
+{
+	repeated int32 SkillId		= 1;	//skill ID
+	repeated int32 SkillIndex		= 2;	//技能索引
+	repeated int32 CDTime		= 3;	//冷却时间
+}
+
+//#send Ret Relive
+//@GC
+message GC_RET_RELIVE
+{
+	required int32 ObjId 	= 1;	//objId
+	optional int32 PosX 	= 2;	//坐标x
+	optional int32 PosZ 	= 3;	//坐标z
+	optional int32 FaceDir 	= 4; //朝向
+}
+
+// 添加buff
+//#GC_ADD_BUFF
+//@GC
+message GC_ADD_BUFF
+{
+    optional int32 attackerObjId = 1;       // buff的施法者Id
+    optional int32 defenderObjId = 2;       // buff的受击方Id
+    optional int32 buffId = 3;              // buff配置Id
+    optional int32 remain = 4;              // 剩余时间，单位秒
+    optional int32 overlayCount = 5;        // 堆叠层数
+};
+
+//@GC
+message GC_BUFF_COMMON_EFFECT
+{
+    optional int32 attackerObjId = 1;       // buff的施法者Id
+    optional int32 defenderObjId = 2;       // buff的受击方Id
+    optional int32 buffId = 3;              // buff配置Id
+    optional int32 remain = 4;              // 剩余时间，单位秒
+    optional int32 overlayCount = 5;        // 堆叠层数
+};
+
+//@GC
+message GC_BUFF_EFFECT
+{
+    required int32 attackerObjId = 1;
+    required int32 defenderObjId = 2;
+    required int32 effId = 3;
+};
+
+// 删除buff
+//#GC_DEL_BUFF
+//@GC
+message GC_DEL_BUFF
+{
+    optional int32 attackerObjId = 1;       // buff的施法者Id
+    optional int32 defenderObjId = 2;       // buff的受击方Id
+    optional int32 buffId = 3;              // buff配置Id
+};
+
+//@GC
+message GC_RELEASE_EFFECT
+{
+    optional int32 objId = 1;
+    repeated int32 types = 2;
+    optional int32 PosX = 3;
+    optional int32 PoxZ = 4;
+};
+
+//@GC
+message GC_PASSIVE_SKILL_ADD
+{
+    optional int32 objId = 1;
+    optional int32 passiveSkillId = 2;
+    optional int32 buffId = 3;
+};
+
+//@GC
+message GC_PASSIVE_SKILL_DEL
+{
+    optional int32 objId = 1;
+    optional int32 passiveSkillId = 2;
+    optional int32 buffId = 3;
+};
+
+//@GC
+message GC_PASSIVE_SKILL_TRIGGER
+{
+    optional int32 configId = 1;
+    optional int32 objId = 2;
+    optional int32 defenderId = 3;
+    repeated int32 impactCarrierId = 4;
+};
+
+//#Collect status
+//@GC
+message GC_COLLECT_STATUS
+{
+	repeated int32	ObjId 		= 1;	// objid
+	repeated int32	DataId 	= 2;	// BirthId
+	repeated int32	IsExsit	= 3;  // 存在否
+}
+
+//#CG_COLLECT
+//@CG
+message CG_COLLECT
+{
+	required int32 ObjId 		= 1;	// objid
+}
+
+//#GC_COLLECT
+//@GC
+message GC_COLLECT
+{
+	required int32 ObjId 	= 1;	// objid
+	required int32 Result	= 2;	//采集结果，0失败，1成功
+	repeated int32 ItemId	= 3;	// 采集的物品ID
+	repeated int32 Num		= 4;	// 数量
+}
+
+
+
+//#GC_CREATE_COLLECTION
+//@GC
+message GC_CREATE_COLLECTION
+{
+	repeated int32 ObjId 		= 1;
+	repeated int32 DataId 		= 2; // birthId
+	repeated int32 CollectionId = 3; // collectionId
+	repeated int32 PosX 		= 4;
+	repeated int32 PosZ 		= 5;
+	repeated int32 FaceDir 		= 6;
+}
+
+
+
+//#GC_DEL_COLLECTION
+//@GC
+message GC_DEL_COLLECTION
+{
+	repeated int32 ObjId = 1;
+}
+
+
+
+//#GC_CREATE_OBJ
+//@GC
+message GC_CREATE_OBJ
+{
+	required int32	ObjId 		= 1;	// objid
+	required int32	ObjType		= 2;	// obj类型
+	required int32	SceneClass	= 3;	// 场景在SceneDefine的ID
+	required int32	SceneInst 	= 4;	// 场景在Server上的ID
+	required int32	DataId 		= 5;	// 模型在rolebase中的ID
+	required int32	PosX 		= 6;	// Obj的坐标X
+	required int32	PosZ 		= 7;	// Obj的坐标Z
+	required int32	Facedir 	= 8;	// 朝向
+	optional string	Name	 	= 9;	// 名字
+	optional uint64	Guid		= 10;	// guid
+	optional int32	IsDie		= 11;	// 是否死亡
+	optional int32	MoveSpeed	= 12;	// 移动速度
+	optional uint64	OwnerGuid	= 13;	//拥有者id
+	optional int32 isCanAddTime = 14;	//是否增加时间
+	optional int32 masterID = 15;	// 主人id
+}
+
+//#CG_BUILD_CREATE
+//@CG
+message CG_BUILD_CREATE
+{
+	required int32 typeId 			= 1;	// objid
+	required int32 PosX 			= 2;
+	required int32 PosY 			= 3;
+	required int32 PosZ 			= 4;
+	required int32 Facedir      	= 5;
+    repeated int32 collectionDataId = 6;
+}
+
+//#GC_BUILD_CREATE
+//@GC
+message GC_BUILD_CREATE
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 result 		= 1;  // 结果
+	required int32 objId 		= 2;	// objid
+	required int32 typeId		= 3;	// 建筑表中的唯一ID
+	required int32 PosX 		= 4;
+	required int32 PosZ 		= 5;
+	required int32 Facedir      = 6;
+}
+
+//#GC_BUILD_SYN_STATUS
+//@GC
+message GC_BUILD_SYN_STATUS
+{
+	enum STATUS
+	{
+		COMPLETE = 1;
+		DESTROY = 2;
+	}
+	required int32 	status 		= 1;
+	required int32 	objId 		= 2;	// objid
+}
+
+//#CG_BUILD_CANCEL
+//@CG
+message CG_BUILD_CANCEL
+{
+	required int32 	objId 		= 1;	// objid
+}
+
+//#GC_BUILD_CANCEL
+//@GC
+message GC_BUILD_CANCEL
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 result 		= 1;    // 结果
+	required int32 objId 		= 2;	// objid
+}
+
+//#GC_BUILD_SYN_LIST
+//@GC
+message GC_BUILD_SYN_LIST
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 result 		= 1;    // 结果
+	required int32 mainCityLvl 	= 2;    // 主堡等级
+	repeated int32 objId 		= 3;	// objid
+	repeated int32 typeId		= 4;	// 建筑表中的唯一ID
+	repeated int32 PosX 		= 5;
+	repeated int32 PosZ 		= 6;
+}
+
+//#CG_BUILD_UPGRADE
+//@CG
+message CG_BUILD_UPGRADE
+{
+	required int32 	objId 		= 1;	// objid
+}
+
+//#GC_BUILD_UPGRADE
+//@GC
+message GC_BUILD_UPGRADE
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 result 		= 1;    // 结果
+	required int32 objId 		= 2;	// objid
+}
+
+//#CG_BUILD_REPAIR
+//@CG
+message CG_BUILD_REPAIR
+{
+	required int32 	objId 		= 1;	// objid
+}
+
+//#GC_BUILD_REPAIR
+//@GC
+message GC_BUILD_REPAIR
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 result 		= 1;    // 结果
+	required int32 objId 		= 2;	// objid
+}
+
+
+
+//#CG_ITEM_MOVE
+//@CG
+message CG_ITEM_MOVE
+{
+	required int32	packType    = 1;    // 存储位置类型
+	required int32 	pos1 		= 2;
+	required int32 	pos2 		= 3;
+}
+
+//#GC_ITEM_MOVE
+//@GC
+message GC_ITEM_MOVE
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 	result 		= 1;    // 结果
+}
+
+
+
+//#CG_ITEM_TIDY
+//@CG
+message CG_ITEM_TIDY
+{
+	required int32	packType    = 1;    // 存储位置类型
+	repeated int32 	pos 		= 2;
+	repeated uint64 guid 		= 3;
+}
+
+//#GC_ITEM_TIDY
+//@GC
+message GC_ITEM_TIDY
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 result 	= 1;    // 结果
+}
+
+
+
+//#CG_ITEM_DISCARD
+//@CG
+message CG_ITEM_DISCARD
+{
+	required int32	packType    = 1;    // 存储位置类型
+	required int32 	pos 		= 2;
+	required int32 	count 		= 3;
+	required int32  posX 		= 4;
+	required int32  posZ 		= 5;
+}
+
+//#GC_ITEM_DISCARD
+//@GC
+message GC_ITEM_DISCARD
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32  result 		= 1;    // 结果
+}
+
+
+
+//#CG_ITEM_DESTROY
+//@CG
+message CG_ITEM_DESTROY
+{
+	required int32	packType    = 1;    // 存储位置类型
+	required int32 	pos 		= 2;
+	required int32 	count 		= 3;
+}
+
+//#GC_ITEM_DESTROY
+//@GC
+message GC_ITEM_DESTROY
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 result 	= 1;    // 结果
+}
+
+
+
+//#CG_ITEM_USE
+//@CG
+message CG_ITEM_USE
+{
+	required uint64	guid    	= 1;    //
+	required int32 	count       = 2;
+	required int32 	targetObj 	= 3;
+	required int32 	faceDir 	= 4;
+	repeated int32  addition_Optional_box   = 5;	//自选宝箱附加信息
+}
+
+//#GC_ITEM_USE
+//@GC
+message GC_ITEM_USE
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+		CAREER_ERR = 3;//职业限制
+	}
+	required int32 result 	= 1;    // 结果
+	optional int32 itemid 	= 2;
+}
+
+
+
+//#CG_ITEM_REPAIR
+//@CG
+message CG_ITEM_REPAIR
+{
+	required int32	packType    = 1;    // 存储位置类型
+	required int32 	pos 		= 2;    // 快速模式下修理装备，此处传ItemId
+}
+
+//#GC_ITEM_REPAIR
+//@GC
+message GC_ITEM_REPAIR
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 	result 		= 1;    // 结果
+}
+
+
+
+//#CG_ITEM_PICKUP
+//@CG
+message CG_ITEM_PICKUP
+{
+	required int32 	objId 		= 1;
+	required int32 	index 		= 2;
+}
+
+//#GC_ITEM_PICKUP
+//@GC
+message GC_ITEM_PICKUP
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+		FULL = 3;
+		CHANGEANDFULL = 4;
+	}
+	required int32 result 	= 1;    // 结果
+	required int32	objId = 2;       //玩家场景内objid
+}
+
+
+
+message ProtoItemObjData
+{
+	repeated int32  Index       = 1;    // 索引
+	repeated int32	DataId 		= 2;	// DataId
+	repeated int32	Count 		= 3;	// 数量
+}
+
+
+
+//#GC_ITEM_SYN_STATUS
+//@GC
+message GC_ITEM_SYN_STATUS
+{
+	repeated int32				ObjId 		= 1;	// objid
+	repeated int32 				PosX 		= 2;
+	repeated int32				PosZ 		= 3;
+	repeated ProtoItemObjData	Data 		= 4;	// data
+	repeated int32				IsExsit		= 5;    // 存在否
+	repeated int32				OwnObjId 	= 6;    //归属 谁可以获取
+	repeated int32				type 		= 7;	// 0 掉落包; 1 宝箱
+	repeated int32				status 		= 8;    //0 预告; 1 真实未开启; 2 真实已开启
+	repeated int32				dataId 		= 9;    //宝箱Id
+	repeated int32				wheelid 	= 10;    //
+	repeated int32				rewardid 	= 11;    //
+	repeated int32              MakeObjId   = 12;    //产出，由谁产出
+}
+
+
+
+message GC_ItemData
+{
+	required int32	dataId 		= 1;						// dataId
+	required int32	count 		= 2;						// 数量
+	required uint64 guid 		= 3;    					// guid
+	required int32	pos 		= 4;						// 位置, 对应packType
+	optional int32  cdTime 		= 5;    					// 剩余cd时间
+	optional int64	lifeTime	= 6;						// 存在时间
+   	optional int32 	enhanceLv 		= 7;
+   	optional int32  enhanceLvNum 	= 8;					//当前等级强化次数
+   	optional int32  chgcount		= 9;
+}
+
+
+
+//#GC_ITEM_LIST
+//@PC
+message GC_ITEM_LIST
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 			result 		= 1;    // 结果
+	required int32			packType    = 2;    // 存储位置类型
+	repeated GC_ItemData 	itemData 	= 3;
+}
+
+
+//#GC_ITEM_CHANGE
+//@GC
+message GC_ITEM_CHANGE
+{
+	required int32  			condition 		= 1;    // 改变时的操作
+	repeated int32				packType    	= 2;    // 存储位置类型
+	repeated GC_ItemData 		itemData 		= 3;
+	optional int32				objId    		= 4;	// 场景objid
+}
+
+
+
+
+//#CG_ITEM_CREATE
+//@CG
+message CG_ITEM_CREATE
+{
+	required int32 	createId 		= 1;
+	required int32  count           = 2;
+}
+
+//#GC_ITEM_CREATE
+//@GC
+message GC_ITEM_CREATE
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 result 	= 1;    // 结果
+}
+
+
+//#CG_ITEM_SALE
+//@CG
+message CG_ITEM_SALE
+{
+	required uint64 guid 		= 	1;
+	required int32	count 		= 2;
+}
+
+
+//#GC_ITEM_SALE
+//@GC
+message GC_ITEM_SALE
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 result 	= 1;    // 结果
+}
+
+
+// =================== Equipment Begin ================================
+// 装备的数据库存储结构
+message DB_Equipment
+{
+//    optional int32 wearPos = 1;         // 穿戴位置
+    optional int32 currDuration = 2;    // 当前持久
+    optional int32 level = 3;           // 当前等级
+};
+
+
+
+// 装备的通信结构
+message D_Equipment
+{
+    // 穿戴位置枚举
+    enum enWearPos
+    {
+        UNWEAR = 0;             // 未穿戴
+        WEAPON_FIRST = 1;       // 一号位武器
+        WEAPON_SECOND = 2;      // 二号位武器
+        CLOTH = 3;              // 衣服
+        TROUSER = 4;            // 裤子
+        GLOVE = 5;              // 手套
+        SHOE = 6;               // 鞋子
+        SHOULDER = 7;           // 肩甲
+        HEADER = 8;             // 头盔
+        COLLECTION1 = 9;        // 采集工具--镰刀
+        COLLECTION2 = 10;       // 采集工具--锤子
+        COLLECTION3 = 11;       // 采集工具--镐
+		PET = 12;       		// 宠物
+		WING = 13;       		// 翅膀
+    }
+    optional int32  configId = 1;   // 配置表ID
+    optional uint64 guid = 2;       // guid
+    optional int32 wearPos = 3;     // 穿戴位置，0表示没有穿戴，在包裹中
+    optional int32 currDuration = 4;    // 当前的持久
+    optional int32 level = 5;       // 装备等级
+};
+
+
+
+// 装备栏信息
+//#CG_EQUIPMENT_LIST
+//@CG
+message CG_EQUIPMENT_LIST
+{
+
+};
+
+
+
+//#GC_EQUIPMENT_LIST
+//@GC
+message GC_EQUIPMENT_LIST
+{
+    repeated int32 pos = 1;
+    repeated int32 currDuration = 2;
+}
+
+
+
+// Equipment 详细信息
+//#CG_EQUIPMENT_DETAIL
+//@CG
+message CG_EQUIPMENT_DETAIL
+{
+    optional int32 pos = 1;
+}
+
+
+//#GC_EQUIPMENT_DETAIL
+//@GC
+message GC_EQUIPMENT_DETAIL
+{
+    optional D_Equipment info = 1;
+}
+
+
+
+// Equipment 脱下
+//#CG_EQUIPMENT_TAKEOFF
+//@CG
+message CG_EQUIPMENT_TAKEOFF
+{
+    optional int32 wearPos = 1;     // 穿戴的位置
+    optional int32 itemId = 2;      // 快速模式下发这个
+};
+
+
+//#GC_EQUIPMENT_TAKEOFF
+//@GC
+message GC_EQUIPMENT_TAKEOFF
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 	result 		= 1;    // 结果
+}
+
+
+
+// Equipment信息推送和数据变更推送
+//message GC_ITEM_LIST
+//message GC_ITEM_CHANGE
+
+
+
+// Equipment使用（装配）
+//message CG_ITEM_USE
+//message GC_ITEM_USE
+
+
+
+// Equipment 丢弃
+//message CG_ITEM_DISCARD
+//message GC_ITEM_DISCARD
+
+
+
+// Equipment 拾取
+//message CG_ITEM_PICKUP
+//message GC_ITEM_PICKUP
+
+
+
+// Equipment 修理
+//message CG_ITEM_REPAIR
+//message GC_ITEM_REPAIR
+
+
+
+// 同步装备外观
+//#GC_SYN_EQUIPMENT_APPEARANCE
+//@GC
+message GC_SYN_EQUIPMENT_APPEARANCE
+{
+    optional int32  objId = 1;
+    repeated int32  configId = 2;
+}
+
+// =================== Equipment End ================================
+
+
+
+//#GC_SCENE_NOTICE
+//@GC
+message GC_SCENE_NOTICE
+{
+	required int32  index  = 1;
+    repeated int32  intVal = 2;
+	repeated string	strVal = 3;
+}
+
+
+
+//#CG_ITEM_STORAGE
+//@CG
+message CG_ITEM_STORAGE
+{
+	required int32 	objId 		= 1;
+	required int32	pos 		= 2;	// 位置
+	required int32	count 		= 3;	// 数量
+}
+
+
+
+//#GC_ITEM_STORAGE
+//@GC
+message GC_ITEM_STORAGE
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+		FULL = 3;
+	}
+	required int32 	result 		= 1;    // 结果
+}
+
+
+
+//#CG_ITEM_FETCH
+//@CG
+message CG_ITEM_FETCH
+{
+	required int32 	objId 		= 1;
+	required int32	pos 		= 2;	// 位置
+	required int32	count 		= 3;	// 数量
+}
+
+
+
+//#GC_ITEM_FETCH
+//@GC
+message GC_ITEM_FETCH
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+		FULL = 3;
+	}
+	required int32 	result 		= 1;    // 结果
+}
+
+
+
+//#CG_ENTER_BUILDING
+//@CG
+message CG_ENTER_BUILDING
+{
+	enum ENTER_BUILDING
+	{
+		ENTER = 1;
+		LEAVE = 2;
+	}
+    optional int32 isEnter = 1;
+}
+
+
+//#GC_ENTER_BUILDING
+//@GC
+message GC_ENTER_BUILDING
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+    optional int32 ret = 1;
+}
+
+
+
+//#GC_BOSS_TRANSFORM (Notify surrounding players that Boss start to transform)
+//@GC
+message GC_BOSS_TRANSFORM
+{
+	required int32 ObjId = 1;
+}
+
+
+
+//#GC_ERROR_MSG (general error message for all features in the game)
+//@GC
+message GC_ERROR_MSG
+{
+	required int32 MsgId = 1;	// ID in "Client/Assets/Game/Data/Excels/LocalizationLanguage.xlsx"
+}
+
+
+
+//#CG_CHAT
+//@CG
+message CG_CHAT
+{
+    enum charType
+    {
+        VOICE_SCENE_LOCAL = 1;      //场景局内小范围语音
+
+    };
+
+	required int32 	type 	= 1;
+	required string info 	= 2;
+	optional uint64 receiverGuid 	= 3;
+}
+
+//#GC_CHAT
+//@GC
+message GC_CHAT
+{
+	required int32 	type 		= 1;
+	required string info 		= 2;
+	required string senderName 	= 3;
+	required uint64 senderGuid 	= 4;
+}
+
+
+
+//#CG_RIDE_LEAVE
+//@CG
+message CG_RIDE_LEAVE
+{
+	required int32 	type 		= 1;
+}
+
+
+
+//#CG_RIDE
+//@CG
+message CG_RIDE
+{
+	required int32 	type 		= 1;
+}
+
+
+
+//#GC_RIDE
+//@GC
+message GC_RIDE
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 result 	= 1;    // 结果
+}
+
+//#GC_ROBOT_CREATE
+//@GC
+message GC_ROBOT_CREATE
+{
+	required int32 roomId       = 1;     // RoomID
+	required int32 createCount  = 2;     // 创建机器人个数
+	required int32 matchid      = 3;     // 匹配id
+}
+
+message D_RobotFashion
+{
+    optional int32 configId = 1;
+    optional int32 rgb1 = 2;
+    optional int32 rgb2 = 3;
+    optional int32 rgb3 = 4;
+};
+
+//#Robot client ask login
+//@CG
+message CG_LOGIN_ROBOT
+{
+	//登录基本数据
+	required int32	GameVersion 	= 1;	//游戏大版本号
+	required int32	ProgramVersion 	= 2;	//代码版本号
+	required int32	MaxPacketId		= 3;	//最大消息包ID
+	required int32  IsRobot       	= 4;	//是否机器人
+	required string	Account 		= 5;	//登陆账号
+	required int32  EquipmId        = 6;    // 装备id
+	required int32  RoomId          = 7;	//房间id
+    optional int32  sex 			= 8;    //性别
+	repeated D_RobotFashion fashion = 9;    // 时装
+
+}
+
+//#user param
+//@GC
+message GC_USER_PARAM
+{
+	required int32	type = 1;		//类型
+	required int32	objId = 2;
+	repeated string	strList = 3;	//字符串参数
+	repeated int32	intList = 4;	//整形参数
+}
+
+//#recive leave game ok
+//@CG
+message CG_LEAVE_GAME_OK
+{
+}
+
+message D_UserInfo
+{
+    optional int32 objId = 1;
+    optional int32 faceDir = 2;
+    optional int32 posX = 3;
+    optional int32 posZ = 4;
+};
+//@GC
+message GC_SYN_USER_INFO
+{
+    repeated D_UserInfo userList = 1;
+};
+
+message BoxNoticeData
+{
+	required	int32	PosX			= 1;	// 目标点X
+	required	int32	PosZ			= 2;	// 目标点Z
+	required	int32	BoxId			= 3;    // 箱子Id
+	required	int32	BoxIndex		= 4;    // 箱子唯一Id
+}
+
+//#GC_BOX_NOTICE
+//@GC
+message GC_BOX_NOTICE
+{
+	required int32 type = 1;   //类型, 0 预告; 1 刷新; 2 消失
+	repeated BoxNoticeData boxList = 2;
+}
+
+//#GC_BOX_LIST
+//@GC
+message GC_BOX_LIST
+{
+	repeated BoxNoticeData preBoxList = 1;  //预告宝箱的信息
+	repeated BoxNoticeData boxList = 2; 	// 宝箱信息
+}
+
+//#CG_BOX_OPEN
+//@CG
+message CG_BOX_OPEN
+{
+	required int32 objId = 1;  //宝箱objId
+}
+
+//#CG_ROBOT_ATTR
+//@CG
+message CG_ROBOT_ATTR
+{
+	repeated int32 index = 1;   //属性类型
+	repeated int32 value = 2;   //属性值
+	repeated int32 buffid = 3;  //buff列表
+}
+
+//@GC
+message GC_PASSIVE_SKILL_LIST
+{
+    repeated int32 skillId = 1;
+}
+
+//#CG_NEARDEATH_KILL
+//@CG
+message CG_NEARDEATH_KILL
+{
+	required int32 TargetId	 	= 1;	//target id
+	required int32 FaceDir	 	= 2;	//朝向
+	optional int32 PosX 		= 3;	//点的X坐标乘以100
+	optional int32 PosZ 		= 4;	//点的Z坐标乘以100
+	optional int32 dirType      = 5;
+}
+
+//#GC_NEARDEATH_KILL
+//@GC
+message GC_NEARDEATH_KILL
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 result 		= 1;    // 结果
+}
+
+//#CG_NEARDEATH_SAVE
+//@CG
+message CG_NEARDEATH_SAVE
+{
+	required int32 TargetId	 	= 1;	//target id
+	required int32 FaceDir	 	= 2;	//朝向
+	optional int32 PosX 		= 3;	//点的X坐标乘以100
+	optional int32 PosZ 		= 4;	//点的Z坐标乘以100
+	optional int32 dirType      = 5;
+}
+
+//#GC_NEARDEATH_SAVE
+//@GC
+message GC_NEARDEATH_SAVE
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 result 		= 1;    // 结果
+}
+
+//#GC_TESTDELAY
+//@GC_TESTDELAY
+message GC_TESTDELAY
+{
+	required int32 starttime 		= 1; //开始时间
+	required int32 order 		= 2; //序号
+}
+
+//#CG_TESTDELAY
+//@CG_TESTDELAY
+message CG_TESTDELAY
+{
+	required int32 starttime 		= 1;//开始时间
+	required int32 order 		= 2; //序号
+}
+
+//#GC_SHOW_KICK_COUNTDWON
+//@GC
+message GC_SHOW_KICK_COUNTDWON
+{
+	required int32 countdowntime	= 1;//开始时间
+}
+
+//#GC_HIDE_KICK_COUNTDWON
+//@GC
+message GC_HIDE_KICK_COUNTDWON
+{
+
+}
+
+//#GC_AUTO_ADDHP
+//@GC
+message GC_AUTO_ADDHP
+{
+	required int32 addvalue	= 1;//增加的血量或者能量
+	required int32 costmoney= 2;//花费的金币数量
+	required int32 addtype= 3;//增加的类型 0 血量 1 能量
+}
+
+message GlobalNoticData_ItemChage
+{
+	required int32 userid = 1;
+	required string	userName= 2;
+	required string	headIcon = 3;
+	required int32 monsterid = 4;
+	required int32 msttbId = 5;
+    required int32 itemId = 6;
+    required int32 num = 7;
+    required int32 noticetype = 8;
+    optional int32 noticeparam = 9;
+	optional int32 wheelid = 10;//转盘怪参数
+	optional int32 wheelReward = 11;//转盘奖励id
+}
+//#GC_GLOBAL_NOTIC
+//@GC
+message GC_GLOBAL_NOTIC
+{
+	repeated GlobalNoticData_ItemChage itemchange=1;
+}
+
+message GlobalNoticData_Rank
+{
+	required int32 userid = 1;
+	required string PlayerName 	= 2;
+	required int32 money = 3;
+	required int32 rank = 4;
+	required string PlayerIcon 	= 5;
+}
+//#GC_RANK_MODIFY_NOTIC
+//@GC
+message GC_RANK_MODIFY_NOTIC
+{
+	repeated GlobalNoticData_Rank rankchange=1;
+	required GlobalNoticData_Rank rankown=2;
+}
+
+//#GC_ATTKER_PARAM
+//@GC
+message GC_ATTKER_PARAM
+{
+	required int32  sucess = 1;
+	required int32 basicrate = 2;
+	required int32 basichitrate = 3;
+	required int32 monsterhitedrate = 4;
+	required int32 incomeregulationrate = 5;
+
+}
+
+
+//@CG
+// 时装穿脱
+message CG_FASHION_CHANGE
+{
+    required uint64 guid = 1;
+	required int32 pos = 2;
+	required int32 type = 3;	// 0,穿， 1，脱
+};
+
+//@GC
+message GC_FASHION_CHANGE
+{
+	enum RESULT
+	{
+		OK = 1;
+		EXIST = 2;
+		POS = 3;
+		BAG_OVERLIMIT = 4;
+	}
+	required int32 	 	result 		= 1;	// 结果
+    required int32   	type 		= 2;	// 0,穿， 1，脱
+    required uint64		guid 		= 3;
+	required int32 		pos 		= 4;
+    optional int32   	equipmentId = 5;
+}
+
+
+//@CG
+//
+message CG_AdjustAtk
+{
+    required int32 bAdd = 1;
+};
+
+//@GC
+message GC_AdjustAtk
+{
+    required int32 atk = 1;
+    required int32 badd = 2;
+    required int32 bsub = 3;
+}
+
+
+//@GC
+message GC_BagTip
+{
+    required int32 space = 1;
+}
+
+//@CG
+message CG_Batch_Sale
+{
+    repeated int32 quality = 1;
+}
+
+//@CG
+message CG_Exchange_JJGold
+{
+    required int32 type = 1;	//0:jj2gold 1:gold2jj
+    required int32 num = 2;
+}
+//@CG
+message GC_Exchange_JJGold_Result
+{
+	enum RESULT
+	{
+		succeed = 1;		//成功
+		failed = 2;			//失败，失败原因未知
+		failed_cd = 3;    //兑换cd中
+		failed_limit = 4;   //兑换达上限
+	}
+    required int32 type = 1;	//0:jj2gold 1:gold2jj
+    required int32 num = 2;		// 数量
+    required int32 result = 3;  // 结果
+    optional int32 cdtime = 4;	//cd时长
+}
+
+
+//@CG
+message CG_QueryJJGold
+{
+}
+//@CG
+message GC_QueryJJGold
+{
+ 	required int32 jjgold = 1;
+}
+//@CG
+message CG_JJ2Diamod
+{
+	required int32 	jjnum = 1;
+}
+//@GC
+message GC_JJ2Diamod_Result
+{
+	required int32 	suc = 1;
+}
+//@GC
+message GC_JJAward_Result
+{
+	required int32 	awardnum = 1;
+}
+
+
+message GC_GOODS_DATA
+{
+	required int32	id 		= 1;
+	required int32	count 	= 2;  // 剩余数量
+	optional int32  discount = 3;
+}
+
+//#CG_GOODS_INFO
+//@CG
+message CG_GOODS_INFO
+{
+	required int32	index 		= 1;
+};
+
+
+//#GC_GOODS_INFO
+//@GC
+message GC_GOODS_INFO
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 	result 		= 1;    // 结果
+	required int32	index 		= 2;
+	repeated GC_GOODS_DATA   	infoList = 3;
+	optional int32  luncyStorRefreshNum = 4; //幸运商店刷新次数
+}
+
+
+//#CG_GOODS_BUY
+//@CG
+message CG_GOODS_BUY
+{
+	required int32	id 		= 1;
+	required int32	count 	= 2;
+	required int32  index   = 3;
+}
+
+//#GC_GOODS_BUY
+//@gC
+message GC_GOODS_BUY
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+		COUNT_NOT_ENOUGH = 3;
+		CAREER_ERR = 5;//职业限制
+	}
+	required int32 	result 		= 1;
+	required int32	id 			= 2;
+	required int32	count 		= 3;
+}
+
+//#shop refresh
+//@CG
+message CG_SHOP_REFRESH
+{
+	required int32	type 	= 1;  //商店类型
+};
+//#shop refresh ret
+//@GC
+message GC_SHOP_REFRESH_RET
+{
+	required int32	type 	= 1;     //商店类型
+	optional int32  refreshNum = 2;  //剩余刷新次数
+	required int32	result  = 3;	//结果0失败，1成功
+};
+
+
+//#CG_ReqExInfo
+//@CG
+message CG_ReqExInfo
+{
+
+}
+
+message Return_Kill_Info
+{
+	required int32 monsterId	= 1;	//怪物ID
+	required int32 typeId		= 2;	//玩法类型
+	required int32 retNum		= 3;	//击杀数量or转盘倍数or倒计时倍数
+}
+
+//#GC_
+//@GC
+message GC_ReqExInfo
+{
+	required int32 	 gold2jj			= 1;
+	required int32	 mp2jj				= 2;
+	required int32	 award				= 3;
+	optional int32	 exNum				= 4;	//免费场剩余兑换次数
+	optional int32	 outLimit			= 5;	//是否超过上限
+	optional int32	 costNum			= 6;	//消耗兑换次数
+	required int32   diplayMode			= 7;	//展示信息的类型
+	repeated Return_Kill_Info retInfo	= 8;	//返回每张显示卡片的具体信息
+	optional int32	 gmcloseJJexhange   = 9;	//GM是否关闭了兑入兑出
+}
+
+//#CG_AddMp
+//@CG
+message CG_AddMp
+{
+}
+
+//#CG_AddMp
+//@CG
+message CG_AddHp
+{
+}
+
+//#CG_GeneralMessageTips
+//@CG
+message CG_GeneralMessageTips
+{
+	required int32 msgtype = 1;
+	repeated string paramstr = 2;
+	repeated int32 paramint = 3;
+}
+
+//#GC_GeneralMessageTips
+//@GC
+message GC_GeneralMessageTips
+{
+	required int32 msgtype = 1;
+	repeated string paramstr = 2;
+	repeated int32 paramint = 3;
+}
+
+//#CG_GeneralMessageTips
+//@CG
+message CG_MstSelect
+{
+	required int32 _type = 1;
+}
+
+//#save client config
+//@CG
+message CG_CLIENT_CONFIG
+{
+	required string ccfg = 1;
+}
+
+//#save client config
+//@CG
+message CG_Use_LotteryTicket
+{
+	required int32 groupid = 1;
+}
+//#save client config
+//@GC
+message GC_Use_LotteryTicket
+{
+	required int32 id = 1;
+}
+
+//#save client config
+//@CG
+message CG_LotteryTicket_Info
+{
+}
+//#save client config
+//@GC
+message GC_LotteryTicket_Info
+{
+	required int32 groupid = 1;
+}
+
+//#save client config
+//@CG
+message CG_LotteryTicket_Record
+{
+}
+//#save client config
+//@GC
+message GC_LotteryTicket_Record
+{
+	repeated int64 time = 1;
+	repeated int32 id = 2;
+}
+//#
+//@GC
+message GC_SceneTaskBegin
+{
+	repeated int32 mid = 1;
+	repeated int32 mmaxnum = 2;
+	required int32 duration = 3;
+	repeated int32 awardid = 4;
+	repeated int32 awardnum = 5;
+	required int64 begintime = 6;
+	required int32 isFirst = 7;
+	required int32 awardlimitnum = 8;
+}
+//#
+//@GC
+message GC_SceneTaskInfoSyn
+{
+	repeated int32 mid = 1;
+	repeated int32 mmaxnum = 2;
+	repeated int32 mcompletnum = 3;
+}
+
+
+message SceneTaskCompleteInfo
+{
+	required int32 objid = 1;//玩家游戏内id//
+	repeated D_ItemData awdrdbase = 2;//基础奖励//
+	repeated D_ItemData awdrdappraise = 3;//评级奖励//
+	required int32 appraise = 4;	//评级///
+	required int32 contribute = 5;	//贡献///
+	repeated int32 mid = 6;	//完成数量///
+	repeated int32 mcompletnum = 7;	//完成数量///
+	repeated int32 mmaxnum = 8;		//总需要数量///
+	repeated int32 mcontribute = 9;	//怪物贡献///
+	required string name = 10;		//人物名字//
+	required string	headIcon = 11;	//头像//
+}
+
+//#
+//@GC
+message GC_SceneTaskCompleteInfo
+{
+	required int32 suc = 1;
+	repeated SceneTaskCompleteInfo sceneTaskCompleteInfo = 2;
+	required int64 usetime = 3;
+
+}
+
+
+//#
+//@GC
+message GC_SceneTaskPlayerInfoSyn
+{
+	repeated int32 mid = 1;
+	repeated int32 mmaxnum = 2;
+	repeated int32 mcompletnum = 3;
+}
+
+
+//#
+//@CG
+message CG_SceneTaskRecord
+{
+}
+
+//#
+message D_SceneTaskRecordInfo
+{
+		required int32 goldnum =1;
+		required int32 diamondnum =2;
+		required int32 hammernum =3;
+		required int32 mid0 =4;
+		required int32 mnum0 =5;
+		required int32 mid1 =6;
+		required int32 mnum1 =7;
+		required int32 appraise =8;
+		required int32 mcontribute =9;
+}
+
+//#
+//@GC
+message GC_SceneTaskRecord
+{
+	repeated D_SceneTaskRecordInfo scenetaskrecord = 1;
+}
+
+//#
+//@GC
+message GC_SynDwordData
+{
+	repeated int32 index = 1;
+	repeated int32 value = 2;
+}
+
+//#
+//@GC
+message GC_SynMonsterCostPer
+{
+	repeated int32 mid = 1;
+	repeated int32 value = 2;
+}
+
+
+//#
+//@CG
+message CG_EnhanceEquip
+{
+	required uint64 guid = 1;
+	required int32  pos  = 2;   //位置
+	required int32  type = 3;   //类型(见枚举ItemPackType -1为fashion即在玩家身上穿着)
+}
+
+//#
+//@PC
+message GC_EnhanceEquip
+{
+	required uint64 guid = 1;
+	required int32 suc = 2;
+	optional int32 enhancelv = 3;
+	optional int32 enhancelvNum = 4;
+}
+
+//#
+//@CG
+message CG_OpenEnergy
+{
+	required int32 bopen = 1;
+}
+
+//#
+//@PC
+message GC_OpenEnergy
+{
+	required int32 bopen = 1;
+}
+
+
+//#
+//@PC
+message GC_EquipSuitInfo
+{
+	required int32 equiSuitID = 1;
+	required int32 equiSuitLevel = 2;
+
+	required int32 skill0 = 3;
+	required int32 skill1 = 4;
+
+	repeated int32 attrib0 = 5;
+	repeated int32 attrib1 = 6;
+}
+
+//@CG
+message CG_ACTIVITY_INFO
+{
+};
+
+message GD_ActivityInfo
+{
+    enum activityState
+    {
+        PGS_UNFINISH = 1;
+        PGS_UNTAKE = 2;
+        PGS_TAKED = 3;
+    };
+    optional int32 cigId = 1;
+    repeated int32 progress = 2;
+    optional int32 state = 4;
+};
+
+//@GC
+message GC_ACTIVITY_INFO
+{
+    repeated GD_ActivityInfo info = 1;
+};
+
+//@CG
+message CG_ACTIVITY_REWARD
+{
+    optional int32 configId = 1;
+};
+
+//@GC
+message GC_ACTIVITY_REWARD
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+    required int32 	ret = 1;
+};
+
+
+//#
+//@CG
+message GC_StartBossChallengeTask
+{
+	required int32 taskid = 1;
+	required int32 monsterid = 2;
+	required int64 starttime = 3;
+}
+
+message D_BossChallengeUserScoreInfo
+{
+	required int32 objid = 1;
+	required int32 per = 2;
+	required int32 diamond = 3;
+	required int32 gold = 4;
+	required string name = 5;
+    required string	headIcon	= 6;	//头像
+	repeated D_ItemData itemdata = 7;
+}
+
+//#
+//@GC
+message GC_EndBossChallengeTask
+{
+	required int32 suc =1 ;
+	repeated D_BossChallengeUserScoreInfo scoreInfo= 2;
+	required int32 killerid = 3;
+	required string killername = 4;
+	required int32 killergold = 5;
+	required int32 consumetime = 6;
+}
+//#
+//@CG
+message CG_RequestRechargeList
+{
+}
+
+message GC_Recharge_Info
+{
+	required int32 shopId = 1;
+	required int32 num = 2;
+	optional int64 lifeTime = 3;
+};
+
+//#
+//@GC
+message GC_RequestRechargeListRet
+{
+	repeated GC_Recharge_Info shopInfo = 1;
+}
+
+
+//#
+//@CG
+message CG_RequestRechargeOrderID
+{
+  	optional string AppID 			= 1;
+  	optional string AppSchemeID 	= 2;
+  	optional string PayMethodID 	= 3;
+  	optional string QuotationType 	= 4;
+  	optional string GoodsID 		= 5;
+  	optional string GoodsAmount 	= 6;
+  	optional string MoneyType 		= 7;
+  	optional string MoneyAmount 	= 8;
+  	optional string ECASchemeID 	= 9;
+};
+
+
+//#
+//@GC·
+message GC_RequestRechargeOrderIDRet
+{
+	enum RetCode
+	{
+		failed = 1;			//非法购买失败不做提示
+		unlockfailed = 2;	//限制礼包购买失败，条件不满足
+		CAREER_ERR = 5;//职业限制
+	}
+  	optional string AppOrder 	= 1;
+  	optional string AppReqTime 	= 2;
+  	optional string AppOrderSign= 3;
+  	optional string NotifyUrl = 4;
+  	optional int32  Suc = 5;
+  	optional string GoodsID 		= 6;
+  	optional string GoodsAmount 	= 7;
+};
+//#
+//@GC
+message GC_RechargeSuc
+{
+  	repeated int32 itemid 		= 1;
+  	repeated int32 itemnum		= 2;
+};
+
+
+//@CG
+message CG_Exchange_GoldJJInfo
+{
+}
+//@CG
+message GC_Exchange_GoldJJInfo_Result
+{
+    required int32 num = 1;
+    required int32 outLimit	= 2;//是否超过上限
+}
+
+//#enhance attr
+//@CG
+message CG_EnhanceAttr
+{
+	enum attr_type
+	{
+		attr_ack = 1;
+		attr_power = 2;
+	}
+  	required int32 type 	= 1;	//强化类型
+  	required int32 lv 		= 2;	//当前等级
+  	required int32 bunitlSuc = 3;	//连续强化直至成功
+};
+
+//#enhance attr
+//@CG
+message GC_EnhanceAttr_Ret
+{
+	required int32 result 	= 1;	//结果0失败，其他成功
+  	required int32 type 	= 2;
+  	required int32 lv 		= 3;
+  	required int32 count 	= 4;	//强化次数
+};
+
+//#copy scene notify
+//@GC
+message GC_COPY_SCENE_NOTIFY
+{
+  	required int64 end_time = 1;//结束时间
+}
+
+//#copy scene notify ret
+//@CG
+message CG_COPY_SCENE_NOTIFY_RET
+{
+	required int32 result   = 1;//结果
+}
+
+//#Change Scene
+//@GC
+message GC_CHANGE_SCENE
+{
+	required int32      result      = 1;   //接受副本结果
+    required int32      changeType  = 2;    //切换原因
+  	required int32		matchtbId	= 3;    //matchTB  id
+	required int32		roomId      = 4;	//新场景  id
+	required int32		gServerId	= 5;
+}
+
+//#Change Scene Ret
+//@CG
+message CG_CHANGE_SCENE_RET
+{
+	required int32      result      = 1;   //接受副本结果
+    required int32      changeType  = 2;    //切换原因
+	required int32		roomId      = 3;	//新场景  id
+}
+
+//#ticket lottery
+//@CG
+message CG_Ticket_Lottery
+{
+	required int32 cost_multiple = 1; //倍率
+}
+//#ticket lottery ret
+//@GC
+message GC_Ticket_Lottery_Ret
+{
+	enum RESULT
+	{
+		lottry_OK     = 0;  //成功
+		ticket_err    = -1;//点券不足
+		multiple_err  = -2;//倍率错误
+		JJPlt_err     = -3;//平台接口错误
+		lottry_err    = -4;//其他错误
+		ticket_daylimit = -5;//点券日上限
+	}
+	required int32 result         = 1;
+	required int32 cost_multiple  = 2;//倍率
+	required int32 reward_index   = 3;//奖励pos ID
+	required int32 multiple_index = 4;//奖励倍数 pos ID
+	required int32 reward_num     = 5;//奖励 数量
+	required int32 dayticket_cost = 6;//日消耗
+}
+
+//#get ticket lottery record
+//@CG
+message CG_TicketLottery_Record
+{
+}
+//#get ticket lottery record ret
+//@GC
+message GC_TicketLottery_Record_Ret
+{
+	repeated int64 time       = 1;     //时间
+	repeated int32 multiple   = 2;     //倍数
+	repeated int32 rewardId   = 3;     //奖励id
+	repeated int32 rewardNum  = 4;     //奖励数量
+}
+
+//#Compound
+//@CG
+message CG_Compound
+{
+	required uint64 itemGuid=1;//道具guid
+	required int32 count=2;//合成个数， 0为全部合成
+}
+
+//#Compound
+//@GC
+message GC_CompoundResult
+{
+	required int32 result=1;//合成结果
+}
+
+message GC_DailyTaskData
+{
+	required int32 task_id                  = 1;
+	required int32 task_state               = 2;
+	required int32 task_progress            = 3;
+}
+
+//#Get Daily task info
+//@CG
+message CG_DailyTask_Info
+{
+
+}
+
+//#Get Daily task info
+//@GC
+message GC_DailyTask_Info_Ret
+{
+	repeated int32 taskList                 = 1;//任务列表
+	required int32 refreshNum               = 2;//刷新次数
+    optional GC_DailyTaskData taskData      = 3;//已领取任务数据
+}
+
+//#syn Daily task Progress
+//@GC
+message GC_Syn_DailyTask_Progress
+{
+    required GC_DailyTaskData taskData      = 1;//已领取任务数据
+}
+
+//#accept Daily task
+//@CG
+message CG_DailyTask_Accept
+{
+	required int32 task_id                  = 1;//任务id
+}
+
+//#accept Daily task ret
+//@GC
+message GC_DailyTask_Accept_Ret
+{
+	enum RESULT
+	{
+		SUCCESS       = 0;
+		Accept_Err    = -99;//已有任务
+	}
+  	required int32 result                   = 1;//结果
+	optional GC_DailyTaskData taskData      = 2;//已领取任务数据
+}
+
+//#refresh Daily task
+//@CG
+message CG_DailyTask_Refresh
+{
+
+}
+
+//#refresh Daily task
+//@GC
+message GC_DailyTask_Refresh_Ret
+{
+	enum RESULT
+	{
+		SUCCESS       = 0;
+		Cost_ERR      = -99;//消耗不足
+		Limit_ERR     = -98;//每日次数上限
+		Accept_Err    = -97;//已有任务
+	}
+  	required int32 result                   = 1;//结果
+	required int32 refreshNum               = 2;//刷新次数
+	repeated int32 taskList                 = 3;//任务列表
+}
+
+//#get Daily task  record
+//@CG
+message CG_DailyTask_Record
+{
+}
+
+//#get Daily task  record ret
+//@GC
+message GC_DailyTask_Record_Ret
+{
+	repeated int64 time       = 1;     //时间
+	repeated int32 task_id    = 2;     //任务id
+}
+
+
+//#module lock syn info功能解锁数据同步
+//@GC
+message GC_Syn_ModuleLock_Data
+{
+	repeated int32 moduleID = 1;	//功能id
+	repeated int32 isUnlock = 2;	//是否解锁 1解锁 0 未解锁
+}
+
+
+//#get mission info
+//@CG
+message CG_STORY_MISSION_INFO
+{
+};
+//# syn mission info
+//@GC
+message GC_STORY_MISSION_INFO
+{
+	required int32 missionId  =1;
+	repeated int32 missionProgress = 2;
+	required int32 missionState    = 3;
+}
+
+//# get mission reward
+//@CG
+message CG_GET_STORY_MISSION_REWARDS
+{
+	required int32 missionId  =1;
+}
+
+//# get mission reward ret
+//@GC
+message GC_GET_STORY_MISSION_REWARDS_RET
+{
+	required int32 result  =1;
+}
+
+message GC_ItemSimpleData
+{
+
+    required int32 itemId = 1;
+    required int32 num = 2;
+};
+
+//#GC_ITEM_NOTICE_LIST
+//@GC
+message GC_ITEM_NOTICE_LIST
+{
+	enum TYPE
+	{
+		LVL_REWARD = 1;
+		DROPBOX = 2;
+		EMAIL = 3;
+		TASK = 4;
+		LOGINAWARD = 5;
+        Activity_Award = 6;
+		STAR_TASK = 7;
+		OBTAIN_TITLE = 8;
+		OPTIONAL_BOX = 9;
+	}
+
+	required	int32 				type = 1;
+	repeated	GC_ItemSimpleData 	data = 2;
+	optional 	int32 				level = 3;
+}
+
+//#Reconnection kick out
+//@GC
+message GC_KICK_OUT
+{
+    enum KickoutReason
+    {
+        REPEATED = 1;	//重复登录
+        ALTER_SEX = 2; //修改性别
+    }
+    optional int32 reason = 1;
+}
+//#GC_CLIENT_CONFIG
+//@GC
+message GC_CLIENT_CONFIG
+{
+    required string	clientCfg 	= 1;
+}
+
+
+//#CG_RequestMonsterScore
+//@CG
+message CG_RequestMonsterScoreRecord
+{
+	required int32 monsterid = 1;
+	required int32 matchid = 2;
+}
+//#GC_RequestMonsterScore
+//@GC
+message GC_RequestMonsterScoreRecord
+{
+	required int32 monsterid = 1;
+	required int32 matchid = 2;
+	repeated int64	monsterscore = 3;
+}
+
+
+message GMonsterScoreInfo
+{
+	required int32 monsterid = 1;
+	required int64	monsterscore = 2;
+}
+//#CG_RequestMonsterScoreInterval
+//@CG
+message CG_RequestMonsterScoreInterval
+{
+	required int32 global = 1;
+	required int32 matchid = 2;
+}
+
+//#GC_RequestMonsterScoreInterval
+//@GC
+message GC_RequestMonsterScoreInterval
+{
+	required int32 global = 1;
+	required int32 matchid = 2;
+	repeated GMonsterScoreInfo	monsterscore = 3;
+}
+
+//#CG_ChangeTitle
+//@CG
+message CG_CHANGE_TITLE
+{
+	enum OptType
+	{
+		UNEQUIPMENT	= 0;	//卸下称号
+		EQUIPMENT 	= 1;	//装备称号
+	}
+	required int32 operation 	= 1;	// 装备还是卸下称号/(0：卸下；1：装备）
+	required int32 titleID 		= 2;	// 称号ID
+}
+
+//#GC_ChangeTitle
+//@GC
+message GC_CHANGE_TITLE_RET
+{
+	enum ResultType
+	{
+		FAILED		= 0;	//失败
+		SUCCESS 	= 1;	//成功
+	}
+	required int32 result	 	= 1;	// 替换结果/(0：失败；1：成功）
+	required int32 usingID		= 2;	// 替换后使用中的称号
+	required int32 unUsingID	= 3;	// 卸下的称号
+}
+
+message GC_TitleInfo
+{
+	enum UsingType
+	{
+		UNUSING 	= 0;	// 未使用
+		USING 		= 1;	// 使用中
+	}
+	required int32	titleID			= 1;	//称号ID
+	required int64	createTime	 	= 2;	//创建时间/（实际时间）
+	required int64	lifeTime		= 3;	//过期时间/（-1：永久称号;实际时间：限时称号）
+	required int32	isUsing			= 4;	//是否装备中/(UsingType)
+}
+//#GC_Title_LIST
+//@GC
+message GC_TITLE_LIST
+{
+	repeated GC_TitleInfo 		titleInfo 		= 1;    // 称号信息
+}
+
+// 同步称号表现
+//#GC_SYN_TITLE_APPEARANCE
+//@GC
+message GC_SYN_TITLE_APPEARANCE
+{
+    optional int32  objId 		= 1;
+    repeated int32  titleID 	= 2;
+}
+
+//#GC_SYN_DEL_TITLE
+//@GC
+message GC_SYN_DEL_TITLE
+{
+	required int32 titleID	= 1;    // 称号ID
+}
+
+//#GC_SYN_ADD_TITLE
+//@GC
+message GC_SYN_ADD_TITLE
+{
+	repeated GC_TitleInfo titleInfo	= 1;    // 称号信息
+}
+
+//#CG_USE_CONSUM_ITEM
+//@CP
+message CG_USE_CONSUM_ITEM
+{
+	required uint64	guid    	= 1;
+	required int32 	count 		= 2;
+}
+
+//#GC_USE_CONSUM_ITEM
+//@GC
+message GC_USE_CONSUM_ITEM
+{
+	enum UseRet
+	{
+		Ret_Succ = 0;       //成功
+		Ret_Fail = -1; //其他错误
+	}
+	required int32 result 	= 1;
+	repeated int32 rewardid = 2; //奖励itemid
+	repeated int32 rewardnum = 3;//奖励个数
+}
+
+message GC_LimitTimesData
+{
+	required int32	id 		 = 1;  //id
+	required int32	times 	 = 2;  //次数
+}
+//#GC_Syn_LimitTimes
+//@GC
+message GC_Syn_LimitTimes
+{
+	repeated GC_LimitTimesData limitlist = 1;
+}
+
+//#CG_Get_Free_Mana
+//@CG
+message CG_Get_Free_Mana
+{
+
+}
+
+//#GC_Get_Free_Mana
+//@GC
+message GC_Get_Free_Mana
+{
+	enum ResultType
+	{
+		FAILED		= 0;	//失败
+		SUCCESS 	= 1;	//成功
+	}
+	required int32	result 		 = 1;  	//结果
+	optional int32	manaNum		 = 2;	//灵力数量
+	optional int32  freeTimes	 = 3;	//剩余免费获取次数
+}
+
+//#CG_Get_Mana_Gif_Bag_Info
+//@CG
+message CG_Get_Mana_Gif_Bag_Info
+{
+	required int32  id			 		= 1;	//礼包ID
+}
+
+//#GC_Get_Mana_Gift_Bag
+//@GC
+message GC_Get_Mana_Gift_Bag
+{
+	enum ResultType
+	{
+		FAILED		= 0;	//失败
+		SUCCESS 	= 1;	//成功
+	}
+	required int32	result 		 		= 1;  	//结果
+	optional int32  id			 		= 2;	//礼包ID
+	optional int64	lifeTime	 		= 3;	//过期时间
+}
+
+//syn function pet list
+//@GC
+message GC_FUNCTIONPETLIST
+{
+    repeated uint64  guidList = 1;  //guid列表
+    repeated int32   idList = 2;    //宠物表中对应的id列表
+    required uint64  curGuid = 3;   //当前跟随的宠物guid
+	repeated int64	 expireTimeList = 4;	//宠物的过期时间
+}
+
+//syn new function pet
+//@GC
+message GC_FUNCTIONPET_NEW
+{
+	required uint64 petguid = 1;//宠物guid
+	required int32	petid = 2;//宠物表id
+	required int64	expiretime = 3;//过期时间，单位秒
+}
+
+//function pet config
+//@CG
+message CG_FUNCTIONPETCONFIG
+{
+    required int32  autoUseRecoverHpItem = 1;//自动吃血瓶
+    required int32  hpPercent = 2;
+    required int32  autoPickDrop = 3;//自动拾取
+}
+
+//function pet config
+//@GC
+message GC_FUNCTIONPETCONFIG
+{
+    required int32  autoUseRecoverHpItem = 1;//自动吃血瓶
+    required int32  hpPercent = 2;
+    required int32  autoPickDrop = 3;//自动拾取
+}
+
+//summon function pet
+//@CG
+message CG_SUMMONFUNCTIONPET
+{
+    required uint64 petGuid = 1;
+}
+
+//summon function pet ret
+//@GC
+message GC_SUMMONFUNCTIONPET_RET
+{
+    required int32 result = 1;//成功返回1，失败返回0
+    required uint64 curPetGuid = 2;//出战的宠物guid
+}
+
+//function pet rest
+//@CG
+message CG_RESTFUNCTIONPET
+{
+
+}
+
+//function pet rest ret
+//@GC
+message GC_RESTFUNCTIONPET_RET
+{
+    required int32  result = 1;//成功返回1， 失败返回0
+}
+
+//function pet expire
+//@GC
+message GC_FUNCTIONPET_EXPIRE
+{
+	repeated uint64	petguid = 1;//过期的宠物guid
+	required uint64 summonPetGuid = 2;//新出战宠物的guid
+}
+
+//syn system record state
+//@GC
+message GC_Syn_SystemRecrodState
+{
+    required int32  haveNewRecord = 1;//是否有新消息 0无1有
+	repeated int32  newRecordType = 2;//有新系统消息的类型
+}
+
+//get system record 
+//@CG
+message CG_Get_SystemRecrod
+{
+	required int32  recordType = 1;//系统消息的类型
+}
+
+//get system record ret
+//@GC
+message GC_Get_SystemRecrod
+{
+	repeated int32  recordType = 1;//记录类型
+	repeated int64  recordTime = 2;//记录时间
+	repeated string  recordContent = 3;//记录数据
+}
+
+//#sys com data
+//@GC
+message GC_SYNC_COMMONDATA
+{
+	repeated int32 	index = 1;		//commondata索引
+	repeated int32	value = 2;		//当前值
+}
+
+//#Get sign activity info
+//@CG
+message CG_SignActivity_Info
+{
+
+}
+
+//#Get sign activity info
+//@PC
+message GC_SignActivity_Info_Ret
+{
+	enum RESULT
+	{
+		Ret_Succ = 0;  //成功
+		Ret_Fail_TIME = 1; //活动未开启
+		Ret_Fail = 2; //活动未开启
+	}
+    required int32            result        = 1;
+    repeated int32            task_id       = 2;
+	repeated int32            task_state    = 3;
+	repeated int32            task_progress = 4;
+}
+
+//#syn sign activity task Progress
+//@GC
+message GC_Syn_SignActivityTask_Progress
+{
+    required GC_DailyTaskData taskData      = 1;//已领取任务数据
+}
+
+// 一键换装 g->c
+//@CG
+message CG_OneKeyChangeFashion
+{
+	
+}
+
+// 一键换装 g->c
+//@GC
+message GC_OneKeyChangeFashionRet
+{
+	enum ResultType
+	{
+		FAILED		= 0;	//失败
+		SUCCESS 	= 1;	//成功
+		ATTONITY 	= 2;	//无升级，无错误
+	}
+	required int32	result 		 = 1;  	//结果
+	repeated int32  posList 	 = 2; 	// 换了哪些部位
+}
+
+//一键升级装备
+//@CG
+message CG_OneKeyUpgradeFashion
+{
+	required int32 	pos = 1; //-1：升级所有穿戴装备   具体pos升级对应装备
+}
+
+// 一键升级装备 g->c
+//@GC
+message GC_OneKeyUpgradeFashionRet
+{
+	enum ResultType
+	{
+		FAILED		= 0;	//失败
+		SUCCESS 	= 1;	//成功
+		ATTONITY 	= 2;	//无升级，无错误
+	}
+	required int32	result 		 = 1;  	//结果
+	required int32 	pos			 = 2;
+	repeated int32  posList 	 = 3; // 升级了哪些部位
+	
+}
+
+// 一键装备融合 c-> g
+//@CG
+message CG_OneKeyFusion
+{
+	required int32 equipType = 1;//融合类型 -1：是融合所有， 其他是融合对应位置 参考EquipType
+}
+
+// 装备合成结果返回 g->c
+//@GC
+message GC_OneKeyFusionRet
+{
+	enum ResultType
+	{
+		FAILED		= 0;	//失败
+		SUCCESS 	= 1;	//成功
+		ATTONITY 	= 2;	//无升级，无错误
+	}
+	required int32  equipType		= 1;//融合类型 -1：是融合所有， 其他是融合对应位置 参考EquipType
+	required int32	result			= 2; //结果
+	repeated uint64 guidList		= 3;// 融合了哪些装备
+}
+
+//背包单个装备升级c->g
+//@CG
+message CG_SingleEquipmentUpgrade
+{
+	enum UpgradeType
+	{
+		BagNext		= 1;	//背包升到下一级
+		FashionNext 	= 2;	//身上装备升到下一级
+	}
+	required int32  upgradeType = 1;//升级类型UpgradeType
+	required uint64 guid = 2;
+	required int32 	pos = 3;
+}
+
+//背包单个装备升级 g->c
+//@GC
+message GC_SingleEquipmentUpgradeRet
+{
+	enum ResultType
+	{
+		FAILED		= 0;	//失败
+		SUCCESS 	= 1;	//成功
+		ATTONITY 	= 2;	//无升级，无错误
+	}
+	required int32  upgradeType = 1;   //升级类型UpgradeType
+	required uint64 guid = 2;
+	required int32 	pos = 3;
+	optional int32  equipmentId = 4;
+	required int32	result 		 = 5;  //结果
+}
+
+
+
+//地图中位置
+message GC_PosNode
+{
+	required int32  ObjId 			= 1;	// objid
+	required int32 	PosX			= 2;	//点的X坐标乘以100
+	required int32	PosZ 			= 3;	//点的Z坐标乘以100
+}
+//请求地图内所有玩家和怪物坐标
+//@CG
+message CG_PlayersAndMonstersPosReq
+{
+
+}
+//@GC
+message GC_PlayersAndMonstersPosRet
+{
+	repeated GC_PosNode  playerList = 1; //玩家位置列表
+	repeated GC_PosNode  monsterList = 2;//怪物位置列表
+}

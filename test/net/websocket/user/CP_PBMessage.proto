@@ -1,0 +1,3174 @@
+syntax = "proto2";
+
+option go_package = "./pb/";
+
+message MatchItem
+{
+	optional int32 itemid = 1;
+	optional int32 itemnum = 2;
+}
+
+message D_PlayerInfo
+{
+	enum FirstRecharge
+	{
+		eFirstRechargeFlag_NotPay = 0;
+		eFirstRechargeFlag_NotReward = 1;
+		eFirstRechargeFlag_AlreadyReward = 2;
+	};
+    optional string account = 1;
+    optional string playerName = 2;
+    optional string headIcon = 3;
+    optional uint64 guid = 4;
+    optional int32 sex = 5;
+    optional int32 level = 6;
+    optional int32 exp = 7;
+    optional int32 equipmentId = 8;
+    repeated int32 fashionIds = 9;
+    optional int32 matchrank = 10;
+    repeated MatchItem presentitem = 11;
+    repeated int32 unlockEquipmentId = 12;
+	optional int32	firstRechargeFlag = 13;
+	optional int32 jjGold = 14;
+	optional string cconfig = 15;  			//
+    optional int32  career  = 16; //职业
+};
+
+
+
+message D_DeviceInfo
+{
+    enum ChannelId
+    {
+        Channel_None = 1;
+        Channel_JJ = 2;
+    };
+
+    optional string deviceModel = 1;
+    optional string deviceHeight = 2;
+    optional string deviceWidth = 3;
+
+    optional string osName = 4;
+    optional string osVersion = 5;
+    optional string macAddress = 6;
+    optional string udid = 7;
+    optional string nation = 8;
+    optional string isp = 9;
+    optional string network = 10;
+
+
+
+    optional string appChannel = 11;
+    optional string appVersion = 12;
+    optional string imei = 13;
+    optional string HardwareInfo = 14;
+
+};
+
+
+//#client ask login 
+//@CP
+message CP_LOGIN
+{
+    enum LoginType
+    {
+        TEST_LOGIN = 1;
+        JJ_LOGIN = 2;
+        GM_LOGIN = 3;
+    };
+	required int32	GameVersion 	= 1;	//
+	required int32	ProgramVersion 	= 2;	//
+	required int32	MaxPacketId	    = 3;	//
+    required D_DeviceInfo deviceInfo = 4;   // 
+	optional string	Account 	    = 5;	//
+    required int32  type = 6;
+    optional string token = 7;
+    optional string uuid = 8;
+}
+
+
+
+//#client login result 
+//@PC
+message PC_LOGIN_RET
+{
+	enum LOGINRESULT
+	{
+		SUCCESS = 1;
+		ACCOUNTVERIFYFAIL = 2;	//账号类型不匹配（正式环境不允许测试账号登录）
+		ALREADYLOGIN = 3;
+		CREATEDBFAIL =4;
+		LOADDBFAIL = 5;
+		PACKETNOTMATCH = 6;
+		VERSIONNOTMATCH = 7;
+        NEEDCREATE = 8;     
+        ENTERLASTGAME = 9;  
+        BLOCKED = 10;		
+        EXPLIMIT = 11;		
+        EXCEPTION = 12;		//异常
+        NEWEXPLIMIT = 13; //经验限制
+        MUTEX_GAME = 14; //14不能同时登陆多个游戏
+	}
+	required int32 	Result 		= 1;
+	optional int64	ServerTime = 2;
+	optional int64	BlockTime = 3;	
+	optional int32	value = 4;	
+	repeated int32  rechargeIntervals =5;
+	optional int64	LastLogoutTime = 6;
+}
+
+
+//#client login result 
+//@PC
+message PC_ENTER_WORLD
+{
+	required int32 isInGame = 1;							//是否在游戏中
+	required D_PlayerInfo playerInfo = 2;
+}
+
+//#save client config
+//@CP
+message CP_CLIENT_CONFIG
+{
+	required string ccfg = 1;
+}
+
+
+
+//@CP
+message CP_RECONNECT
+{
+    required uint64 tokenId = 1;	//玩家guid
+    required string accName = 2;   //玩家账号ID，uid
+};
+
+//@PC
+message PC_RECONNECT_RET
+{
+    enum ReconnectResult
+    {
+        SUCCESS = 1;
+        ENTERLASTGAME = 2;
+        FAILED = 3;
+    };
+	required int32 	Result 		= 1;
+	optional D_PlayerInfo playerInfo = 2;
+}
+
+
+//@CP
+message CP_GM_COMMAND
+{
+    enum selectType
+    {
+        ACCOUNT = 1;
+        ROLE = 2;
+        BROADCAST = 3;
+		ITEM = 4;
+		GUID = 5;
+    };
+    optional string command = 1;
+    optional int32 type = 2;
+    optional string name = 3;
+};
+
+
+//@PC
+
+message PC_GM_COMMAND
+{
+    enum CommandReason
+    {
+        SUCCESS = 1;
+        FAILED = 2;
+    };
+    required int32 result = 1;
+    optional string response = 2;
+};
+
+// ============================= create player ==========================
+//@CP
+message CP_CREATE_PLAYER
+{
+    required string playerName = 1;
+    required int32 sex = 2;
+};
+
+
+
+//@PC
+message PC_CREATE_PLAYER_RET
+{
+    enum CreateResult
+    {
+        SUCESS = 1;
+        REPEATED = 2;
+        ARGFAILED = 3;
+        FAILED = 4;
+    };
+    required int32 result = 1;       
+    optional D_PlayerInfo playerInfo = 2;
+};
+
+
+
+//@CP
+message CP_ACCOUNT_BIND
+{
+    optional string newToken = 1;
+};
+
+
+
+//@PC
+message PC_ACCOUNT_BIND
+{
+    enum result
+    {
+        OK = 1;
+        FAILED = 2;
+        FAILED_ALREADY_BIND = 3;
+    };
+    optional int32 ret = 1;
+};
+
+
+
+//@CP
+
+message CP_CLIENT_READY
+{
+
+};
+
+//#client connected heartbeat 
+//@CP
+message CP_CONNECTED_HEARTBEAT
+{
+	required int32 IsResponse = 1;
+}
+
+//@PC
+message PC_KICK_OUT
+{
+    enum KickoutReason
+    {
+        REPEATED = 1;	//重复登录
+        ALTER_SEX = 2; //修改性别
+    };
+    optional int32 reason = 1;
+}
+
+
+
+//@PC
+message PC_SYN_PLAYER_INFO
+{
+    optional D_PlayerInfo info = 1;
+};
+
+
+
+
+//#PC_NOTICE
+//@PC
+message PC_NOTICE
+{   
+    required int32  index  = 1;
+    repeated int32  intVal = 2;
+    repeated string strVal = 3;
+}
+
+
+
+//@CP
+message CP_CHANGE_EQUIPMENT
+{
+    optional int32 equipmentId = 1;
+};
+
+
+
+//@PC
+message PC_CHANGE_EQUIPMENT
+{
+    enum ChangeEquipmentReason
+    {
+        SUCCESS = 1;
+        FAILED = 2;
+    };
+    required int32 result = 1;
+    optional int32 currEquipmentId = 2;
+
+};
+
+
+
+message PC_CardProperty
+{
+	required int32	index 		= 1;	
+	required int32	num 		= 2;	 
+}
+
+
+
+message PC_CardPassiveSkillInfo
+{
+	required int32 passiveSkillId = 1;
+	required int32 lock = 2;
+
+}
+
+
+message D_FashionProperty
+{
+    optional int32 rgb1 = 1;
+    optional int32 rgb2 = 2;
+    optional int32 rgb3 = 3;
+    optional int32 tempRGB1_DB = 4;
+    optional int32 tempRGB2_DB = 5;
+    optional int32 tempRGB3_DB = 6;
+};
+
+
+
+message PC_ItemData
+{
+	required int32	dataId 		= 1;						// itemID
+	required int32	count 		= 2;						// 数量    
+	required uint64 guid 		= 3;    					// guid
+	required int32	pos 		= 4;						// 装备位/格子ID
+    optional int64 	lifeTime			= 5;				// 剩余时间
+    optional int32 	enhanceLv 			= 6;                //武器等级
+    optional int32  enhanceLvNum 		= 7;				//当前等级强化次数
+}
+
+
+
+//#PC_ITEM_LIST
+//@PC
+message PC_ITEM_LIST
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 			result 		= 1;    //结果
+	required int32			packType    = 2;    //背包类型	
+	repeated PC_ItemData 	data 		= 3;    //物品信息
+}
+
+
+//#PC_ITEM_CHANGE
+//@PC
+message PC_ITEM_CHANGE
+{	
+	required int32  			condition 		= 1;    // 物品变化原因
+	repeated int32				packType    	= 2;    //背包类型	
+	repeated PC_ItemData 		itemData 		= 3;    
+}
+
+
+message CP_CardComposeData
+{
+	required int32	pos 		= 1;
+	required uint64 guid 		= 2;
+}
+
+
+//#CP_CARD_COMPOSE
+//@CP
+message CP_CARD_COMPOSE
+{
+    repeated CP_CardComposeData data = 1;
+};
+
+
+
+//#PC_CARD_COMPOSE
+//@PC
+message PC_CARD_COMPOSE
+{	
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 			result 		= 1;    // ç»“æžœ 
+}
+
+//#CP_CARD_EQUIP
+//@CP
+message CP_CARD_EQUIP
+{
+	required int32	bagPos 		= 1;
+	required int32  equipPos 	= 2;
+};
+
+
+//#PC_CARD_EQUIP
+//@PC
+message PC_CARD_EQUIP
+{	
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 			result 		= 1;    // ç»“æžœ 
+}
+
+
+//#CP_CARD_TAKEOFF
+//@CP
+message CP_CARD_TAKEOFF
+{
+	repeated int32	equipPos 		= 1;
+};
+
+
+
+//#PC_CARD_TAKEOFF
+//@PC
+message PC_CARD_TAKEOFF
+{	
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 			result 		= 1;    // ç»“æžœ 
+}
+
+
+
+//#CP_CARD_UPGRADE 
+//@CP
+message CP_CARD_UPGRADE
+{
+	required int32	bagPos 		  = 1;
+	required int32	bagType 	  = 2;
+};
+
+
+
+//#PC_CARD_UPGRADE
+//@PC
+message PC_CARD_UPGRADE
+{	
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 			result 		= 1;    // ç»“æžœ 
+}
+
+
+
+//#CP_CARD_DECOMPOSE 
+//@CP
+message CP_CARD_DECOMPOSE
+{
+	required int32	bagPos 		= 1;
+	optional int32  count		= 2;
+};
+
+
+
+//#PC_CARD_DECOMPOSE
+//@PC
+message PC_CARD_DECOMPOSE
+{	
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 			result 		= 1;    // ç»“æžœ 
+}
+
+
+
+//#CP_CARD_FORGE  
+//@CP
+message CP_CARD_FORGE
+{
+	required int32	bagPos 		= 1;
+	required int32	bagType 	= 2;	
+};
+
+
+//#PC_CARD_FORGE
+//@PC
+message PC_CARD_FORGE
+{	
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 			result 		= 1; 
+}
+
+
+//#CP_CARD_FORGE_LOCK 
+//@CP
+message CP_CARD_FORGE_LOCK
+{
+	required int32	bagPos 		= 1;
+	required int32  index	 	= 2; 
+	required int32  lock	 	= 3;
+	required int32	bagType 	= 4;		
+};
+
+
+//#PC_CARD_FORGE_LOCK
+//@PC
+message PC_CARD_FORGE_LOCK
+{	
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 			result 		= 1;    // ç»“æžœ 
+}
+
+
+
+//@CP
+message CP_FASHION_CHANGE
+{
+	required uint64 guid = 1;
+	required int32 pos = 2;
+	required int32 type = 3;	// 0穿 1脱
+};
+
+
+
+//@PC
+message PC_FASHION_CHANGE
+{	
+	enum RESULT
+	{
+		OK = 1;
+		EXIST = 2;
+		POS = 3;
+		BAG_OVERLIMIT = 4;
+
+	}
+	required int32 	 	result 		= 1;	// 结果 
+    required int32   	type 		= 2;	// 0穿 1脱
+    required uint64		guid 		= 3;
+	required int32 		pos 		= 4;
+    optional int32   	equipmentId = 5;
+}
+
+
+//#CP_CARD_COMPOSECHIP
+//@CP
+message CP_CARD_COMPOSECHIP
+{
+	required int32	chipId 		= 1;
+};
+
+
+
+//#PC_CARD_COMPOSECHIP
+//@PC
+message PC_CARD_COMPOSECHIP
+{	
+
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 			result 		= 1;    // ç»“æžœ 
+}
+
+
+
+message PC_ItemSimpleData
+{
+
+    required int32 itemId = 1;
+    required int32 num = 2;
+};
+
+
+//#PC_ITEM_NOTICE_LIST
+//@PC
+message PC_ITEM_NOTICE_LIST
+{
+	enum TYPE
+	{
+		LVL_REWARD = 1;
+		DROPBOX = 2;
+		EMAIL = 3;
+		TASK = 4;
+		LOGINAWARD = 5;
+        Activity_Award = 6;
+		STAR_TASK = 7;
+		OBTAIN_TITLE = 8;
+		OPTIONAL_BOX = 9;
+	}
+
+	required	int32 				type = 1;
+	repeated	PC_ItemSimpleData 	data = 2;
+	optional 	int32 				level = 3;
+
+}
+
+
+
+//#CP_ITEM_SALE
+
+//@CP
+
+message CP_ITEM_SALE
+{
+	required uint64 guid 		= 	1;
+	required int32	count 		= 	2;
+};
+
+//#PC_ITEM_SALE
+//@PC
+message PC_ITEM_SALE
+{	
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 			result 		= 1;    // ç»“æžœ 
+}
+
+
+//#CP_ITEM_USE   
+//@CP
+message CP_ITEM_USE
+{
+	required uint64	guid    			    = 1;
+	required int32 	count 				    = 2;
+	repeated int32  addition_Optional_box   = 3;	//自选宝箱附加信息
+}
+
+
+//#PC_ITEM_USE
+//@PC
+message PC_ITEM_USE
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+		CAREER_ERR = 3;//职业限制
+	}
+	required int32 result 	= 1; 
+	optional int32 itemid 	= 2;    
+}
+
+
+
+message PC_StatusData
+{
+	enum TYPE
+	{
+		Invalid = -1;
+		DoubleExpByTime = 0;
+		DoubleExpByCount = 1;
+		DoubleGoldByTime = 2;
+		DoubleGoldByCount = 3;
+		Max = 4;
+	}
+
+	required int32	index 			= 1;
+	optional int32	count 			= 2;	
+	optional int64 	remainTime 		= 3;    
+}
+
+
+
+//#PC_STATUS_LIST
+//@PC
+message PC_STATUS_LIST
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 			result 		= 1;    // ç»“æžœ
+	repeated PC_StatusData 	data 		= 2;    
+}
+
+
+
+//@CP
+message CP_CHANGE_COLOR
+{
+    optional int32 packetType = 1;
+    optional int32 pos = 2; 
+    repeated int32 index = 3;
+}
+
+//@PC
+
+message PC_CHANGE_COLOR
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+    optional int32 ret = 1;
+    optional int32 packetType = 2;
+    optional int32 pos = 3;
+    repeated int32 index = 4;
+    optional D_FashionProperty property = 5;
+}
+
+
+//@CP
+message CP_CONFIRM_CHANGE_COLOR
+{
+    optional int32 packetType = 1; // åŒ…è£¹ç±»åž‹
+    optional int32 pos = 2;
+    optional int32 isConfirm = 3;
+}
+
+//@PC
+message PC_CONFIRM_CHANGE_COLOR
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+    optional int32 ret = 1;
+}
+
+
+message PC_EmailHead
+{
+	required uint64 guid 		= 1;
+	required int32	type        = 2;	
+	required int32	state       = 3;
+	required int64 	createTime	= 4;	
+	required string title		= 5;
+	required int32	remainTime	= 6;		
+}
+
+
+
+message PC_EmailAwardData
+{
+	required int32	itemId      = 1;	
+	required int32	count       = 2;
+}
+
+
+
+message PC_EmailAwardDataList
+{
+	repeated  	PC_EmailAwardData	data = 1;
+
+}
+
+
+
+message PC_EmailData
+{
+	enum TYPE
+	{
+		SYSTEM = 0;
+		GAME = 1;
+		USER = 2;	
+		GLOBAL = 3;
+	}
+
+	enum STATE
+	{
+		INVALID = -1;
+		NOT_READ = 0;
+		NOT_READ_AWARD = 1;	 // æœ‰å¥–åŠ±
+		ALREADY_READ = 2;
+		ALREADY_READ_AWARD = 3;	 // æœ‰å¥–åŠ±
+		ALREADY_AWARD = 4; 
+	}
+
+	required	PC_EmailHead	head 	= 1;
+	optional	string			sender 	= 2;
+	required	string			content = 3;
+	repeated  	PC_EmailAwardData	awardList = 4;	
+}
+
+
+
+//#PC_EMAIL_LIST
+//@PC
+message PC_EMAIL_LIST
+{
+	required int64 			curTime 	= 1;    
+	repeated PC_EmailHead 	data 		= 2;    
+}
+
+
+
+//#PC_EMAIL_INFO
+//@PC
+message PC_EMAIL_INFO
+{
+	required int64 			curTime 	= 1;    
+	required PC_EmailData 	data 		= 2;    
+}
+
+
+
+//#CP_EMAIL_READ
+//@CP
+message CP_EMAIL_READ
+{
+	required uint64 guid 		= 1;    
+}
+
+
+
+//#PC_EMAIL_READ
+//@PC
+message PC_EMAIL_READ
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+		OVERDUE = 3;
+	}
+    required int32 	ret 	= 1;
+	required uint64 guid 	= 2;   	
+}
+
+
+
+//#CP_EMAIL_AWARD
+//@CP
+message CP_EMAIL_AWARD
+{
+	required uint64 guid 		= 1;    
+}
+
+
+
+//#PC_EMAIL_AWARD
+//@PC
+message PC_EMAIL_AWARD
+{
+
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+		FULL = 3;
+	}
+    required int32 	ret 	= 1;
+	required uint64 guid 	= 2;    	
+
+}
+
+
+
+//#CP_EMAIL_DEL
+//@CP
+message CP_EMAIL_DEL
+{
+	required uint64 guid 		= 1;    
+}
+
+
+
+//#PC_EMAIL_DEL
+//@PC
+message PC_EMAIL_DEL
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+    required int32 	ret 	= 1;
+	required uint64 guid 	= 2;
+}
+
+//@CP
+message CP_ACTIVITY_INFO
+{
+
+};
+
+message D_ActivityInfo
+{
+    enum activityState
+    {
+        PGS_UNFINISH = 1;
+        PGS_UNTAKE = 2;
+        PGS_TAKED = 3;
+    };
+    optional int32 cigId = 1;
+    repeated int32 progress = 2;
+    optional int32 state = 4;
+};
+
+//@PC
+message PC_ACTIVITY_INFO
+{
+    repeated D_ActivityInfo info = 1;
+};
+
+//@CP
+message CP_Receive_Award
+{
+    optional int32 configId = 1;
+};
+
+//@PC
+message PC_Receive_Award
+{
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+    required int32 	ret = 1;
+};
+
+
+
+//@CP
+message CP_BACK_TO_LOBBY
+{
+
+};
+
+
+message PC_GOODS_DATA
+{
+	required int32	id 		 = 1;
+	required int32	count 	 = 2;
+	optional int32  discount = 3;
+}
+
+
+//#CP_GOODS_INFO
+//@CP
+message CP_GOODS_INFO
+{
+	required int32	index 		= 1;  //客户端当前商店index标志
+};
+
+
+//#PC_GOODS_INFO
+//@PC
+message PC_GOODS_INFO
+{	
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 	result 		= 1;
+	required int32	index 		= 2;//服务器当前商店index标志
+	repeated PC_GOODS_DATA   infoList = 3;
+	optional int32  luncyStorRefreshNum = 4; //幸运商店刷新次数
+}
+
+
+
+//#CP_GOODS_BUY
+//@CP
+message CP_GOODS_BUY
+{
+	required int32	id 		= 1; //商品id
+	required int32	count 	= 2;  //购买数量
+	required int32  index   = 3;  //客户端当前商店index标志，如果跟服务器不一致，会购买失败，刷新商店
+};
+
+
+//#PC_GOODS_BUY
+//@PC
+message PC_GOODS_BUY
+{	
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+		COUNT_NOT_ENOUGH = 3;
+		CAREER_ERR = 5;//职业限制
+	}
+	required int32 	result 		= 1;//购买结果
+	required int32	id 			= 2;//商品id
+	required int32	count 		= 3;  //有库存的是购买次数，没有库存限制的购买次数一直是0
+}
+
+//#shop refresh
+//@CP
+message CP_SHOP_REFRESH
+{
+	required int32	type 	= 1;  //商店类型
+};
+//#shop refresh ret
+//@PC
+message PC_SHOP_REFRESH_RET
+{
+	required int32	type 	= 1;     //商店类型
+	optional int32  refreshNum = 2;  //剩余刷新次数
+	required int32	result  = 3;	//结果0失败，1成功
+};
+
+message PC_TASK_INFO
+{ 
+	enum State
+	{
+		DOING = 1;
+		COMPLETE = 2;
+	}
+	required int32 index  = 1;
+	required int32 status = 2;
+	optional int32 weekIndex = 3;
+	optional int32 remainTime = 4;
+	optional int32 count  = 5;
+}
+
+
+
+//#PC_TASK_LIST
+
+//@PC
+
+message PC_TASK_LIST
+{
+	required int32 ifChange = 1;   
+	optional int32 weekIndex = 2; 
+	optional int32 weekNum = 3; 
+	repeated PC_TASK_INFO info = 4;	
+	optional int32 type = 5;
+}
+
+//#PC_TASK_STARAWARD_LIST
+//@PC
+message PC_TASK_STARAWARD_LIST
+{	
+
+	required int64  curTime = 1;    
+	repeated int32 	info = 2;
+	required int32 taskStarCount = 3;
+	optional int32 ifLvlUp = 4;
+}
+
+
+
+//#CP_TASK_STARAWARD_AWARD
+//@CP
+message CP_TASK_STARAWARD_AWARD
+{
+
+	required int32	index 		  = 1;  // æ˜Ÿæ•°
+
+};
+
+
+
+//#PC_TASK_STARAWARD_AWARD
+
+//@PC
+
+message PC_TASK_STARAWARD_AWARD
+
+{	
+
+	enum RESULT
+
+	{
+
+		OK = 1;
+
+		FAILED = 2;
+
+	}
+
+	required int32 	result 		= 1;    // ç»“æžœ 
+
+	required int32	index 		= 2;    // æ˜Ÿæ•°
+
+}
+
+//#CP_TASK_STARAWARD_LVLUP
+//@CP
+message CP_TASK_STARAWARD_LVLUP
+{
+	
+};
+
+
+//#PC_TASK_STARAWARD_LVLUP
+//@PC
+message PC_TASK_STARAWARD_LVLUP
+{	
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+
+	required int32 	result 		= 1;    // ç»“æžœ 
+}
+
+//#CP_TASK_STARAWARD_BUYSTAR
+//@CP
+message CP_TASK_STARAWARD_BUYSTAR
+{
+	required int32 	count 	= 1;  
+};
+
+
+//#PC_TASK_STARAWARD_BUYSTAR
+//@PC
+message PC_TASK_STARAWARD_BUYSTAR
+{	
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+
+	required int32 	result 		= 1;    // ç»“æžœ 
+}
+
+
+//#CP_TASK_DAILY_REFRESH
+
+//@CP
+
+message CP_TASK_DAILY_REFRESH
+
+{
+
+	required int32	index 		  = 1;  
+
+};
+
+
+
+//#PC_TASK_DAILY_REFRESH
+
+//@PC
+
+message PC_TASK_DAILY_REFRESH
+
+{	
+
+	enum RESULT
+
+	{
+
+		OK = 1;
+
+		FAILED = 2;
+
+	}
+
+	required int32 	result 		= 1;    // ç»“æžœ 
+
+	required int32	index 		= 2;    
+
+}
+
+
+
+//#CP_SEVENLOGIN_AWARD
+//@CP
+message CP_SEVENLOGIN_AWARD
+{
+	required int32	number 	= 1;     // 
+};
+
+//#PC_SEVENLOGIN_AWARD
+//@PC
+message PC_SEVENLOGIN_AWARD
+{
+		enum SigninResult{
+	      Exception 			= -1;	//异常
+			  SpaceNotEnough 	= 7;	//背包空间不足
+			  NoPlayer 				= 9;	//玩家不存在
+			  ErrorTime 			= 10;	//时间越界
+			  RepeatSignin 		= 11;	//已领取奖励
+			  NoFirstTime 		= 12;	//没有初始签到数据
+	}
+	required int32 	result 				= 1;    // 结果
+	required int32	signInStatus 		= 2;	// 签到状态
+	required int32  takeSignInStatus    = 3;    //签到领取状态
+};
+
+//#PC_SEVENLOGIN_AWARD_INFO
+//@PC
+message PC_SEVENLOGIN_AWARD_INFO
+{
+	required int32	signInStatus 		= 1;	// 签到状态
+	required int32  takeSignInStatus    = 2;    // 签到领取状态
+	required int64  firstSignInTime		= 3;	// 第一次签到时间
+};
+
+//#Supplementary signature
+//@CP
+message CP_AFTER_SIGNIN
+{
+	required int32	number 				= 1;	//
+};
+
+//#back result for Supplementary signature
+//@PC
+message PC_AFTER_SIGNIN_RET
+{
+	enum SigninResult{
+	    Exception 							= -1;	//异常
+	    SpaceNotEnough 					= 7;	//背包空间不足
+			AfterSigninNotEnough 		= 8;	//补签条件不满足
+			NoPlayer 								= 9;	//玩家不存在
+			ErrorTime 							= 10;	//时间越界
+			RepeatSignin 						= 11;	//已领取奖励
+			NoFirstTime 						= 12;	//没有初始签到数据
+	}
+	required int32	result 				= 1;
+	required int32	signInStatus 		= 2;	// 签到状态
+	required int32  takeSignInStatus    = 3;    // 签到领取状态
+};
+
+//#enroll match
+//@CP
+message CP_ENROLL_MATCH
+{
+	required uint64 matchId = 1;
+	required int32	tbId = 2;
+}
+
+//#enroll match result
+//@PC
+message PC_ENROLL_MATCH_RET
+{
+	required uint64 	matchId 	= 1;	//èµ›äº‹ID
+	required int32      result 		= 2;	//åŒ¹é…ç»“æžœ
+}
+
+//# match room
+//@PC
+message PC_ENTER_MATCH_ROOM
+{
+	required int32		matchtbId	= 1;
+	required int32		roomId      = 2;	//æˆ¿é—´id
+	required int32		gServerId	= 3;	//gsid	
+}
+
+//#PC_WEEKCARDITEM_INFO
+//@PC
+message PC_WEEKCARDITEM_INFO
+{
+    repeated D_WeekCardItemInfo info = 1;
+};
+
+message D_WeekCardItemInfo
+{
+	required int32	dataId 		= 1;	// dataId
+	required int32	count 		= 2;	// æ•°é‡	    
+	required int32	pos 		= 3;	// ä½ç½®
+	required int64  remaintime  = 4;    // å‰©ä½™æ—¶é—´
+}
+//# 
+//@PC
+message PC_NotifyEquipmentUnlockList
+{
+    repeated int32 unlockEquipmentIds = 1;
+};
+
+//# 
+//@CP
+message CP_RequestRechargeList
+{
+};
+
+message PC_Recharge_Info
+{
+	required int32 shopId = 1;
+	required int32 num = 2;
+	optional int64 lifeTime = 3;
+};
+
+//# 
+//@PC
+message PC_RequestRechargeListRet
+{
+	repeated PC_Recharge_Info shopInfo = 1;
+};
+
+//#CP_LUCKYWHEEL_LIST
+//@CP
+message CP_LUCKYWHEEL_INFO
+{
+}
+
+//#PC_LUCKYWHEEL_INFO_RESULT
+//@PC
+message PC_LUCKYWHEEL_INFO_RESULT
+{
+	required  int32 	  consumeid 	 = 1;  // æ¶ˆè€—id
+	required  int32  	  remaincount    = 2;  // å‰©ä½™æŠ½å¥–æ¬¡æ•°
+	repeated  D_WheelInfo wheelinfo      = 3;  // ä¿¡æ¯
+	optional  int32       consumecount   = 4;  // æ¶ˆè€—ä¸ªæ•°
+}
+
+message D_WheelInfo
+{
+	required int32	index 		= 1;	// 
+	required int32	itmeid 		= 2;	// dataId
+	required int32  count       = 3;	// count
+}
+
+//#CP_PICK_LUCKYWHEEL
+//@cp
+message CP_PICK_LUCKYWHEEL
+{
+}
+
+//#PC_PICK_LUCKYWHEEL_RESULT
+//@pc
+message PC_PICK_LUCKYWHEEL_RESULT
+{
+	enum PICK_RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	enum FAILED_INFO
+	{
+		COUNT = 1;
+		CONSUME = 2;
+	}
+	required int32 result 	 = 1;
+	optional int32 itemid 	 = 2;
+	optional int32 index     = 3;
+	optional int32 count     = 4;
+	optional int32 failedinfo = 5;
+	optional int32 remaincount = 6;
+}
+
+//#CP_RECHARGE_FIRST_REWARD
+//@CP
+message CP_RECHARGE_FIRST_REWARD
+{
+
+};
+
+
+//#PC_RECHARGE_FIRST_REWARD
+//@PC
+message PC_RECHARGE_FIRST_REWARD
+{	
+	enum RESULT
+	{
+		OK = 1;
+		FAILED = 2;
+	}
+	required int32 	result 		= 1;    // ç»“æžœ 
+}
+
+
+//#sys com data
+//@PC
+message PC_SYNC_COMMONDATA
+{
+	repeated int32 	index = 1;		//ç´¢å¼•
+	repeated int32	value = 2;		//å€¼
+}
+
+//#sys com flag
+//@PC
+message PC_SYNC_COMMONFLAG
+{
+	repeated int32 	index = 1;		//ç´¢å¼•
+	repeated int32	value = 2;		//å€¼
+}
+
+//#sys com flag
+//@PC
+message PC_SYNC_COMMONFLAGBIT
+{
+	required int32 	bitpos = 1;		//ç´¢å¼•
+	required int32	flag   = 2;		//å€¼
+}
+
+//@CP
+message CP_Batch_Sale
+{	
+    repeated int32 quality = 1;
+}
+
+//@PC
+message PC_BagTip
+{	
+    required int32 space = 1;
+}
+
+//@CP
+message CP_Exchange_JJGold
+{
+    required int32 type = 1;	//0:jj2gold 1:gold2jj
+    required int32 num = 2;
+}
+//@PC
+message PC_Exchange_JJGold_Result
+{
+    required int32 type = 1;	//0:jj2gold 1:gold2jj
+    required int32 num = 2;
+	required int32 outLimit	= 3;	//是否超过上限
+    required int32 result = 4;
+}
+
+//@CP
+message CP_QueryJJGold
+{
+}
+//@PC
+message PC_QueryJJGold
+{
+ 	required int32 jjgold = 1;
+}
+
+
+
+
+//#CP_RequestMonsterScore
+//@CP
+message CP_RequestMonsterScoreRecord
+{
+	required int32 monsterid = 1;
+	required int32 matchid = 2;
+}
+//#PC_RequestMonsterScore
+//@PC
+message PC_RequestMonsterScoreRecord
+{	
+	required int32 monsterid = 1;
+	required int32 matchid = 2;
+	repeated int64	monsterscore = 3;	
+}
+
+
+message MonsterScoreInfo
+{
+	required int32 monsterid = 1;
+	required int64	monsterscore = 2;
+}
+//#CP_RequestMonsterScoreInterval
+//@CP
+message CP_RequestMonsterScoreInterval
+{
+	required int32 global = 1;
+	required int32 matchid = 2;
+}
+
+//#PC_RequestMonsterScoreInterval
+//@PC
+message PC_RequestMonsterScoreInterval
+{
+	required int32 global = 1;	
+	required int32 matchid = 2;
+	repeated MonsterScoreInfo	monsterscore = 3;
+}
+
+
+//#
+//@CP
+message CP_UseTreasureChestHammer
+{	
+	required int32 isHundred = 1;
+}
+
+//#
+//@PC
+message PC_UseTreasureChestHammer
+{	
+	enum chest_result
+	{
+		succeed = 1;
+		hammer_lack = 2;
+		daylimit = 3;
+		failed = 4;
+	}
+	required int32 suc = 1;
+	required int32 durable = 2;
+	repeated int32 awardid = 3;
+}
+
+//#
+//@CP
+message CP_EnhanceEquip
+{
+	required uint64 guid = 1;
+	required int32  pos  = 2;   //位置
+	required int32  type = 3;   //类型(见枚举ItemPackType -1为fashion即在玩家身上穿着)
+}
+
+//#
+//@PC
+message PC_EnhanceEquip
+{
+	required uint64 guid = 1;
+	required int32 suc = 2;
+	optional int32 enhancelv = 3;
+	optional int32 enhancelvNum = 4;
+}
+
+
+//#
+//@PC
+message PC_EquipSuitInfo
+{
+	required int32 equiSuitID = 1;
+	required int32 equiSuitLevel = 2;
+
+	required int32 skill0 = 3;
+	required int32 skill1 = 4;
+
+	repeated int32 attrib0 = 5;
+	repeated int32 attrib1 = 6;
+}
+
+
+//@CP
+
+message CP_RechargeVerify
+{
+    optional string account         =1;
+    optional string CPOrderID       =2;
+    optional string OrderID         =3;
+    optional int32 PID              =4;
+    optional int32 SourceMoneyID    =5;
+    optional int32 SourceMoneyAmount=6;
+    optional int32 EndMoneyID       =7;
+    optional int32 EndMoneyAmount   =8;
+    optional int32 Coin             =9;
+}
+
+
+
+//#PC
+
+//@PC
+
+message PC_RechargeVerify
+{
+    optional string account         =1;
+    optional string CPOrderID       =2;
+    optional string OrderID         =3;
+    optional int32 PID              =4;
+    optional int32 SourceMoneyID    =5;
+    optional int32 SourceMoneyAmount=6;
+    optional int32 EndMoneyID       =7;
+    optional int32 EndMoneyAmount   =8;
+    optional int32 Coin             =9;
+    optional int32 CurCoinNum       =10;
+    optional int32 Suc              =11;
+}
+
+//# 
+//@CP
+message CP_RequestRechargeOrderID
+{
+  	optional string AppID 			= 1;
+  	optional string AppSchemeID 	= 2;
+  	optional string PayMethodID 	= 3;
+  	optional string QuotationType 	= 4;
+  	optional string GoodsID 		= 5;
+  	optional string GoodsAmount 	= 6;
+  	optional string MoneyType 		= 7;
+  	optional string MoneyAmount 	= 8;
+  	optional string ECASchemeID 	= 9;
+};
+
+
+
+//# 
+//@PC
+message PC_RequestRechargeOrderIDRet
+{
+	enum RetCode
+	{
+		failed = 1;			//非法购买失败不做提示
+		unlockfailed = 2;	//限制礼包购买失败，条件不满足
+		CAREER_ERR = 5;//职业限制
+	}
+  	optional string AppOrder 	= 1;
+  	optional string AppReqTime 	= 2;
+  	optional string AppOrderSign= 3;
+  	optional string NotifyUrl = 4;
+  	optional int32  Suc = 5;
+  	optional string GoodsID 		= 6;
+  	optional string GoodsAmount 	= 7;
+};
+
+//# 
+//@PC
+message PC_RechargeSuc
+{
+  	repeated int32 itemid 		= 1;
+  	repeated int32 itemnum		= 2;
+};
+//# 
+//@CP
+message CP_SucRechargeOrderID
+{
+  	optional string AppOrder 	= 1;	
+}
+
+
+//#
+//@CP
+message CP_ExchangeHammer
+{	
+}
+
+//#
+//@PC
+message PC_ExchangeHammer
+{
+	required int32 diamondNum	= 1;
+}
+
+//#enhance attr
+//@CP
+message CP_EnhanceAttr
+{
+	enum attr_type
+	{
+		attr_ack = 1;
+		attr_power = 2;
+	}
+  	required int32 type 	= 1;	//强化类型
+  	required int32 lv 		= 2;	//当前等级
+  	required int32 bunitlSuc = 3;	//连续强化直至成功
+};
+
+//#enhance attr
+//@PC
+message PC_EnhanceAttr_Ret
+{
+	required int32 result 	= 1;	//结果0失败，其他成功
+  	required int32 type 	= 2;
+  	required int32 lv 		= 3;
+  	required int32 count 	= 4;	//强化次数		
+};
+
+//# syn Jackpot have lottrynum task reward
+//@PC
+message PC_JackpotHaveLottryTaskReward
+{
+	required int32 activity_id  = 1; //活动id
+  	required int32 have_reward  = 2;//0为无，1为有	
+}
+
+//#Jackpot lottry num and task state
+//@CP
+message CP_JackpotLottryInfo
+{
+  	required int32 activity_id = 1;//活动id
+}
+
+//#Jackpot lottry num and task state ret
+//@PC
+message PC_JackpotLottryInfo_Ret
+{
+	enum RESULT
+	{
+		SUCCESS = 0;
+		ACTIVITY_ID  = -100;//活动id错误
+	}
+  	required int32 result      = 1;//结果
+	required int32 activity_id = 2; //活动id
+	required int32 lottry_num  = 3;//抽奖次数
+	repeated int32 task_id     = 4;//已领取任务
+}
+
+//#get jackpot lottrynum task reward
+//@CP
+message CP_JackpotLottryNumReward
+{
+  	required int32 activity_id = 1;//活动id
+	required int32 task_id     = 2;//奖励id
+}
+
+//#get jackpot lottrynum task reward ret
+//@PC
+message PC_JackpotLottryNumReward_Ret
+{
+	enum RESULT
+	{
+		SUCCESS = 0;
+		ACTIVITY_ID  = -100;//活动id错误
+		HAVE_GET = -99; //已领取
+		LOTTRY_NUM = -98;//抽奖次数不足
+		TASK_ID_ERR= -97;//任务id错误
+		SUCCESS_BAGFULL = 1;//背包已满，奖励发邮件
+	}
+	required int32 result      = 1;//结果
+	required int32 activity_id = 2; //活动id
+	required int32 task_id     = 3;//奖励任务id
+}
+
+//#Jackpot lottry 
+//@CP
+message CP_JackpotLottry
+{
+  	required int32 activity_id = 1;//活动id
+	required int32 lottry_type = 2;//抽奖类
+}
+
+//#Jackpot lottry ret
+//@PC
+message PC_JackpotLottry_Ret
+{
+	enum RESULT
+	{
+		SUCCESS = 0;
+		ACTIVITY_ID  = -100;//活动id错误
+		ACTIVITY_END = -96; //活动已结束
+		ITEM_NUM = -95;//抽奖道具不足
+		SUCCESS_BAGFULL = 1;//背包已满，奖励发邮件
+	}
+	required int32 result      = 1;//抽奖结果
+	required int32 activity_id = 2; //活动id
+	required int32 lottry_num  = 3;//抽奖总次数
+	repeated int32 reward_id   = 4;//奖励结果
+	repeated int32 reward_num  = 5;//奖励个数
+}
+
+//#Jackpot lottry pool item num
+//@CP
+message CP_JackpotLottry_PoolItemNum
+{
+  	required int32 activity_id = 1;//活动id
+}
+
+//#Jackpot lottry pool item num ret
+//@PC
+message PC_JackpotLottry_PoolItemNum_Ret
+{
+	enum RESULT
+	{
+		SUCCESS = 0;
+		ACTIVITY_ID  = -100;//活动id错误
+	}
+  	required int32 result      = 1;//结果
+	required int32 activity_id = 2; //活动id
+	required int32 pool_itemnum = 3;//奖池奖励总数
+}
+
+//#Jackpot lottry record
+//@CP
+message CP_JackpotLottry_Record
+{
+  	required int32 activity_id = 1;//活动id
+}
+
+//#Jackpot lottry record ret
+//@PC
+message PC_JackpotLottry_Record_Ret
+{
+	enum RESULT
+	{
+		SUCCESS = 0;
+		ACTIVITY_ID  = -100;//活动id错误
+	}
+	required int32 result      = 1;//结果
+	required int32 activity_id = 2; //活动id
+    repeated string name       = 3;//玩家昵称
+	repeated int32  rewardId   = 4;//奖励id
+	repeated int64  time       = 5;//记录时间
+}
+
+//#ticket lottery
+//@CP
+message CP_Ticket_Lottery
+{
+	required int32 cost_multiple = 1; //倍率
+}
+//#ticket lottery ret
+//@PC
+message PC_Ticket_Lottery_Ret
+{
+	enum RESULT
+	{
+		lottry_OK     = 0;  //成功
+		ticket_err    = -1;//点券不足
+		multiple_err  = -2;//倍率错误
+		JJPlt_err     = -3;//平台接口错误
+		lottry_err    = -4;//其他错误
+		ticket_daylimit = -5;//点券日上限
+	}
+	required int32 result         = 1;
+	required int32 cost_multiple  = 2;//倍率
+	required int32 reward_index   = 3;//奖励pos ID 
+	required int32 multiple_index = 4;//奖励倍数 pos ID 
+	required int32 reward_num     = 5;//奖励 数量
+	required int32 dayticket_cost = 6;//日消耗
+}
+
+//#get ticket lottery record
+//@CP
+message CP_TicketLottery_Record
+{
+}
+//#get ticket lottery record ret
+//@PC
+message PC_TicketLottery_Record_Ret
+{
+	repeated int64 time       = 1;     //时间
+	repeated int32 multiple   = 2;     //倍数
+	repeated int32 rewardId   = 3;     //奖励id
+	repeated int32 rewardNum  = 4;     //奖励数量
+}
+
+
+
+message PC_MonopolyGridData
+{
+	required int32	gridId 		= 1;		//格子id
+	required int32	rewardId 	= 2;		//奖励itemid     
+	required int32  rewardNum 	= 3;    	//奖励数量
+	required string rewardIcon 	= 4;    	//奖励图标 
+	required int32  quality     = 5;        //品质
+}
+
+//#Monopoly Activity Info
+//@CP
+message CP_MonopolyInfo
+{
+  	required int32 activity_id = 1;//活动id
+}
+
+//#Monopoly Activity Info ret
+//@PC
+message PC_MonopolyInfo_Ret
+{
+	enum RESULT
+	{
+		SUCCESS = 0;
+		ACTIVITY_ID   = -100;//活动id错误
+	}
+  	required int32 result      = 1;//结果
+	required int32 activity_id = 2; //活动id
+	required int32 storey      = 3;//玩家层数
+	required int32 grid_id     = 4;//玩家id
+	repeated int32 task_id     = 5;//已领取任务
+	repeated PC_MonopolyGridData grid_data = 6;//格子数据 
+}
+
+
+//#get Monopoly Roll Dice
+//@CP
+message CP_MonopolyRollDice
+{
+  	required int32 activity_id = 1;//活动id
+}
+
+//#get Monopoly Roll Dice ret
+//@PC
+message PC_MonopolyRollDice_Ret
+{
+	enum RESULT
+	{
+		SUCCESS = 0;
+		ACTIVITY_ID  = -100;//活动id错误
+		COST_TOOL_ERR = -99;//道具不足
+		ACTIVITY_END  = -98;//活动结束
+		SUCCESS_BAGFULL = 1;//背包已满，奖励发邮件
+	}
+	required int32 result      = 1;//结果
+	required int32 activity_id = 2; //活动id
+	required int32 storey      = 3;//玩家层数
+	required int32 grid_id     = 4;//玩家id
+    required int32 roll_num    = 5;//点数
+	repeated int32 reward_id   = 6;//奖励id
+	repeated int32 reward_num  = 7;//奖励个数
+	repeated PC_MonopolyGridData grid_data = 8;//格子数据(层数变化)
+}
+
+
+//#get Monopoly  Storey task reward
+//@CP
+message CP_MonopolyStoreyTaskReward
+{
+  	required int32 activity_id = 1;//活动id
+	required int32 task_id     = 2;//奖励id
+}
+
+//#get Monopoly  Storey task reward ret
+//@PC
+message PC_MonopolyStoreyTaskReward_Ret
+{
+	enum RESULT
+	{
+		SUCCESS = 0;
+		ACTIVITY_ID  = -100;//活动id错误
+		HAVE_GET = -99; //已领取
+		STOREY_ERR = -98;//层数不足
+		TASK_ID_ERR= -97;//任务id错误
+		SUCCESS_BAGFULL = 1;//背包已满，奖励发邮件
+	}
+	required int32 result      = 1;//结果
+	required int32 activity_id = 2; //活动id
+	required int32 task_id     = 3;//奖励任务id
+}
+
+//# syn Monopoly have task reward
+//@PC
+message PC_MonopolyHaveStoreyTask
+{
+	required int32 activity_id  = 1; //活动id
+  	required int32 have_reward  = 2;//0为无，1为有	
+}
+
+//#TreasureLand Activity IconNotice
+//@PC
+message PC_TreasureLand_IconNotice
+{
+	required int32 haveReward  = 1;//是否有奖励
+}
+
+//#TreasureLand Activity Info
+//@CP
+message CP_TreasureInfo
+{
+  	required int32 activity_id = 1;//活动id
+}
+
+//#TreasureLand Activity Info ret
+//@PC
+message PC_TreasureInfo_Ret
+{
+	enum RESULT
+	{
+		SUCCESS = 0;
+		ACTIVITY_ID   = -100;//活动id错误
+	}
+  	required int32 result      = 1;//结果
+	required int32 activity_id = 2; //活动id
+	repeated int32 island_type = 3;//主题
+    repeated int32 island_id   = 4;//进度	
+}
+
+message PC_IsLandReward
+{
+	required int32  island_id    = 1;//奖励点id
+	required int32	reward_index = 2;//奖励itemid     
+}
+
+//#TreasureLand Get LandType RewardList
+//@CP
+message CP_TreasureLand_Reward
+{
+  	required int32 island_type = 1;//主题id
+}
+
+//#TreasureLand Get LandType RewardList ret
+//@PC
+message PC_TreasureLand_Reward
+{
+	required int32 island_type              = 1;//主题
+	required int32 island_id                = 2;//进度
+    repeated PC_IsLandReward rewards        = 3;//奖励
+}
+
+//#TreasureLand Move
+//@CP
+message CP_TreasureLand_Move
+{
+  	required int32 island_type = 1;//主题id
+}
+
+//#TreasureLand Get LandType RewardList ret
+//@PC
+message PC_TreasureLand_Move_Ret
+{
+	enum RESULT
+	{
+		SUCCESS_BAGFULL = 1;//背包已满，奖励发邮件
+		SUCCESS = 0;
+		ACTIVITY_END   = -100;//活动解释
+		COST_ERR       = -99;//道具不足
+	}
+  	required int32 result                   = 1;//结果
+	required int32 island_type              = 2;//主题
+	required int32 island_id                = 3;//最新进度
+    optional PC_IsLandReward new_reward   = 4;//新增奖励
+	repeated int32 bombId                   = 5;//被炸岛id
+	optional  int32 have_safe               = 6;//保险箱是否生效
+	repeated PC_IsLandReward rewards   = 7;//结算奖励
+}
+
+//#TreasureLand End
+//@CP
+message CP_TreasureLand_End
+{
+  	required int32 island_type = 1;//主题id
+}
+
+//#TreasureLand Get LandType RewardList ret
+//@PC
+message PC_TreasureLand_End_Ret
+{
+	enum RESULT
+	{
+		SUCCESS_BAGFULL = 1;//背包已满，奖励发邮件
+		SUCCESS = 0;
+	}
+  	required int32 result                   = 1;//结果
+	required int32 island_type              = 2;//主题
+	required int32 island_id                = 3;//最新进度
+    repeated PC_IsLandReward rewards        = 4;//结算奖励
+}
+
+//#TreasureLand Chip exchange
+//@CP
+message CP_Treasure_ChipExchange
+{
+ 
+}
+
+//#TreasureLand Chip exchange ret
+//@PC
+message PC_Treasure_ChipExchange_Ret
+{
+	enum RESULT
+	{
+		SUCCESS       = 0;
+		SUCCESS_BAGFULL = 1;//背包已满，奖励发邮件
+		CHIP_ERR      = -99;//碎片不足
+	}
+  	required int32 result                   = 1;//结果
+	required int32 reward_id                = 2;//奖励id
+	required int32 reward_num               = 3;//奖励个数
+}
+
+//#Compound
+//@CP
+message CP_Compound
+{
+	required uint64 itemGuid=1;//道具guid
+	required int32 count=2;//合成个数， 0为全部合成
+}
+
+//#Compound
+//@PC
+message PC_CompoundResult
+{
+	required int32 result=1;//合成结果
+}
+
+message PC_DailyTaskData
+{
+	required int32 task_id                  = 1;
+	required int32 task_state               = 2;
+	required int32 task_progress            = 3;   
+}
+
+//#Get Daily task info
+//@CP
+message CP_DailyTask_Info
+{
+
+}
+
+//#Get Daily task info
+//@PC
+message PC_DailyTask_Info_Ret
+{
+	repeated int32 taskList                 = 1;//任务列表
+	required int32 refreshNum               = 2;//刷新次数
+    optional PC_DailyTaskData taskData      = 3;//已领取任务数据
+}
+
+//#syn Daily task Progress
+//@PC
+message PC_Syn_DailyTask_Progress
+{
+    required PC_DailyTaskData taskData      = 1;//已领取任务数据
+}
+
+//#accept Daily task
+//@CP
+message CP_DailyTask_Accept
+{
+	required int32 task_id                  = 1;//任务id
+}
+
+//#accept Daily task ret 
+//@PC
+message PC_DailyTask_Accept_Ret
+{
+	enum RESULT
+	{
+		SUCCESS       = 0;
+		Accept_Err    = -99;//已有任务
+	}
+  	required int32 result                   = 1;//结果
+	optional PC_DailyTaskData taskData      = 2;//已领取任务数据
+}
+
+//#refresh Daily task
+//@CP
+message CP_DailyTask_Refresh
+{
+
+}
+
+//#refresh Daily task 
+//@PC
+message PC_DailyTask_Refresh_Ret
+{
+	enum RESULT
+	{
+		SUCCESS       = 0;
+		Cost_ERR      = -99;//消耗不足
+		Limit_ERR     = -98;//每日次数上限
+		Accept_Err    = -97;//已有任务
+	}
+  	required int32 result                   = 1;//结果
+	required int32 refreshNum               = 2;//刷新次数
+	repeated int32 taskList                 = 3;//任务列表
+}
+
+//#get Daily task  record
+//@CP
+message CP_DailyTask_Record
+{
+}
+
+//#get Daily task  record ret
+//@PC
+message PC_DailyTask_Record_Ret
+{
+	repeated int64 time       = 1;     //时间
+	repeated int32 task_id    = 2;     //任务id
+}
+
+
+
+//#common tip
+//@PC
+message PC_Common_Tips
+{
+	required int32 tipId = 1;	//提示消息id
+}
+
+//#module lock syn info功能解锁数据同步
+//@PC
+message PC_Syn_ModuleLock_Data
+{
+	repeated int32 moduleID = 1;	//功能id
+	repeated int32 isUnlock = 2;	//是否解锁 1解锁 0 未解锁
+}
+
+
+message ScrapCardPoolAward
+{
+	required int32 awardLevel = 1;		//几等奖
+	optional int32 goldCount = 2;		//金币数量
+	optional int32 itemid = 3;			//道具id
+}
+
+//#guaguaka - award pool info
+//@PC
+message PC_ScrapCard_SyncInfo
+{
+	required int32 period = 1;	//第几期
+	required int64 endAnsiTime = 2; //结束时间
+	repeated ScrapCardPoolAward awards = 3;//奖池奖项
+}
+
+//#guaguaka - player exchanged count
+//@PC
+message PC_ScrapCard_OwnCardCount
+{
+	required int32 cardCount = 1;
+}
+
+//#guaguaka - req pool exchange count
+//@CP
+message CP_ScrapCard_PoolExchangeCountReq
+{
+	
+}
+
+//#guaguaka - update pool exchanged count
+//@PC
+message PC_ScrapCard_PoolExchangeCount
+{
+	required int32 exchangedCount = 1;//当前已兑换数量
+}
+
+//#guaguaka - req exchange card
+//@CP
+message CP_ScrapCard_ExchangeReq
+{
+	required int32 count = 1;//请求兑换数量
+}
+
+//#guaguaka - exchange card ret
+//@PC
+message PC_ScrapCard_ExchangeRet
+{
+	required int32 result = 1;//0兑换失败，1兑换成功
+}
+
+//#guaguaka - req award info
+//@CP
+message CP_ScrapCard_AwardInfoReq
+{
+	required int32 period = 1;//哪一期
+}
+
+message ScrapCardAwardInfo
+{
+	required int32 level = 1;//几等奖
+	repeated string playerName = 2;//中奖人角色名
+}
+
+//#guaguaka - return award info
+//@PC
+message PC_ScrapCard_AwardInfoRet
+{
+	required int32 period = 1;//哪一期
+	repeated ScrapCardAwardInfo info = 2;//中奖信息
+}
+
+//#guaguaka - req award log
+//@CP
+message CP_ScrapCard_AwardLogReq
+{
+}
+
+message ScrapCard_AwardLog
+{
+	required int32 period = 1;		//期数
+	required int64 awardTime = 2;	//领取时间
+	required int32 awardLevel = 3;	//几等奖
+	required int32 count = 4;		//数量
+	optional int64 goldCount = 5;	//金币数量
+	optional int32 itemId = 6;		//道具ID
+}
+
+//#guaguaka - return award log
+//@PC
+message PC_ScrapCard_AwardLogRet
+{
+	repeated ScrapCard_AwardLog log = 1;
+}
+
+message ScrapCard_CardInfo
+{
+	required int64 cardId = 1;
+	required int32 cardState = 2;
+	required int32 cardAwardLevel = 3;
+	required int32 goldCount = 4;
+}
+
+message ScrapCard_CardList
+{
+	required int32 period = 1;
+	repeated ScrapCard_CardInfo cardList = 2;
+}
+
+//#guaguaka - player card list
+//@PC
+message PC_ScrapCard_CardList
+{
+	repeated ScrapCard_CardList cardList = 1;
+}
+
+//#guaguaka - req scrap card
+//@CP
+message CP_ScrapCard_ScrapReq
+{
+	required int64 cardId = 1;//card id
+}
+
+//#guaguaka - scrap card ret
+//@PC
+message PC_ScrapCard_ScrapRet
+{
+	required int64 cardId = 1;
+	required int32 result = 2;	//结果0失败，1成功
+	required int32 awardLevel = 3;
+	optional int32 goldCount = 4;
+}
+
+//#guaguaka - onekey scrap common card
+//@CP
+message CP_ScrapCard_ScrapCommonReq
+{
+	required int32 period = 1;//哪期的
+}
+
+//#guaguaka - onekey scrap common card result
+//@PC
+message PC_ScrapCard_ScrapCommonRet
+{
+	required int32 period = 1;
+	required int32 result = 2;//结果0失败，1成功
+}
+
+//#guaguaka - start scrap
+//@CP
+message CP_ScrapCard_StartScrap
+{
+	required int32 period = 1;
+}
+
+//#guaguaka - stop scrap
+//@CP
+message CP_ScrapCard_StopScrap
+{
+
+}
+
+//#guaguaka - settlement
+//@PC
+message PC_ScrapCard_Settlement
+{
+	repeated int32 awardId = 1;
+	repeated int32 awardCount = 2;
+}
+
+//#guaguaka - have record log
+//@PC
+message PC_ScrapCard_HaveRecordLog
+{
+	required int32 logRecord = 1;//是否有中奖记录
+}
+
+//#guaguaka - close
+//@PC
+message PC_ScrapCard_Close
+{
+	
+}
+
+//#guaguaka - open
+//@PC
+message PC_ScrapCard_Open
+{
+	
+}
+
+//#get mission info
+//@CP
+message CP_STORY_MISSION_INFO
+{
+};
+//# syn mission info
+//@PC
+message PC_STORY_MISSION_INFO
+{
+	required int32 missionId  =1;
+	repeated int32 missionProgress = 2;
+	required int32 missionState    = 3;
+}
+
+//# get mission reward
+//@CP
+message CP_GET_STORY_MISSION_REWARDS
+{
+	required int32 missionId  =1;
+}
+
+//# get mission reward ret
+//@PC
+message PC_GET_STORY_MISSION_REWARDS_RET
+{
+	required int32 result  =1;
+}
+
+//#mission client event
+//@CP
+message CP_MissionClientEvent
+{
+	required int32 eventID = 1; //事件id
+};
+//# mission client event ret
+//@PC
+message PC_MissionClientEventRet
+{
+	required int32  result = 1; 
+}
+
+message BuildData
+{
+	required int32	dataId 		= 1;		//表Id
+	optional int32 	status   	= 2;		//建造状态
+	optional uint32  buildTime   = 3;		//完成时间
+	optional uint32  MaterialTime   = 4;    //生产材料时间
+}
+
+//# homland build
+//@CP
+message CP_StartBuild
+{
+	required int32	BuildId 		= 1;		//建筑物Id
+}
+
+//# homland build
+//@PC
+message PC_StartBuild_Ret
+{
+	required int32	result 		= 1;		//结果
+	optional BuildData buildData	= 2;    //建筑物
+}
+
+//# homland Activate build
+//@CP
+message CP_ActivateBuild
+{
+	required int32	BuildId 		= 1;		//建筑物Id
+}
+
+//# homland Activate build
+//@PC
+message PC_ActivateBuild_Ret
+{
+	required int32	result 		= 1;		//结果
+	optional BuildData buildData	= 2;    //建筑物
+}
+
+//# syn building status
+//@PC
+message PC_BuildStatus
+{
+	repeated BuildData buildData	= 1;    //建筑物
+}
+
+//# build Compose
+//@CP
+message CP_BuildCompose
+{
+	required int32 composeId	= 2;    //合成物品ID
+}
+
+//# build Compose ret
+//@PC
+message PC_BuildCompose_Ret
+{
+	enum ComposeRet
+	{
+		Ret_Succ = 0;       //成功
+		Ret_Meterial = -1;  //材料不足
+		Ret_BagLimit = -2; //背包已满
+		Ret_BuilErr  = -3; //建筑错误
+		Ret_Fail     = -4; //其他错误
+	}
+	required int32	result 		= 1;		//结果
+	required int32	composeId 	= 2;		//合成物品
+	required int32	composeNum 	= 3;		//合成物品个数
+}
+
+//# build material
+//@CP
+message CP_BuildMaterialReward
+{
+	required int32 MaterialType	    = 1;    //建筑物类型
+}
+
+//# build material ret
+//@PC
+message PC_BuildMaterialReward_Ret
+{
+	enum MaterialRet
+	{
+		Ret_Succ = 0;       //成功
+		Ret_BuilErr    = -1; //建筑错误
+		Ret_BagErr    = -2;  //背包已满
+		Ret_Fail       = -3; //其他错误
+	}
+	required int32	result 		= 1;		//结果
+	required int32	MaterialId 	= 2;		//材料id
+	required int32	MaterialNum = 3;		//材料个数
+	repeated BuildData buildData = 4;    //建筑物
+}
+
+//# hatch pet
+//@CP
+message CP_PET_HATCH
+{
+	required uint64	eggItemId = 1;//宠物蛋道具ID
+}
+
+//# evovle pet
+//@CP
+message CP_PET_EVOLVE
+{
+	required uint64 petGuid = 1;//宠物guid
+}
+
+//# summon pet
+//@CP
+message CP_PET_SUMMON
+{
+	required uint64 petGuid = 1;//宠物guid
+}
+
+//# rest pet
+//@CP
+message CP_PET_REST
+{
+	required uint64 petGuid = 1;//宠物guid
+}
+
+//# free pet
+//@CP
+message CP_PET_FREE
+{
+	required uint64 petGuid = 1;//宠物guid
+}
+
+//# hatch pet result
+//@PC
+message PC_PET_HATCHRET
+{
+	enum HatchRet
+	{
+		ret_success = 0;//成功
+		ret_itemnotenough = 1;//道具不足
+		ret_failed = 2;//失败
+	}
+	required int32 result = 1;//结果
+	required int32 eggId = 2;//对应egg.txt表的id
+	required uint32 endTime = 3;//结束时间
+}
+
+//# summon pet result
+//@PC
+message PC_PET_SUMMON_RET
+{
+	enum SummonRet
+	{
+		ret_success = 0;//成功
+		ret_fail = 1;//失败
+	}
+	required uint64 petGuid = 1;//宠物guid
+	required int32	result = 2;//结果，对应SummonRet
+}
+
+//# rest pet result
+//@PC
+message PC_PET_REST_RET
+{
+	enum RestRet
+	{
+		ret_success = 0;//成功
+		ret_fail = 1;//失败
+	}
+	required uint64 petGuid = 1;//宠物guid
+	required int32 	result = 2;//结果，对应RestRet
+}
+
+//# evovle pet result
+//@PC
+message PC_PET_EVOLVE_RET
+{
+	enum EvolveResult
+	{
+		evolve_ret_success = 0;//成功
+		evovle_ret_maxlv = 1;//已达最大等级
+		evovle_ret_itemnotenough = 2;//道具不足
+		evovle_ret_fail = 3;//其它原因导致的失败
+	}
+	required uint64	petGuid = 1;//宠物guid
+	required int32	result = 2;//结果
+}
+
+//# free pet result
+//@PC
+message PC_PET_FREE_RET
+{
+	enum FreeRet
+	{
+		free_ret_success = 0;//放生成功
+		free_ret_bagfull = 1;//背包满
+		free_ret_fail = 2;//其它原因导致的失败
+	}
+	required uint64 petGuid = 1;//宠物guid
+	required int32 	result = 2;//结果
+}
+
+message SyncPetData
+{
+	required uint64 petGuid = 1;//宠物guid
+	required int32 	typeId = 2;//宠物类型id
+}
+
+//# pet list
+//@PC
+message PC_PET_LIST
+{
+	repeated SyncPetData data = 1;//宠物列表
+}
+
+//# cur pet
+//@PC
+message PC_PET_CURPET
+{
+	required uint64 petGuid = 1;//宠物guid
+}
+
+//# cur hatching pet
+//@PC
+message PC_PET_HATCHING
+{
+	required int32 	eggTypeId = 1;//宠物蛋typeid，-1表示没有正在孵化的
+	required uint64	endTime = 2;//孵化结束时间
+}
+
+//# hatch over
+//@PC
+message PC_PET_HATCHOVER
+{
+	required uint64 petGuid = 1;//宠物guid
+	required int32	typeId = 2;//宠物类型Id
+	required int32	status = 3;//游戏中为0，上线是为1
+}
+
+//# PC_CLIENT_CONFIG
+//@PC
+message PC_CLIENT_CONFIG
+{
+	required string cconfig = 1;  			//
+}
+
+//#CP_ChangeTitle
+//@CP
+message CP_CHANGE_TITLE
+{
+	enum OptType
+	{
+		UNEQUIPMENT	= 0;	//卸下称号
+		EQUIPMENT 	= 1;	//装备称号
+	}
+	required int32 operation 	= 1;	// 装备还是卸下称号/(0：卸下；1：装备）
+	required int32 titleID 		= 2;	// 称号ID
+}
+
+//#PC_ChangeTitle
+//@PC
+message PC_CHANGE_TITLE_RET
+{
+	enum ResultType
+	{
+		FAILED		= 0;	//失败
+		SUCCESS 	= 1;	//成功
+	}
+	required int32 result	 	= 1;	// 替换结果/(0：失败；1：成功）
+	required int32 usingID		= 2;	// 替换后使用中的称号
+	required int32 unUsingID	= 3;	// 卸下的称号
+}
+
+message PC_TitleInfo
+{
+	enum UsingType
+	{
+		UNUSING 	= 0;	// 未使用
+		USING 		= 1;	// 使用中
+	}
+	required int32	titleID			= 1;	//称号ID
+	required int64	createTime	 	= 2;	//创建时间/（实际时间）
+	required int64	lifeTime		= 3;	//过期时间/（-1：永久称号;实际时间：限时称号）
+	required int32	isUsing			= 4;	//是否装备中/(UsingType)
+}
+//#PC_Title_LIST
+//@PC
+message PC_TITLE_LIST
+{
+	repeated PC_TitleInfo 		titleInfo 		= 1;    // 称号信息
+}
+
+//#PC_SYN_DEL_TITLE
+//@PC
+message PC_SYN_DEL_TITLE
+{
+	required int32 titleID	= 1;    // 称号ID 
+}
+
+//#PC_SYN_ADD_TITLE
+//@PC
+message PC_SYN_ADD_TITLE
+{
+	repeated PC_TitleInfo titleInfo	= 1;    // 称号信息
+}
+
+//#CP_USE_CONSUM_ITEM   
+//@CP
+message CP_USE_CONSUM_ITEM
+{
+	required uint64	guid    	= 1;
+	required int32 	count 		= 2;
+}
+
+//#PC_USE_CONSUM_ITEM
+//@PC
+message PC_USE_CONSUM_ITEM
+{
+	enum UseRet
+	{
+		Ret_Succ = 0;       //成功
+		Ret_Fail = -1; //其他错误
+	}
+	required int32 result 	= 1;
+	repeated int32 rewardid = 2; //奖励itemid
+	repeated int32 rewardnum = 3;//奖励个数
+}
+
+message PC_LimitTimesData
+{
+	required int32	id 		 = 1;  //id
+	required int32	times 	 = 2;  //次数
+}
+
+//#PC_Syn_LimitTimes
+//@PC
+message PC_Syn_LimitTimes
+{
+	repeated PC_LimitTimesData limitlist = 1; 
+}
+
+//syn function pet list
+//@PC
+message PC_FUNCTIONPETLIST
+{
+    repeated uint64  guidList = 1;  //guid列表 
+    repeated int32   idList = 2;    //宠物表中对应的id列表
+    required uint64  curGuid = 3;   //当前跟随的宠物guid
+	repeated int64	 expireTimeList = 4;	//宠物的过期时间
+}
+
+//syn new function pet
+//@PC
+message PC_FUNCTIONPET_NEW
+{
+	required uint64 petguid = 1;//宠物guid
+	required int32	petid = 2;//宠物表id
+	required int64	expiretime = 3;//过期时间，单位秒
+}
+
+//function pet config
+//@CP
+message CP_FUNCTIONPETCONFIG
+{
+    required int32  autoUseRecoverHpItem = 1;//自动吃血瓶
+    required int32  hpPercent = 2;
+    required int32  autoPickDrop = 3;//自动拾取
+}
+
+//function pet config
+//@PC
+message PC_FUNCTIONPETCONFIG
+{
+    required int32  autoUseRecoverHpItem = 1;//自动吃血瓶
+    required int32  hpPercent = 2;
+    required int32  autoPickDrop = 3;//自动拾取
+}
+
+//summon function pet
+//@CP
+message CP_SUMMONFUNCTIONPET
+{
+    required uint64 petGuid = 1;
+}
+
+//summon function pet ret
+//@PC
+message PC_SUMMONFUNCTIONPET_RET
+{
+    required int32 result = 1;//成功返回1，失败返回0
+    required uint64 curPetGuid = 2;//出战的宠物guid
+}
+
+//function pet rest
+//@CP
+message CP_RESTFUNCTIONPET
+{
+    
+}
+
+//function pet rest ret
+//@PC
+message PC_RESTFUNCTIONPET_RET
+{
+    required int32  result = 1;//成功返回1， 失败返回0
+}
+
+//function pet expire
+//@PC
+message PC_FUNCTIONPET_EXPIRE
+{
+	repeated uint64	petguid = 1;//过期的宠物guid
+	required uint64 summonPetGuid = 2;//新出战宠物的guid
+}
+
+//#Server Syn Attr
+//@PC
+message PC_SYN_ATTR
+{
+	repeated int32	Index 			= 1;	// 属性索引
+	repeated int32	AttrValue 		= 2;	// 属性值
+}
+
+//syn system record state
+//@PC
+message PC_Syn_SystemRecrodState
+{
+    required int32  haveNewRecord = 1;//是否有新消息 0无1有
+	repeated int32  newRecordType = 2;//有新系统消息的类型
+}
+
+//get system record 
+//@CP
+message CP_Get_SystemRecrod
+{
+	required int32  recordType = 1;//系统消息的类型
+}
+
+//get system record ret
+//@PC
+message PC_Get_SystemRecrod
+{
+	repeated int32  recordType = 1;//记录类型
+	repeated int64  recordTime = 2;//记录时间
+	repeated string  recordContent = 3;//记录数据
+}
+
+//#Get sign activity info
+//@CP
+message CP_SignActivity_Info
+{
+
+}
+
+//#Get sign activity info
+//@PC
+message PC_SignActivity_Info_Ret
+{
+	enum RESULT
+	{
+		Ret_Succ = 0;  //成功
+		Ret_Fail_TIME =1; //活动未开启
+		Ret_Fail = 2; //活动未开启
+	}
+    required int32            result        = 1;
+   	repeated int32            task_id       = 2;
+	repeated int32            task_state    = 3;
+	repeated int32            task_progress = 4;
+}
+
+//#syn sign activity task Progress
+//@PC
+message PC_Syn_SignActivityTask_Progress
+{
+    required PC_DailyTaskData taskData      = 1;//已领取任务数据
+}
+
+//#Transfer Career
+//@CP 
+message CP_TransferCareer
+{
+	required int32 Career = 1;//目标职业
+}
+
+//#Transfer Career
+//@CP 
+message PC_TransferCareer_Ret
+{
+	enum RESULT
+	{
+		Ret_Suc = 0; //成功
+		Ret_Fail_Career = 1;//职业错误无法转换
+		Ret_Fail_Cost   = 2;//材料不足
+	}
+	required int32 result = 1;//目标职业
+}
+
+//recharge consume  订单发货
+//@CP
+message CP_RechargeConsume
+{
+
+}
+
+//recharge rebate info
+//@PC
+message PC_RechargeRebate_Info
+{
+    required int32 round = 1;//第几轮
+    required int64 openAwardTime = 2;//本轮开奖时间
+}
+
+//recharge rebate self exchanged card count
+//@PC
+message PC_RechargeRebate_SelfExchangedCount
+{
+    required int32 count = 1;//玩家自己已投入卡数量
+}
+
+message RechargeRebate_RoundAward
+{
+    required int32 round = 1;       //第几轮
+    required int32 count = 2;       //卡数量
+}
+
+//recharge rebate self round award list
+//@PC
+message PC_RechargeRebate_SelfAwardList
+{
+    optional RechargeRebate_RoundAward unopen = 1;//祈愿簿未开奖
+    repeated RechargeRebate_RoundAward unawardList = 2;//待领取
+    repeated RechargeRebate_RoundAward awardedList = 3;//已领取
+}
+
+//recharge rebate pool total exchanged count
+//@PC
+message PC_RechargeRebate_PoolExchangedCount
+{
+    required int32 count = 1;//当奖全服总共投入了多少张卡
+}
+
+message RechargeRebate_TopAward
+{
+    required int32 round = 1;//第几轮
+    required string charname = 2;//角色名
+}
+//recharge rebate top award char list
+//@PC
+message PC_RechargeRebate_TopAwardList
+{
+    repeated RechargeRebate_TopAward topaward = 1;//一等奖列表
+}
+
+//recharge rebate have award to get
+//@PC
+message PC_RechargeRebate_HaveAward
+{
+    required int32 have = 1;            //为0时代表没有可领取的奖励，为1时代表有可领取奖励
+}
+
+//recharge rebate req self award log
+//@CP
+message CP_RechargeRebate_ReqSelfAwardLog
+{
+}
+
+message RechargeRebate_SelfAwardLog
+{
+    required int32 round = 1;//第几轮
+    required int64 getawardansitime = 2;//领奖的时间
+    repeated int32 itemid = 3;//道具ID
+    repeated int32 itemcount = 4;//道具数量
+}
+
+//recharge rebate self award log list
+//@PC
+message PC_RechargeRebate_SelfAwardLogList
+{
+    repeated RechargeRebate_SelfAwardLog awardlog = 1;//个人领奖日志列表
+}
+
+//recharge rebate req exchange
+//@CP
+message CP_RechargeRebate_ReqExchange
+{
+    required int32 count = 1;//投入兑换卡的数量
+}
+
+//recharge rebate exchange result
+//@PC
+message PC_RechargeRebate_ExchangeResult
+{
+    required int32 count = 1;//请求投入的数量
+    required int32 result = 2;//结果，0失败，1成功
+}
+
+//recharge rebate req pool total exchange count
+//@CP
+message CP_RechargeRebate_ReqPoolTotalExchangeCount
+{
+
+}
+
+//recharge rebate req get award
+//@CP
+message CP_RechargeRebate_ReqGetAward
+{
+    required int32 round = 1;//请求领第几轮的奖励
+}
+
+message RechargeRebate_AwardInfo
+{
+    required int32 awardlevel = 1;//几等奖
+    required int32 awardCount = 2;//个数
+    required int32 jjCount=3;//jj金币数量
+}
+//recharge rebate get award result
+//@PC
+message PC_RechargeRebate_GetAwardResult
+{
+    required int32 round = 1;//第几轮
+    required int32 result = 2;//0失败，1成功
+    repeated RechargeRebate_AwardInfo awardlist = 3;//领到的奖项列表
+    optional int32 bagfull=4;//背包是否已满
+}
+
+//recharge rebate gm open
+//@PC
+message PC_RechargeRebate_Open
+{
+}
+
+//recharge rebate gm close
+//@PC
+message PC_RechargeRebate_Close
+{
+}
+
+
+
+// 一键换装 g->c
+//@CP
+message CP_OneKeyChangeFashion
+{
+	
+}
+
+// 一键换装 g->c
+//@PC
+message PC_OneKeyChangeFashionRet
+{
+	enum ResultType
+	{
+		FAILED		= 0;	//失败
+		SUCCESS 	= 1;	//成功
+		ATTONITY 	= 2;	//无升级，无错误
+	}
+	required int32	result 		 = 1;  	//结果
+	repeated int32  posList 	 = 2; 	// 换了哪些部位
+}
+
+//一键升级装备
+//@CP
+message CP_OneKeyUpgradeFashion
+{
+	required int32 	pos = 1; //-1：升级所有穿戴装备   具体pos升级对应装备
+}
+
+// 一键升级装备 g->c
+//@PC
+message PC_OneKeyUpgradeFashionRet
+{
+	enum ResultType
+	{
+		FAILED		= 0;	//失败
+		SUCCESS 	= 1;	//成功
+		ATTONITY 	= 2;	//无升级，无错误
+	}
+	required int32	result 		 = 1;  	//结果
+	required int32 	pos 		 = 2;
+	repeated int32  posList 	 = 3; // 升级了哪些部位
+}
+
+// 一键装备融合 c-> g
+//@CP
+message CP_OneKeyFusion
+{
+	required int32 equipType = 1;//融合类型 -1：是融合所有， 其他是融合对应位置 参考EquipType
+}
+
+// 装备合成结果返回 g->c
+//@PC
+message PC_OneKeyFusionRet
+{
+	enum ResultType
+	{
+		FAILED		= 0;	//失败
+		SUCCESS 	= 1;	//成功
+		ATTONITY 	= 2;	//无升级，无错误
+	}
+	required int32  equipType	= 1;//融合类型 -1：是融合所有， 其他是融合对应位置 参考EquipType
+	required int32	result		= 2;//结果
+	repeated uint64 guidList	= 3;// 融合了哪些装备
+}
+
+//背包单个装备升级c->g
+//@CP
+message CP_SingleEquipmentUpgrade
+{
+	enum UpgradeType
+	{
+		BagNext		= 1;	//背包升到下一级
+		FashionNext 	= 2;	//身上装备升到下一级
+	}
+	required int32  upgradeType = 1;//升级类型UpgradeType
+	required uint64 guid = 2;
+	required int32 	pos = 3;
+}
+
+//背包单个装备升级 g->c
+//@PC
+message PC_SingleEquipmentUpgradeRet
+{
+	enum ResultType
+	{
+		FAILED		= 0;	//失败
+		SUCCESS 	= 1;	//成功
+		ATTONITY 	= 2;	//无升级，无错误
+	}
+	required int32  upgradeType = 1;   //升级类型UpgradeType
+	required uint64 guid = 2;
+	required int32 	pos = 3;
+	optional int32  equipmentId = 4;
+	required int32	result 		 = 5;  //结果
+}
+
+//抽奖：单抽
+//@CP
+message CP_ReqDraw
+{
+	required int32 id = 1;//奖池ID
+}
+
+//抽奖：10连抽
+//@CP
+message CP_ReqBatchDraw
+{
+	required int32 id=1;//奖池ID
+}
+
+//抽奖结果
+//@PC
+message PC_DrawResult
+{
+	enum ResultType
+	{
+		FAILED_ITEMNOTENOUGH = 0;//奖券不足
+		SUCCESS = 1;
+	}
+	required int32 id = 1;//奖池ID
+	required int32 result=2;//结果
+	repeated int32 itemidlist=3;//获得的道具列表
+	repeated int32 itemcountlist=4;//获得的道具数量列表		
+}

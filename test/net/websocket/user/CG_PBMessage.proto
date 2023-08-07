@@ -28,7 +28,7 @@ message GC_LOGIN_RET
 	}
 	required int32 	Result 		= 1;
 	required string Account 	= 2;
-	required uint64	PlayerGuid 	= 3;
+	required string	PlayerGuid 	= 3;
 	required string PlayerName 	= 4;
 	required int32 	PlayerId 	= 5;
 	required int32  ServerId 	= 6;
@@ -69,7 +69,7 @@ message CG_CONNECTED_HEARTBEAT
 //@GC
 message GC_CONNECTED_HEARTBEAT
 {
-	required int64 ServerTime = 1;
+	required string ServerTime = 1;
 }
 
 //#Server Syn Attr
@@ -206,7 +206,7 @@ message GC_GAME_FINISH
     optional int32 killersIntegral = 16; //杀人积分
     optional int32 aliveIntegral = 17; //生存积分
     optional int32 totalIntegral = 18; //总积分
-	optional uint64 matchId	= 19;	// match的GUID
+	optional string matchId	= 19;	// match的GUID
 	optional int32 expweekcard = 20;
 	optional int32 goldweekcard = 21;
 }
@@ -215,7 +215,7 @@ message D_FashionInfo
 {
 	required int32 cfgId = 1;
 	required int32 pos = 2;
-	required uint64 guid = 3;    // guid
+	required string guid = 3;    // guid
 	required int32 enhancelv = 4;
 };
 
@@ -224,7 +224,7 @@ message D_FashionInfo
 message GC_CREATE_PLAYER
 {
 	required int32 ObjId 		= 1;	// objid
-	required uint64 Guid 		= 2;	// Player的GUID
+	required string Guid 		= 2;	// Player的GUID
 	required int32 SceneClass 	= 3;	// 场景在SceneDefine的ID
 	required int32 SceneInst 	= 4;	// 场景在Server上的ID
 	required int32 DataId 		= 5;	// 模型在rolebase中的ID
@@ -261,7 +261,7 @@ message CG_USE_SKILL
 	optional int32 PosX 		= 6;	//点的X坐标乘以100
 	optional int32 PosZ 		= 7;	//点的Z坐标乘以100
 	optional int32 dirType      = 8;
-    optional int64 timestamp    = 9;
+    optional string timestamp    = 9;
 }
 
 //#broad cast use skill
@@ -350,7 +350,7 @@ message GC_BE_HIT_INFO
 {
 	required	int32	ObjId			= 1;	// objID
 	required 	int32	Type			= 2;	// 被击类型
-	optional	int64	ExistTime		= 3;	// 持续时间
+	optional	string	ExistTime		= 3;	// 持续时间
 	optional	int32	SkillId			= 4;	// 被击技能id
 	optional	int32	AttackerObjId	= 5;	// 攻击者ObjId
 	optional	int32	Height			= 6;	// 击飞高度
@@ -538,10 +538,10 @@ message GC_CREATE_OBJ
 	required int32	PosZ 		= 7;	// Obj的坐标Z
 	required int32	Facedir 	= 8;	// 朝向
 	optional string	Name	 	= 9;	// 名字
-	optional uint64	Guid		= 10;	// guid
+	optional string	Guid		= 10;	// guid
 	optional int32	IsDie		= 11;	// 是否死亡
 	optional int32	MoveSpeed	= 12;	// 移动速度
-	optional uint64	OwnerGuid	= 13;	//拥有者id
+	optional string	OwnerGuid	= 13;	//拥有者id
 	optional int32 isCanAddTime = 14;	//是否增加时间
 	optional int32 masterID = 15;	// 主人id
 }
@@ -696,7 +696,7 @@ message CG_ITEM_TIDY
 {
 	required int32	packType    = 1;    // 存储位置类型
 	repeated int32 	pos 		= 2;
-	repeated uint64 guid 		= 3;
+	repeated string guid 		= 3;
 }
 
 //#GC_ITEM_TIDY
@@ -765,7 +765,7 @@ message GC_ITEM_DESTROY
 //@CG
 message CG_ITEM_USE
 {
-	required uint64	guid    	= 1;    //
+	required string	guid    	= 1;    //
 	required int32 	count       = 2;
 	required int32 	targetObj 	= 3;
 	required int32 	faceDir 	= 4;
@@ -868,10 +868,10 @@ message GC_ItemData
 {
 	required int32	dataId 		= 1;						// dataId
 	required int32	count 		= 2;						// 数量
-	required uint64 guid 		= 3;    					// guid
+	required string guid 		= 3;    					// guid
 	required int32	pos 		= 4;						// 位置, 对应packType
 	optional int32  cdTime 		= 5;    					// 剩余cd时间
-	optional int64	lifeTime	= 6;						// 存在时间
+	optional string	lifeTime	= 6;						// 存在时间
    	optional int32 	enhanceLv 		= 7;
    	optional int32  enhanceLvNum 	= 8;					//当前等级强化次数
    	optional int32  chgcount		= 9;
@@ -932,7 +932,7 @@ message GC_ITEM_CREATE
 //@CG
 message CG_ITEM_SALE
 {
-	required uint64 guid 		= 	1;
+	required string guid 		= 	1;
 	required int32	count 		= 2;
 }
 
@@ -983,7 +983,7 @@ message D_Equipment
 		WING = 13;       		// 翅膀
     }
     optional int32  configId = 1;   // 配置表ID
-    optional uint64 guid = 2;       // guid
+    optional string guid = 2;       // guid
     optional int32 wearPos = 3;     // 穿戴位置，0表示没有穿戴，在包裹中
     optional int32 currDuration = 4;    // 当前的持久
     optional int32 level = 5;       // 装备等级
@@ -1216,7 +1216,7 @@ message CG_CHAT
 
 	required int32 	type 	= 1;
 	required string info 	= 2;
-	optional uint64 receiverGuid 	= 3;
+	optional string receiverGuid 	= 3;
 }
 
 //#GC_CHAT
@@ -1226,7 +1226,7 @@ message GC_CHAT
 	required int32 	type 		= 1;
 	required string info 		= 2;
 	required string senderName 	= 3;
-	required uint64 senderGuid 	= 4;
+	required string senderGuid 	= 4;
 }
 
 
@@ -1509,7 +1509,7 @@ message GC_ATTKER_PARAM
 // 时装穿脱
 message CG_FASHION_CHANGE
 {
-    required uint64 guid = 1;
+    required string guid = 1;
 	required int32 pos = 2;
 	required int32 type = 3;	// 0,穿， 1，脱
 };
@@ -1526,7 +1526,7 @@ message GC_FASHION_CHANGE
 	}
 	required int32 	 	result 		= 1;	// 结果
     required int32   	type 		= 2;	// 0,穿， 1，脱
-    required uint64		guid 		= 3;
+    required string		guid 		= 3;
 	required int32 		pos 		= 4;
     optional int32   	equipmentId = 5;
 }
@@ -1788,7 +1788,7 @@ message CG_LotteryTicket_Record
 //@GC
 message GC_LotteryTicket_Record
 {
-	repeated int64 time = 1;
+	repeated string time = 1;
 	repeated int32 id = 2;
 }
 //#
@@ -1800,7 +1800,7 @@ message GC_SceneTaskBegin
 	required int32 duration = 3;
 	repeated int32 awardid = 4;
 	repeated int32 awardnum = 5;
-	required int64 begintime = 6;
+	required string begintime = 6;
 	required int32 isFirst = 7;
 	required int32 awardlimitnum = 8;
 }
@@ -1835,7 +1835,7 @@ message GC_SceneTaskCompleteInfo
 {
 	required int32 suc = 1;
 	repeated SceneTaskCompleteInfo sceneTaskCompleteInfo = 2;
-	required int64 usetime = 3;
+	required string usetime = 3;
 
 }
 
@@ -1898,7 +1898,7 @@ message GC_SynMonsterCostPer
 //@CG
 message CG_EnhanceEquip
 {
-	required uint64 guid = 1;
+	required string guid = 1;
 	required int32  pos  = 2;   //位置
 	required int32  type = 3;   //类型(见枚举ItemPackType -1为fashion即在玩家身上穿着)
 }
@@ -1907,7 +1907,7 @@ message CG_EnhanceEquip
 //@PC
 message GC_EnhanceEquip
 {
-	required uint64 guid = 1;
+	required string guid = 1;
 	required int32 suc = 2;
 	optional int32 enhancelv = 3;
 	optional int32 enhancelvNum = 4;
@@ -1990,7 +1990,7 @@ message GC_StartBossChallengeTask
 {
 	required int32 taskid = 1;
 	required int32 monsterid = 2;
-	required int64 starttime = 3;
+	required string starttime = 3;
 }
 
 message D_BossChallengeUserScoreInfo
@@ -2025,7 +2025,7 @@ message GC_Recharge_Info
 {
 	required int32 shopId = 1;
 	required int32 num = 2;
-	optional int64 lifeTime = 3;
+	optional string lifeTime = 3;
 };
 
 //#
@@ -2118,7 +2118,7 @@ message GC_EnhanceAttr_Ret
 //@GC
 message GC_COPY_SCENE_NOTIFY
 {
-  	required int64 end_time = 1;//结束时间
+  	required string end_time = 1;//结束时间
 }
 
 //#copy scene notify ret
@@ -2184,7 +2184,7 @@ message CG_TicketLottery_Record
 //@GC
 message GC_TicketLottery_Record_Ret
 {
-	repeated int64 time       = 1;     //时间
+	repeated string time       = 1;     //时间
 	repeated int32 multiple   = 2;     //倍数
 	repeated int32 rewardId   = 3;     //奖励id
 	repeated int32 rewardNum  = 4;     //奖励数量
@@ -2194,7 +2194,7 @@ message GC_TicketLottery_Record_Ret
 //@CG
 message CG_Compound
 {
-	required uint64 itemGuid=1;//道具guid
+	required string itemGuid=1;//道具guid
 	required int32 count=2;//合成个数， 0为全部合成
 }
 
@@ -2288,7 +2288,7 @@ message CG_DailyTask_Record
 //@GC
 message GC_DailyTask_Record_Ret
 {
-	repeated int64 time       = 1;     //时间
+	repeated string time       = 1;     //时间
 	repeated int32 task_id    = 2;     //任务id
 }
 
@@ -2391,14 +2391,14 @@ message GC_RequestMonsterScoreRecord
 {
 	required int32 monsterid = 1;
 	required int32 matchid = 2;
-	repeated int64	monsterscore = 3;
+	repeated string	monsterscore = 3;
 }
 
 
 message GMonsterScoreInfo
 {
 	required int32 monsterid = 1;
-	required int64	monsterscore = 2;
+	required string	monsterscore = 2;
 }
 //#CG_RequestMonsterScoreInterval
 //@CG
@@ -2452,8 +2452,8 @@ message GC_TitleInfo
 		USING 		= 1;	// 使用中
 	}
 	required int32	titleID			= 1;	//称号ID
-	required int64	createTime	 	= 2;	//创建时间/（实际时间）
-	required int64	lifeTime		= 3;	//过期时间/（-1：永久称号;实际时间：限时称号）
+	required string	createTime	 	= 2;	//创建时间/（实际时间）
+	required string	lifeTime		= 3;	//过期时间/（-1：永久称号;实际时间：限时称号）
 	required int32	isUsing			= 4;	//是否装备中/(UsingType)
 }
 //#GC_Title_LIST
@@ -2490,7 +2490,7 @@ message GC_SYN_ADD_TITLE
 //@CP
 message CG_USE_CONSUM_ITEM
 {
-	required uint64	guid    	= 1;
+	required string	guid    	= 1;
 	required int32 	count 		= 2;
 }
 
@@ -2559,26 +2559,26 @@ message GC_Get_Mana_Gift_Bag
 	}
 	required int32	result 		 		= 1;  	//结果
 	optional int32  id			 		= 2;	//礼包ID
-	optional int64	lifeTime	 		= 3;	//过期时间
+	optional string	lifeTime	 		= 3;	//过期时间
 }
 
 //syn function pet list
 //@GC
 message GC_FUNCTIONPETLIST
 {
-    repeated uint64  guidList = 1;  //guid列表
+    repeated string  guidList = 1;  //guid列表
     repeated int32   idList = 2;    //宠物表中对应的id列表
-    required uint64  curGuid = 3;   //当前跟随的宠物guid
-	repeated int64	 expireTimeList = 4;	//宠物的过期时间
+    required string  curGuid = 3;   //当前跟随的宠物guid
+	repeated string	 expireTimeList = 4;	//宠物的过期时间
 }
 
 //syn new function pet
 //@GC
 message GC_FUNCTIONPET_NEW
 {
-	required uint64 petguid = 1;//宠物guid
+	required string petguid = 1;//宠物guid
 	required int32	petid = 2;//宠物表id
-	required int64	expiretime = 3;//过期时间，单位秒
+	required string	expiretime = 3;//过期时间，单位秒
 }
 
 //function pet config
@@ -2603,7 +2603,7 @@ message GC_FUNCTIONPETCONFIG
 //@CG
 message CG_SUMMONFUNCTIONPET
 {
-    required uint64 petGuid = 1;
+    required string petGuid = 1;
 }
 
 //summon function pet ret
@@ -2611,7 +2611,7 @@ message CG_SUMMONFUNCTIONPET
 message GC_SUMMONFUNCTIONPET_RET
 {
     required int32 result = 1;//成功返回1，失败返回0
-    required uint64 curPetGuid = 2;//出战的宠物guid
+    required string curPetGuid = 2;//出战的宠物guid
 }
 
 //function pet rest
@@ -2632,8 +2632,8 @@ message GC_RESTFUNCTIONPET_RET
 //@GC
 message GC_FUNCTIONPET_EXPIRE
 {
-	repeated uint64	petguid = 1;//过期的宠物guid
-	required uint64 summonPetGuid = 2;//新出战宠物的guid
+	repeated string	petguid = 1;//过期的宠物guid
+	required string summonPetGuid = 2;//新出战宠物的guid
 }
 
 //syn system record state
@@ -2644,7 +2644,7 @@ message GC_Syn_SystemRecrodState
 	repeated int32  newRecordType = 2;//有新系统消息的类型
 }
 
-//get system record 
+//get system record
 //@CG
 message CG_Get_SystemRecrod
 {
@@ -2656,7 +2656,7 @@ message CG_Get_SystemRecrod
 message GC_Get_SystemRecrod
 {
 	repeated int32  recordType = 1;//记录类型
-	repeated int64  recordTime = 2;//记录时间
+	repeated string  recordTime = 2;//记录时间
 	repeated string  recordContent = 3;//记录数据
 }
 
@@ -2702,7 +2702,7 @@ message GC_Syn_SignActivityTask_Progress
 //@CG
 message CG_OneKeyChangeFashion
 {
-	
+
 }
 
 // 一键换装 g->c
@@ -2739,7 +2739,7 @@ message GC_OneKeyUpgradeFashionRet
 	required int32	result 		 = 1;  	//结果
 	required int32 	pos			 = 2;
 	repeated int32  posList 	 = 3; // 升级了哪些部位
-	
+
 }
 
 // 一键装备融合 c-> g
@@ -2761,7 +2761,7 @@ message GC_OneKeyFusionRet
 	}
 	required int32  equipType		= 1;//融合类型 -1：是融合所有， 其他是融合对应位置 参考EquipType
 	required int32	result			= 2; //结果
-	repeated uint64 guidList		= 3;// 融合了哪些装备
+	repeated string guidList		= 3;// 融合了哪些装备
 }
 
 //背包单个装备升级c->g
@@ -2774,7 +2774,7 @@ message CG_SingleEquipmentUpgrade
 		FashionNext 	= 2;	//身上装备升到下一级
 	}
 	required int32  upgradeType = 1;//升级类型UpgradeType
-	required uint64 guid = 2;
+	required string guid = 2;
 	required int32 	pos = 3;
 }
 
@@ -2789,7 +2789,7 @@ message GC_SingleEquipmentUpgradeRet
 		ATTONITY 	= 2;	//无升级，无错误
 	}
 	required int32  upgradeType = 1;   //升级类型UpgradeType
-	required uint64 guid = 2;
+	required string guid = 2;
 	required int32 	pos = 3;
 	optional int32  equipmentId = 4;
 	required int32	result 		 = 5;  //结果

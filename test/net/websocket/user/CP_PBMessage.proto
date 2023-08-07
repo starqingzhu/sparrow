@@ -19,7 +19,7 @@ message D_PlayerInfo
     optional string account = 1;
     optional string playerName = 2;
     optional string headIcon = 3;
-    optional uint64 guid = 4;
+    optional string guid = 4;
     optional int32 sex = 5;
     optional int32 level = 6;
     optional int32 exp = 7;
@@ -66,7 +66,7 @@ message D_DeviceInfo
 };
 
 
-//#client ask login 
+//#client ask login
 //@CP
 message CP_LOGIN
 {
@@ -79,7 +79,7 @@ message CP_LOGIN
 	required int32	GameVersion 	= 1;	//
 	required int32	ProgramVersion 	= 2;	//
 	required int32	MaxPacketId	    = 3;	//
-    required D_DeviceInfo deviceInfo = 4;   // 
+    required D_DeviceInfo deviceInfo = 4;   //
 	optional string	Account 	    = 5;	//
     required int32  type = 6;
     optional string token = 7;
@@ -88,7 +88,7 @@ message CP_LOGIN
 
 
 
-//#client login result 
+//#client login result
 //@PC
 message PC_LOGIN_RET
 {
@@ -101,24 +101,24 @@ message PC_LOGIN_RET
 		LOADDBFAIL = 5;
 		PACKETNOTMATCH = 6;
 		VERSIONNOTMATCH = 7;
-        NEEDCREATE = 8;     
-        ENTERLASTGAME = 9;  
-        BLOCKED = 10;		
-        EXPLIMIT = 11;		
+        NEEDCREATE = 8;
+        ENTERLASTGAME = 9;
+        BLOCKED = 10;
+        EXPLIMIT = 11;
         EXCEPTION = 12;		//异常
         NEWEXPLIMIT = 13; //经验限制
         MUTEX_GAME = 14; //14不能同时登陆多个游戏
 	}
 	required int32 	Result 		= 1;
-	optional int64	ServerTime = 2;
-	optional int64	BlockTime = 3;	
-	optional int32	value = 4;	
+	optional string	ServerTime = 2;
+	optional string	BlockTime = 3;
+	optional int32	value = 4;
 	repeated int32  rechargeIntervals =5;
-	optional int64	LastLogoutTime = 6;
+	optional string	LastLogoutTime = 6;
 }
 
 
-//#client login result 
+//#client login result
 //@PC
 message PC_ENTER_WORLD
 {
@@ -138,7 +138,7 @@ message CP_CLIENT_CONFIG
 //@CP
 message CP_RECONNECT
 {
-    required uint64 tokenId = 1;	//玩家guid
+    required string tokenId = 1;	//玩家guid
     required string accName = 2;   //玩家账号ID，uid
 };
 
@@ -206,7 +206,7 @@ message PC_CREATE_PLAYER_RET
         ARGFAILED = 3;
         FAILED = 4;
     };
-    required int32 result = 1;       
+    required int32 result = 1;
     optional D_PlayerInfo playerInfo = 2;
 };
 
@@ -241,7 +241,7 @@ message CP_CLIENT_READY
 
 };
 
-//#client connected heartbeat 
+//#client connected heartbeat
 //@CP
 message CP_CONNECTED_HEARTBEAT
 {
@@ -273,7 +273,7 @@ message PC_SYN_PLAYER_INFO
 //#PC_NOTICE
 //@PC
 message PC_NOTICE
-{   
+{
     required int32  index  = 1;
     repeated int32  intVal = 2;
     repeated string strVal = 3;
@@ -306,8 +306,8 @@ message PC_CHANGE_EQUIPMENT
 
 message PC_CardProperty
 {
-	required int32	index 		= 1;	
-	required int32	num 		= 2;	 
+	required int32	index 		= 1;
+	required int32	num 		= 2;
 }
 
 
@@ -335,10 +335,10 @@ message D_FashionProperty
 message PC_ItemData
 {
 	required int32	dataId 		= 1;						// itemID
-	required int32	count 		= 2;						// 数量    
-	required uint64 guid 		= 3;    					// guid
+	required int32	count 		= 2;						// 数量
+	required string guid 		= 3;    					// guid
 	required int32	pos 		= 4;						// 装备位/格子ID
-    optional int64 	lifeTime			= 5;				// 剩余时间
+    optional string 	lifeTime			= 5;				// 剩余时间
     optional int32 	enhanceLv 			= 6;                //武器等级
     optional int32  enhanceLvNum 		= 7;				//当前等级强化次数
 }
@@ -355,7 +355,7 @@ message PC_ITEM_LIST
 		FAILED = 2;
 	}
 	required int32 			result 		= 1;    //结果
-	required int32			packType    = 2;    //背包类型	
+	required int32			packType    = 2;    //背包类型
 	repeated PC_ItemData 	data 		= 3;    //物品信息
 }
 
@@ -363,17 +363,17 @@ message PC_ITEM_LIST
 //#PC_ITEM_CHANGE
 //@PC
 message PC_ITEM_CHANGE
-{	
+{
 	required int32  			condition 		= 1;    // 物品变化原因
-	repeated int32				packType    	= 2;    //背包类型	
-	repeated PC_ItemData 		itemData 		= 3;    
+	repeated int32				packType    	= 2;    //背包类型
+	repeated PC_ItemData 		itemData 		= 3;
 }
 
 
 message CP_CardComposeData
 {
 	required int32	pos 		= 1;
-	required uint64 guid 		= 2;
+	required string guid 		= 2;
 }
 
 
@@ -389,13 +389,13 @@ message CP_CARD_COMPOSE
 //#PC_CARD_COMPOSE
 //@PC
 message PC_CARD_COMPOSE
-{	
+{
 	enum RESULT
 	{
 		OK = 1;
 		FAILED = 2;
 	}
-	required int32 			result 		= 1;    // ç»“æžœ 
+	required int32 			result 		= 1;    // ç»“æžœ
 }
 
 //#CP_CARD_EQUIP
@@ -410,13 +410,13 @@ message CP_CARD_EQUIP
 //#PC_CARD_EQUIP
 //@PC
 message PC_CARD_EQUIP
-{	
+{
 	enum RESULT
 	{
 		OK = 1;
 		FAILED = 2;
 	}
-	required int32 			result 		= 1;    // ç»“æžœ 
+	required int32 			result 		= 1;    // ç»“æžœ
 }
 
 
@@ -432,18 +432,18 @@ message CP_CARD_TAKEOFF
 //#PC_CARD_TAKEOFF
 //@PC
 message PC_CARD_TAKEOFF
-{	
+{
 	enum RESULT
 	{
 		OK = 1;
 		FAILED = 2;
 	}
-	required int32 			result 		= 1;    // ç»“æžœ 
+	required int32 			result 		= 1;    // ç»“æžœ
 }
 
 
 
-//#CP_CARD_UPGRADE 
+//#CP_CARD_UPGRADE
 //@CP
 message CP_CARD_UPGRADE
 {
@@ -456,18 +456,18 @@ message CP_CARD_UPGRADE
 //#PC_CARD_UPGRADE
 //@PC
 message PC_CARD_UPGRADE
-{	
+{
 	enum RESULT
 	{
 		OK = 1;
 		FAILED = 2;
 	}
-	required int32 			result 		= 1;    // ç»“æžœ 
+	required int32 			result 		= 1;    // ç»“æžœ
 }
 
 
 
-//#CP_CARD_DECOMPOSE 
+//#CP_CARD_DECOMPOSE
 //@CP
 message CP_CARD_DECOMPOSE
 {
@@ -480,60 +480,60 @@ message CP_CARD_DECOMPOSE
 //#PC_CARD_DECOMPOSE
 //@PC
 message PC_CARD_DECOMPOSE
-{	
+{
 	enum RESULT
 	{
 		OK = 1;
 		FAILED = 2;
 	}
-	required int32 			result 		= 1;    // ç»“æžœ 
+	required int32 			result 		= 1;    // ç»“æžœ
 }
 
 
 
-//#CP_CARD_FORGE  
+//#CP_CARD_FORGE
 //@CP
 message CP_CARD_FORGE
 {
 	required int32	bagPos 		= 1;
-	required int32	bagType 	= 2;	
+	required int32	bagType 	= 2;
 };
 
 
 //#PC_CARD_FORGE
 //@PC
 message PC_CARD_FORGE
-{	
+{
 	enum RESULT
 	{
 		OK = 1;
 		FAILED = 2;
 	}
-	required int32 			result 		= 1; 
+	required int32 			result 		= 1;
 }
 
 
-//#CP_CARD_FORGE_LOCK 
+//#CP_CARD_FORGE_LOCK
 //@CP
 message CP_CARD_FORGE_LOCK
 {
 	required int32	bagPos 		= 1;
-	required int32  index	 	= 2; 
+	required int32  index	 	= 2;
 	required int32  lock	 	= 3;
-	required int32	bagType 	= 4;		
+	required int32	bagType 	= 4;
 };
 
 
 //#PC_CARD_FORGE_LOCK
 //@PC
 message PC_CARD_FORGE_LOCK
-{	
+{
 	enum RESULT
 	{
 		OK = 1;
 		FAILED = 2;
 	}
-	required int32 			result 		= 1;    // ç»“æžœ 
+	required int32 			result 		= 1;    // ç»“æžœ
 }
 
 
@@ -541,7 +541,7 @@ message PC_CARD_FORGE_LOCK
 //@CP
 message CP_FASHION_CHANGE
 {
-	required uint64 guid = 1;
+	required string guid = 1;
 	required int32 pos = 2;
 	required int32 type = 3;	// 0穿 1脱
 };
@@ -550,7 +550,7 @@ message CP_FASHION_CHANGE
 
 //@PC
 message PC_FASHION_CHANGE
-{	
+{
 	enum RESULT
 	{
 		OK = 1;
@@ -559,9 +559,9 @@ message PC_FASHION_CHANGE
 		BAG_OVERLIMIT = 4;
 
 	}
-	required int32 	 	result 		= 1;	// 结果 
+	required int32 	 	result 		= 1;	// 结果
     required int32   	type 		= 2;	// 0穿 1脱
-    required uint64		guid 		= 3;
+    required string		guid 		= 3;
 	required int32 		pos 		= 4;
     optional int32   	equipmentId = 5;
 }
@@ -579,14 +579,14 @@ message CP_CARD_COMPOSECHIP
 //#PC_CARD_COMPOSECHIP
 //@PC
 message PC_CARD_COMPOSECHIP
-{	
+{
 
 	enum RESULT
 	{
 		OK = 1;
 		FAILED = 2;
 	}
-	required int32 			result 		= 1;    // ç»“æžœ 
+	required int32 			result 		= 1;    // ç»“æžœ
 }
 
 
@@ -630,28 +630,28 @@ message PC_ITEM_NOTICE_LIST
 
 message CP_ITEM_SALE
 {
-	required uint64 guid 		= 	1;
+	required string guid 		= 	1;
 	required int32	count 		= 	2;
 };
 
 //#PC_ITEM_SALE
 //@PC
 message PC_ITEM_SALE
-{	
+{
 	enum RESULT
 	{
 		OK = 1;
 		FAILED = 2;
 	}
-	required int32 			result 		= 1;    // ç»“æžœ 
+	required int32 			result 		= 1;    // ç»“æžœ
 }
 
 
-//#CP_ITEM_USE   
+//#CP_ITEM_USE
 //@CP
 message CP_ITEM_USE
 {
-	required uint64	guid    			    = 1;
+	required string	guid    			    = 1;
 	required int32 	count 				    = 2;
 	repeated int32  addition_Optional_box   = 3;	//自选宝箱附加信息
 }
@@ -667,8 +667,8 @@ message PC_ITEM_USE
 		FAILED = 2;
 		CAREER_ERR = 3;//职业限制
 	}
-	required int32 result 	= 1; 
-	optional int32 itemid 	= 2;    
+	required int32 result 	= 1;
+	optional int32 itemid 	= 2;
 }
 
 
@@ -686,8 +686,8 @@ message PC_StatusData
 	}
 
 	required int32	index 			= 1;
-	optional int32	count 			= 2;	
-	optional int64 	remainTime 		= 3;    
+	optional int32	count 			= 2;
+	optional string 	remainTime 		= 3;
 }
 
 
@@ -702,7 +702,7 @@ message PC_STATUS_LIST
 		FAILED = 2;
 	}
 	required int32 			result 		= 1;    // ç»“æžœ
-	repeated PC_StatusData 	data 		= 2;    
+	repeated PC_StatusData 	data 		= 2;
 }
 
 
@@ -711,7 +711,7 @@ message PC_STATUS_LIST
 message CP_CHANGE_COLOR
 {
     optional int32 packetType = 1;
-    optional int32 pos = 2; 
+    optional int32 pos = 2;
     repeated int32 index = 3;
 }
 
@@ -754,19 +754,19 @@ message PC_CONFIRM_CHANGE_COLOR
 
 message PC_EmailHead
 {
-	required uint64 guid 		= 1;
-	required int32	type        = 2;	
+	required string guid 		= 1;
+	required int32	type        = 2;
 	required int32	state       = 3;
-	required int64 	createTime	= 4;	
+	required string 	createTime	= 4;
 	required string title		= 5;
-	required int32	remainTime	= 6;		
+	required int32	remainTime	= 6;
 }
 
 
 
 message PC_EmailAwardData
 {
-	required int32	itemId      = 1;	
+	required int32	itemId      = 1;
 	required int32	count       = 2;
 }
 
@@ -786,7 +786,7 @@ message PC_EmailData
 	{
 		SYSTEM = 0;
 		GAME = 1;
-		USER = 2;	
+		USER = 2;
 		GLOBAL = 3;
 	}
 
@@ -797,13 +797,13 @@ message PC_EmailData
 		NOT_READ_AWARD = 1;	 // æœ‰å¥–åŠ±
 		ALREADY_READ = 2;
 		ALREADY_READ_AWARD = 3;	 // æœ‰å¥–åŠ±
-		ALREADY_AWARD = 4; 
+		ALREADY_AWARD = 4;
 	}
 
 	required	PC_EmailHead	head 	= 1;
 	optional	string			sender 	= 2;
 	required	string			content = 3;
-	repeated  	PC_EmailAwardData	awardList = 4;	
+	repeated  	PC_EmailAwardData	awardList = 4;
 }
 
 
@@ -812,8 +812,8 @@ message PC_EmailData
 //@PC
 message PC_EMAIL_LIST
 {
-	required int64 			curTime 	= 1;    
-	repeated PC_EmailHead 	data 		= 2;    
+	required string 			curTime 	= 1;
+	repeated PC_EmailHead 	data 		= 2;
 }
 
 
@@ -822,8 +822,8 @@ message PC_EMAIL_LIST
 //@PC
 message PC_EMAIL_INFO
 {
-	required int64 			curTime 	= 1;    
-	required PC_EmailData 	data 		= 2;    
+	required string 			curTime 	= 1;
+	required PC_EmailData 	data 		= 2;
 }
 
 
@@ -832,7 +832,7 @@ message PC_EMAIL_INFO
 //@CP
 message CP_EMAIL_READ
 {
-	required uint64 guid 		= 1;    
+	required string guid 		= 1;
 }
 
 
@@ -848,7 +848,7 @@ message PC_EMAIL_READ
 		OVERDUE = 3;
 	}
     required int32 	ret 	= 1;
-	required uint64 guid 	= 2;   	
+	required string guid 	= 2;
 }
 
 
@@ -857,7 +857,7 @@ message PC_EMAIL_READ
 //@CP
 message CP_EMAIL_AWARD
 {
-	required uint64 guid 		= 1;    
+	required string guid 		= 1;
 }
 
 
@@ -874,7 +874,7 @@ message PC_EMAIL_AWARD
 		FULL = 3;
 	}
     required int32 	ret 	= 1;
-	required uint64 guid 	= 2;    	
+	required string guid 	= 2;
 
 }
 
@@ -884,7 +884,7 @@ message PC_EMAIL_AWARD
 //@CP
 message CP_EMAIL_DEL
 {
-	required uint64 guid 		= 1;    
+	required string guid 		= 1;
 }
 
 
@@ -899,7 +899,7 @@ message PC_EMAIL_DEL
 		FAILED = 2;
 	}
     required int32 	ret 	= 1;
-	required uint64 guid 	= 2;
+	required string guid 	= 2;
 }
 
 //@CP
@@ -972,7 +972,7 @@ message CP_GOODS_INFO
 //#PC_GOODS_INFO
 //@PC
 message PC_GOODS_INFO
-{	
+{
 	enum RESULT
 	{
 		OK = 1;
@@ -999,7 +999,7 @@ message CP_GOODS_BUY
 //#PC_GOODS_BUY
 //@PC
 message PC_GOODS_BUY
-{	
+{
 	enum RESULT
 	{
 		OK = 1;
@@ -1028,7 +1028,7 @@ message PC_SHOP_REFRESH_RET
 };
 
 message PC_TASK_INFO
-{ 
+{
 	enum State
 	{
 		DOING = 1;
@@ -1049,19 +1049,19 @@ message PC_TASK_INFO
 
 message PC_TASK_LIST
 {
-	required int32 ifChange = 1;   
-	optional int32 weekIndex = 2; 
-	optional int32 weekNum = 3; 
-	repeated PC_TASK_INFO info = 4;	
+	required int32 ifChange = 1;
+	optional int32 weekIndex = 2;
+	optional int32 weekNum = 3;
+	repeated PC_TASK_INFO info = 4;
 	optional int32 type = 5;
 }
 
 //#PC_TASK_STARAWARD_LIST
 //@PC
 message PC_TASK_STARAWARD_LIST
-{	
+{
 
-	required int64  curTime = 1;    
+	required string  curTime = 1;
 	repeated int32 	info = 2;
 	required int32 taskStarCount = 3;
 	optional int32 ifLvlUp = 4;
@@ -1086,7 +1086,7 @@ message CP_TASK_STARAWARD_AWARD
 
 message PC_TASK_STARAWARD_AWARD
 
-{	
+{
 
 	enum RESULT
 
@@ -1098,7 +1098,7 @@ message PC_TASK_STARAWARD_AWARD
 
 	}
 
-	required int32 	result 		= 1;    // ç»“æžœ 
+	required int32 	result 		= 1;    // ç»“æžœ
 
 	required int32	index 		= 2;    // æ˜Ÿæ•°
 
@@ -1108,42 +1108,42 @@ message PC_TASK_STARAWARD_AWARD
 //@CP
 message CP_TASK_STARAWARD_LVLUP
 {
-	
+
 };
 
 
 //#PC_TASK_STARAWARD_LVLUP
 //@PC
 message PC_TASK_STARAWARD_LVLUP
-{	
+{
 	enum RESULT
 	{
 		OK = 1;
 		FAILED = 2;
 	}
 
-	required int32 	result 		= 1;    // ç»“æžœ 
+	required int32 	result 		= 1;    // ç»“æžœ
 }
 
 //#CP_TASK_STARAWARD_BUYSTAR
 //@CP
 message CP_TASK_STARAWARD_BUYSTAR
 {
-	required int32 	count 	= 1;  
+	required int32 	count 	= 1;
 };
 
 
 //#PC_TASK_STARAWARD_BUYSTAR
 //@PC
 message PC_TASK_STARAWARD_BUYSTAR
-{	
+{
 	enum RESULT
 	{
 		OK = 1;
 		FAILED = 2;
 	}
 
-	required int32 	result 		= 1;    // ç»“æžœ 
+	required int32 	result 		= 1;    // ç»“æžœ
 }
 
 
@@ -1155,7 +1155,7 @@ message CP_TASK_DAILY_REFRESH
 
 {
 
-	required int32	index 		  = 1;  
+	required int32	index 		  = 1;
 
 };
 
@@ -1167,7 +1167,7 @@ message CP_TASK_DAILY_REFRESH
 
 message PC_TASK_DAILY_REFRESH
 
-{	
+{
 
 	enum RESULT
 
@@ -1179,9 +1179,9 @@ message PC_TASK_DAILY_REFRESH
 
 	}
 
-	required int32 	result 		= 1;    // ç»“æžœ 
+	required int32 	result 		= 1;    // ç»“æžœ
 
-	required int32	index 		= 2;    
+	required int32	index 		= 2;
 
 }
 
@@ -1191,7 +1191,7 @@ message PC_TASK_DAILY_REFRESH
 //@CP
 message CP_SEVENLOGIN_AWARD
 {
-	required int32	number 	= 1;     // 
+	required int32	number 	= 1;     //
 };
 
 //#PC_SEVENLOGIN_AWARD
@@ -1217,7 +1217,7 @@ message PC_SEVENLOGIN_AWARD_INFO
 {
 	required int32	signInStatus 		= 1;	// 签到状态
 	required int32  takeSignInStatus    = 2;    // 签到领取状态
-	required int64  firstSignInTime		= 3;	// 第一次签到时间
+	required string  firstSignInTime		= 3;	// 第一次签到时间
 };
 
 //#Supplementary signature
@@ -1249,7 +1249,7 @@ message PC_AFTER_SIGNIN_RET
 //@CP
 message CP_ENROLL_MATCH
 {
-	required uint64 matchId = 1;
+	required string matchId = 1;
 	required int32	tbId = 2;
 }
 
@@ -1257,7 +1257,7 @@ message CP_ENROLL_MATCH
 //@PC
 message PC_ENROLL_MATCH_RET
 {
-	required uint64 	matchId 	= 1;	//èµ›äº‹ID
+	required string 	matchId 	= 1;	//èµ›äº‹ID
 	required int32      result 		= 2;	//åŒ¹é…ç»“æžœ
 }
 
@@ -1267,7 +1267,7 @@ message PC_ENTER_MATCH_ROOM
 {
 	required int32		matchtbId	= 1;
 	required int32		roomId      = 2;	//æˆ¿é—´id
-	required int32		gServerId	= 3;	//gsid	
+	required int32		gServerId	= 3;	//gsid
 }
 
 //#PC_WEEKCARDITEM_INFO
@@ -1280,18 +1280,18 @@ message PC_WEEKCARDITEM_INFO
 message D_WeekCardItemInfo
 {
 	required int32	dataId 		= 1;	// dataId
-	required int32	count 		= 2;	// æ•°é‡	    
+	required int32	count 		= 2;	// æ•°é‡
 	required int32	pos 		= 3;	// ä½ç½®
-	required int64  remaintime  = 4;    // å‰©ä½™æ—¶é—´
+	required string  remaintime  = 4;    // å‰©ä½™æ—¶é—´
 }
-//# 
+//#
 //@PC
 message PC_NotifyEquipmentUnlockList
 {
     repeated int32 unlockEquipmentIds = 1;
 };
 
-//# 
+//#
 //@CP
 message CP_RequestRechargeList
 {
@@ -1301,10 +1301,10 @@ message PC_Recharge_Info
 {
 	required int32 shopId = 1;
 	required int32 num = 2;
-	optional int64 lifeTime = 3;
+	optional string lifeTime = 3;
 };
 
-//# 
+//#
 //@PC
 message PC_RequestRechargeListRet
 {
@@ -1329,7 +1329,7 @@ message PC_LUCKYWHEEL_INFO_RESULT
 
 message D_WheelInfo
 {
-	required int32	index 		= 1;	// 
+	required int32	index 		= 1;	//
 	required int32	itmeid 		= 2;	// dataId
 	required int32  count       = 3;	// count
 }
@@ -1373,13 +1373,13 @@ message CP_RECHARGE_FIRST_REWARD
 //#PC_RECHARGE_FIRST_REWARD
 //@PC
 message PC_RECHARGE_FIRST_REWARD
-{	
+{
 	enum RESULT
 	{
 		OK = 1;
 		FAILED = 2;
 	}
-	required int32 	result 		= 1;    // ç»“æžœ 
+	required int32 	result 		= 1;    // ç»“æžœ
 }
 
 
@@ -1409,13 +1409,13 @@ message PC_SYNC_COMMONFLAGBIT
 
 //@CP
 message CP_Batch_Sale
-{	
+{
     repeated int32 quality = 1;
 }
 
 //@PC
 message PC_BagTip
-{	
+{
     required int32 space = 1;
 }
 
@@ -1457,17 +1457,17 @@ message CP_RequestMonsterScoreRecord
 //#PC_RequestMonsterScore
 //@PC
 message PC_RequestMonsterScoreRecord
-{	
+{
 	required int32 monsterid = 1;
 	required int32 matchid = 2;
-	repeated int64	monsterscore = 3;	
+	repeated string	monsterscore = 3;
 }
 
 
 message MonsterScoreInfo
 {
 	required int32 monsterid = 1;
-	required int64	monsterscore = 2;
+	required string	monsterscore = 2;
 }
 //#CP_RequestMonsterScoreInterval
 //@CP
@@ -1481,7 +1481,7 @@ message CP_RequestMonsterScoreInterval
 //@PC
 message PC_RequestMonsterScoreInterval
 {
-	required int32 global = 1;	
+	required int32 global = 1;
 	required int32 matchid = 2;
 	repeated MonsterScoreInfo	monsterscore = 3;
 }
@@ -1490,14 +1490,14 @@ message PC_RequestMonsterScoreInterval
 //#
 //@CP
 message CP_UseTreasureChestHammer
-{	
+{
 	required int32 isHundred = 1;
 }
 
 //#
 //@PC
 message PC_UseTreasureChestHammer
-{	
+{
 	enum chest_result
 	{
 		succeed = 1;
@@ -1514,7 +1514,7 @@ message PC_UseTreasureChestHammer
 //@CP
 message CP_EnhanceEquip
 {
-	required uint64 guid = 1;
+	required string guid = 1;
 	required int32  pos  = 2;   //位置
 	required int32  type = 3;   //类型(见枚举ItemPackType -1为fashion即在玩家身上穿着)
 }
@@ -1523,7 +1523,7 @@ message CP_EnhanceEquip
 //@PC
 message PC_EnhanceEquip
 {
-	required uint64 guid = 1;
+	required string guid = 1;
 	required int32 suc = 2;
 	optional int32 enhancelv = 3;
 	optional int32 enhancelvNum = 4;
@@ -1581,7 +1581,7 @@ message PC_RechargeVerify
     optional int32 Suc              =11;
 }
 
-//# 
+//#
 //@CP
 message CP_RequestRechargeOrderID
 {
@@ -1598,7 +1598,7 @@ message CP_RequestRechargeOrderID
 
 
 
-//# 
+//#
 //@PC
 message PC_RequestRechargeOrderIDRet
 {
@@ -1617,25 +1617,25 @@ message PC_RequestRechargeOrderIDRet
   	optional string GoodsAmount 	= 7;
 };
 
-//# 
+//#
 //@PC
 message PC_RechargeSuc
 {
   	repeated int32 itemid 		= 1;
   	repeated int32 itemnum		= 2;
 };
-//# 
+//#
 //@CP
 message CP_SucRechargeOrderID
 {
-  	optional string AppOrder 	= 1;	
+  	optional string AppOrder 	= 1;
 }
 
 
 //#
 //@CP
 message CP_ExchangeHammer
-{	
+{
 }
 
 //#
@@ -1666,7 +1666,7 @@ message PC_EnhanceAttr_Ret
 	required int32 result 	= 1;	//结果0失败，其他成功
   	required int32 type 	= 2;
   	required int32 lv 		= 3;
-  	required int32 count 	= 4;	//强化次数		
+  	required int32 count 	= 4;	//强化次数
 };
 
 //# syn Jackpot have lottrynum task reward
@@ -1674,7 +1674,7 @@ message PC_EnhanceAttr_Ret
 message PC_JackpotHaveLottryTaskReward
 {
 	required int32 activity_id  = 1; //活动id
-  	required int32 have_reward  = 2;//0为无，1为有	
+  	required int32 have_reward  = 2;//0为无，1为有
 }
 
 //#Jackpot lottry num and task state
@@ -1725,7 +1725,7 @@ message PC_JackpotLottryNumReward_Ret
 	required int32 task_id     = 3;//奖励任务id
 }
 
-//#Jackpot lottry 
+//#Jackpot lottry
 //@CP
 message CP_JackpotLottry
 {
@@ -1793,7 +1793,7 @@ message PC_JackpotLottry_Record_Ret
 	required int32 activity_id = 2; //活动id
     repeated string name       = 3;//玩家昵称
 	repeated int32  rewardId   = 4;//奖励id
-	repeated int64  time       = 5;//记录时间
+	repeated string  time       = 5;//记录时间
 }
 
 //#ticket lottery
@@ -1817,8 +1817,8 @@ message PC_Ticket_Lottery_Ret
 	}
 	required int32 result         = 1;
 	required int32 cost_multiple  = 2;//倍率
-	required int32 reward_index   = 3;//奖励pos ID 
-	required int32 multiple_index = 4;//奖励倍数 pos ID 
+	required int32 reward_index   = 3;//奖励pos ID
+	required int32 multiple_index = 4;//奖励倍数 pos ID
 	required int32 reward_num     = 5;//奖励 数量
 	required int32 dayticket_cost = 6;//日消耗
 }
@@ -1832,7 +1832,7 @@ message CP_TicketLottery_Record
 //@PC
 message PC_TicketLottery_Record_Ret
 {
-	repeated int64 time       = 1;     //时间
+	repeated string time       = 1;     //时间
 	repeated int32 multiple   = 2;     //倍数
 	repeated int32 rewardId   = 3;     //奖励id
 	repeated int32 rewardNum  = 4;     //奖励数量
@@ -1843,9 +1843,9 @@ message PC_TicketLottery_Record_Ret
 message PC_MonopolyGridData
 {
 	required int32	gridId 		= 1;		//格子id
-	required int32	rewardId 	= 2;		//奖励itemid     
+	required int32	rewardId 	= 2;		//奖励itemid
 	required int32  rewardNum 	= 3;    	//奖励数量
-	required string rewardIcon 	= 4;    	//奖励图标 
+	required string rewardIcon 	= 4;    	//奖励图标
 	required int32  quality     = 5;        //品质
 }
 
@@ -1870,7 +1870,7 @@ message PC_MonopolyInfo_Ret
 	required int32 storey      = 3;//玩家层数
 	required int32 grid_id     = 4;//玩家id
 	repeated int32 task_id     = 5;//已领取任务
-	repeated PC_MonopolyGridData grid_data = 6;//格子数据 
+	repeated PC_MonopolyGridData grid_data = 6;//格子数据
 }
 
 
@@ -1935,7 +1935,7 @@ message PC_MonopolyStoreyTaskReward_Ret
 message PC_MonopolyHaveStoreyTask
 {
 	required int32 activity_id  = 1; //活动id
-  	required int32 have_reward  = 2;//0为无，1为有	
+  	required int32 have_reward  = 2;//0为无，1为有
 }
 
 //#TreasureLand Activity IconNotice
@@ -1964,13 +1964,13 @@ message PC_TreasureInfo_Ret
   	required int32 result      = 1;//结果
 	required int32 activity_id = 2; //活动id
 	repeated int32 island_type = 3;//主题
-    repeated int32 island_id   = 4;//进度	
+    repeated int32 island_id   = 4;//进度
 }
 
 message PC_IsLandReward
 {
 	required int32  island_id    = 1;//奖励点id
-	required int32	reward_index = 2;//奖励itemid     
+	required int32	reward_index = 2;//奖励itemid
 }
 
 //#TreasureLand Get LandType RewardList
@@ -2042,7 +2042,7 @@ message PC_TreasureLand_End_Ret
 //@CP
 message CP_Treasure_ChipExchange
 {
- 
+
 }
 
 //#TreasureLand Chip exchange ret
@@ -2064,7 +2064,7 @@ message PC_Treasure_ChipExchange_Ret
 //@CP
 message CP_Compound
 {
-	required uint64 itemGuid=1;//道具guid
+	required string itemGuid=1;//道具guid
 	required int32 count=2;//合成个数， 0为全部合成
 }
 
@@ -2079,7 +2079,7 @@ message PC_DailyTaskData
 {
 	required int32 task_id                  = 1;
 	required int32 task_state               = 2;
-	required int32 task_progress            = 3;   
+	required int32 task_progress            = 3;
 }
 
 //#Get Daily task info
@@ -2112,7 +2112,7 @@ message CP_DailyTask_Accept
 	required int32 task_id                  = 1;//任务id
 }
 
-//#accept Daily task ret 
+//#accept Daily task ret
 //@PC
 message PC_DailyTask_Accept_Ret
 {
@@ -2132,7 +2132,7 @@ message CP_DailyTask_Refresh
 
 }
 
-//#refresh Daily task 
+//#refresh Daily task
 //@PC
 message PC_DailyTask_Refresh_Ret
 {
@@ -2158,7 +2158,7 @@ message CP_DailyTask_Record
 //@PC
 message PC_DailyTask_Record_Ret
 {
-	repeated int64 time       = 1;     //时间
+	repeated string time       = 1;     //时间
 	repeated int32 task_id    = 2;     //任务id
 }
 
@@ -2192,7 +2192,7 @@ message ScrapCardPoolAward
 message PC_ScrapCard_SyncInfo
 {
 	required int32 period = 1;	//第几期
-	required int64 endAnsiTime = 2; //结束时间
+	required string endAnsiTime = 2; //结束时间
 	repeated ScrapCardPoolAward awards = 3;//奖池奖项
 }
 
@@ -2207,7 +2207,7 @@ message PC_ScrapCard_OwnCardCount
 //@CP
 message CP_ScrapCard_PoolExchangeCountReq
 {
-	
+
 }
 
 //#guaguaka - update pool exchanged count
@@ -2261,10 +2261,10 @@ message CP_ScrapCard_AwardLogReq
 message ScrapCard_AwardLog
 {
 	required int32 period = 1;		//期数
-	required int64 awardTime = 2;	//领取时间
+	required string awardTime = 2;	//领取时间
 	required int32 awardLevel = 3;	//几等奖
 	required int32 count = 4;		//数量
-	optional int64 goldCount = 5;	//金币数量
+	optional string goldCount = 5;	//金币数量
 	optional int32 itemId = 6;		//道具ID
 }
 
@@ -2277,7 +2277,7 @@ message PC_ScrapCard_AwardLogRet
 
 message ScrapCard_CardInfo
 {
-	required int64 cardId = 1;
+	required string cardId = 1;
 	required int32 cardState = 2;
 	required int32 cardAwardLevel = 3;
 	required int32 goldCount = 4;
@@ -2300,14 +2300,14 @@ message PC_ScrapCard_CardList
 //@CP
 message CP_ScrapCard_ScrapReq
 {
-	required int64 cardId = 1;//card id
+	required string cardId = 1;//card id
 }
 
 //#guaguaka - scrap card ret
 //@PC
 message PC_ScrapCard_ScrapRet
 {
-	required int64 cardId = 1;
+	required string cardId = 1;
 	required int32 result = 2;	//结果0失败，1成功
 	required int32 awardLevel = 3;
 	optional int32 goldCount = 4;
@@ -2361,14 +2361,14 @@ message PC_ScrapCard_HaveRecordLog
 //@PC
 message PC_ScrapCard_Close
 {
-	
+
 }
 
 //#guaguaka - open
 //@PC
 message PC_ScrapCard_Open
 {
-	
+
 }
 
 //#get mission info
@@ -2409,7 +2409,7 @@ message CP_MissionClientEvent
 //@PC
 message PC_MissionClientEventRet
 {
-	required int32  result = 1; 
+	required int32  result = 1;
 }
 
 message BuildData
@@ -2509,35 +2509,35 @@ message PC_BuildMaterialReward_Ret
 //@CP
 message CP_PET_HATCH
 {
-	required uint64	eggItemId = 1;//宠物蛋道具ID
+	required string	eggItemId = 1;//宠物蛋道具ID
 }
 
 //# evovle pet
 //@CP
 message CP_PET_EVOLVE
 {
-	required uint64 petGuid = 1;//宠物guid
+	required string petGuid = 1;//宠物guid
 }
 
 //# summon pet
 //@CP
 message CP_PET_SUMMON
 {
-	required uint64 petGuid = 1;//宠物guid
+	required string petGuid = 1;//宠物guid
 }
 
 //# rest pet
 //@CP
 message CP_PET_REST
 {
-	required uint64 petGuid = 1;//宠物guid
+	required string petGuid = 1;//宠物guid
 }
 
 //# free pet
 //@CP
 message CP_PET_FREE
 {
-	required uint64 petGuid = 1;//宠物guid
+	required string petGuid = 1;//宠物guid
 }
 
 //# hatch pet result
@@ -2564,7 +2564,7 @@ message PC_PET_SUMMON_RET
 		ret_success = 0;//成功
 		ret_fail = 1;//失败
 	}
-	required uint64 petGuid = 1;//宠物guid
+	required string petGuid = 1;//宠物guid
 	required int32	result = 2;//结果，对应SummonRet
 }
 
@@ -2577,7 +2577,7 @@ message PC_PET_REST_RET
 		ret_success = 0;//成功
 		ret_fail = 1;//失败
 	}
-	required uint64 petGuid = 1;//宠物guid
+	required string petGuid = 1;//宠物guid
 	required int32 	result = 2;//结果，对应RestRet
 }
 
@@ -2592,7 +2592,7 @@ message PC_PET_EVOLVE_RET
 		evovle_ret_itemnotenough = 2;//道具不足
 		evovle_ret_fail = 3;//其它原因导致的失败
 	}
-	required uint64	petGuid = 1;//宠物guid
+	required string	petGuid = 1;//宠物guid
 	required int32	result = 2;//结果
 }
 
@@ -2606,13 +2606,13 @@ message PC_PET_FREE_RET
 		free_ret_bagfull = 1;//背包满
 		free_ret_fail = 2;//其它原因导致的失败
 	}
-	required uint64 petGuid = 1;//宠物guid
+	required string petGuid = 1;//宠物guid
 	required int32 	result = 2;//结果
 }
 
 message SyncPetData
 {
-	required uint64 petGuid = 1;//宠物guid
+	required string petGuid = 1;//宠物guid
 	required int32 	typeId = 2;//宠物类型id
 }
 
@@ -2627,7 +2627,7 @@ message PC_PET_LIST
 //@PC
 message PC_PET_CURPET
 {
-	required uint64 petGuid = 1;//宠物guid
+	required string petGuid = 1;//宠物guid
 }
 
 //# cur hatching pet
@@ -2635,14 +2635,14 @@ message PC_PET_CURPET
 message PC_PET_HATCHING
 {
 	required int32 	eggTypeId = 1;//宠物蛋typeid，-1表示没有正在孵化的
-	required uint64	endTime = 2;//孵化结束时间
+	required string	endTime = 2;//孵化结束时间
 }
 
 //# hatch over
 //@PC
 message PC_PET_HATCHOVER
 {
-	required uint64 petGuid = 1;//宠物guid
+	required string petGuid = 1;//宠物guid
 	required int32	typeId = 2;//宠物类型Id
 	required int32	status = 3;//游戏中为0，上线是为1
 }
@@ -2689,8 +2689,8 @@ message PC_TitleInfo
 		USING 		= 1;	// 使用中
 	}
 	required int32	titleID			= 1;	//称号ID
-	required int64	createTime	 	= 2;	//创建时间/（实际时间）
-	required int64	lifeTime		= 3;	//过期时间/（-1：永久称号;实际时间：限时称号）
+	required string	createTime	 	= 2;	//创建时间/（实际时间）
+	required string	lifeTime		= 3;	//过期时间/（-1：永久称号;实际时间：限时称号）
 	required int32	isUsing			= 4;	//是否装备中/(UsingType)
 }
 //#PC_Title_LIST
@@ -2704,7 +2704,7 @@ message PC_TITLE_LIST
 //@PC
 message PC_SYN_DEL_TITLE
 {
-	required int32 titleID	= 1;    // 称号ID 
+	required int32 titleID	= 1;    // 称号ID
 }
 
 //#PC_SYN_ADD_TITLE
@@ -2714,11 +2714,11 @@ message PC_SYN_ADD_TITLE
 	repeated PC_TitleInfo titleInfo	= 1;    // 称号信息
 }
 
-//#CP_USE_CONSUM_ITEM   
+//#CP_USE_CONSUM_ITEM
 //@CP
 message CP_USE_CONSUM_ITEM
 {
-	required uint64	guid    	= 1;
+	required string	guid    	= 1;
 	required int32 	count 		= 2;
 }
 
@@ -2746,26 +2746,26 @@ message PC_LimitTimesData
 //@PC
 message PC_Syn_LimitTimes
 {
-	repeated PC_LimitTimesData limitlist = 1; 
+	repeated PC_LimitTimesData limitlist = 1;
 }
 
 //syn function pet list
 //@PC
 message PC_FUNCTIONPETLIST
 {
-    repeated uint64  guidList = 1;  //guid列表 
+    repeated string  guidList = 1;  //guid列表
     repeated int32   idList = 2;    //宠物表中对应的id列表
-    required uint64  curGuid = 3;   //当前跟随的宠物guid
-	repeated int64	 expireTimeList = 4;	//宠物的过期时间
+    required string  curGuid = 3;   //当前跟随的宠物guid
+	repeated string	 expireTimeList = 4;	//宠物的过期时间
 }
 
 //syn new function pet
 //@PC
 message PC_FUNCTIONPET_NEW
 {
-	required uint64 petguid = 1;//宠物guid
+	required string petguid = 1;//宠物guid
 	required int32	petid = 2;//宠物表id
-	required int64	expiretime = 3;//过期时间，单位秒
+	required string	expiretime = 3;//过期时间，单位秒
 }
 
 //function pet config
@@ -2790,7 +2790,7 @@ message PC_FUNCTIONPETCONFIG
 //@CP
 message CP_SUMMONFUNCTIONPET
 {
-    required uint64 petGuid = 1;
+    required string petGuid = 1;
 }
 
 //summon function pet ret
@@ -2798,14 +2798,14 @@ message CP_SUMMONFUNCTIONPET
 message PC_SUMMONFUNCTIONPET_RET
 {
     required int32 result = 1;//成功返回1，失败返回0
-    required uint64 curPetGuid = 2;//出战的宠物guid
+    required string curPetGuid = 2;//出战的宠物guid
 }
 
 //function pet rest
 //@CP
 message CP_RESTFUNCTIONPET
 {
-    
+
 }
 
 //function pet rest ret
@@ -2819,8 +2819,8 @@ message PC_RESTFUNCTIONPET_RET
 //@PC
 message PC_FUNCTIONPET_EXPIRE
 {
-	repeated uint64	petguid = 1;//过期的宠物guid
-	required uint64 summonPetGuid = 2;//新出战宠物的guid
+	repeated string	petguid = 1;//过期的宠物guid
+	required string summonPetGuid = 2;//新出战宠物的guid
 }
 
 //#Server Syn Attr
@@ -2839,7 +2839,7 @@ message PC_Syn_SystemRecrodState
 	repeated int32  newRecordType = 2;//有新系统消息的类型
 }
 
-//get system record 
+//get system record
 //@CP
 message CP_Get_SystemRecrod
 {
@@ -2851,7 +2851,7 @@ message CP_Get_SystemRecrod
 message PC_Get_SystemRecrod
 {
 	repeated int32  recordType = 1;//记录类型
-	repeated int64  recordTime = 2;//记录时间
+	repeated string  recordTime = 2;//记录时间
 	repeated string  recordContent = 3;//记录数据
 }
 
@@ -2886,14 +2886,14 @@ message PC_Syn_SignActivityTask_Progress
 }
 
 //#Transfer Career
-//@CP 
+//@CP
 message CP_TransferCareer
 {
 	required int32 Career = 1;//目标职业
 }
 
 //#Transfer Career
-//@CP 
+//@CP
 message PC_TransferCareer_Ret
 {
 	enum RESULT
@@ -2917,7 +2917,7 @@ message CP_RechargeConsume
 message PC_RechargeRebate_Info
 {
     required int32 round = 1;//第几轮
-    required int64 openAwardTime = 2;//本轮开奖时间
+    required string openAwardTime = 2;//本轮开奖时间
 }
 
 //recharge rebate self exchanged card count
@@ -2977,7 +2977,7 @@ message CP_RechargeRebate_ReqSelfAwardLog
 message RechargeRebate_SelfAwardLog
 {
     required int32 round = 1;//第几轮
-    required int64 getawardansitime = 2;//领奖的时间
+    required string getawardansitime = 2;//领奖的时间
     repeated int32 itemid = 3;//道具ID
     repeated int32 itemcount = 4;//道具数量
 }
@@ -3052,7 +3052,7 @@ message PC_RechargeRebate_Close
 //@CP
 message CP_OneKeyChangeFashion
 {
-	
+
 }
 
 // 一键换装 g->c
@@ -3110,7 +3110,7 @@ message PC_OneKeyFusionRet
 	}
 	required int32  equipType	= 1;//融合类型 -1：是融合所有， 其他是融合对应位置 参考EquipType
 	required int32	result		= 2;//结果
-	repeated uint64 guidList	= 3;// 融合了哪些装备
+	repeated string guidList	= 3;// 融合了哪些装备
 }
 
 //背包单个装备升级c->g
@@ -3123,7 +3123,7 @@ message CP_SingleEquipmentUpgrade
 		FashionNext 	= 2;	//身上装备升到下一级
 	}
 	required int32  upgradeType = 1;//升级类型UpgradeType
-	required uint64 guid = 2;
+	required string guid = 2;
 	required int32 	pos = 3;
 }
 
@@ -3138,7 +3138,7 @@ message PC_SingleEquipmentUpgradeRet
 		ATTONITY 	= 2;	//无升级，无错误
 	}
 	required int32  upgradeType = 1;   //升级类型UpgradeType
-	required uint64 guid = 2;
+	required string guid = 2;
 	required int32 	pos = 3;
 	optional int32  equipmentId = 4;
 	required int32	result 		 = 5;  //结果
@@ -3170,5 +3170,5 @@ message PC_DrawResult
 	required int32 id = 1;//奖池ID
 	required int32 result=2;//结果
 	repeated int32 itemidlist=3;//获得的道具列表
-	repeated int32 itemcountlist=4;//获得的道具数量列表		
+	repeated int32 itemcountlist=4;//获得的道具数量列表
 }

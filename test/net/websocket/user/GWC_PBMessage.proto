@@ -1,0 +1,157 @@
+syntax = "proto2";
+
+option go_package = "./pb/";
+
+//#Client Connect to GateServer
+//@CGW
+message CGW_VERIFY
+{
+  //登录基本数据
+  optional string	userinfo 	= 1;	//玩家的信息
+  optional int32	isreconnect	= 2;	//是否是断线重连
+  optional int32	centerid	= 3;	//连接的center服务器id
+}
+
+//#Client Connect to GateServer
+//@GWC
+message GWC_VERIFY
+{
+  //登录基本数据
+  optional int32	result 	= 1;	//
+  optional int32	isreconnect	= 2;	//是否是断线重连
+}
+
+//#Client Connect to GateServer
+//@CGW
+message CGW_HEART
+{
+  optional string	userinfo 	= 1;	//玩家的信息
+}
+
+
+//#Client Connect to GateServer
+//@CGW
+message CGW_CONNECT_GAMESERVER
+{
+  optional int32	gameserverid 	= 1;	//game server 的id
+  optional int32	isreconnect	= 2;	//是否是断线重连
+}
+
+
+//#Client Connect to GateServer
+//@GWC
+message GWC_CONNECT_GAMESERVER_RET
+{
+  optional int32	suc 	= 1;	//game server 的id
+  optional int32	isreconnect	= 2;	//是否是断线重连
+}
+
+
+//#Client Connect to GateServer
+//@CGW
+message CGW_REQUEST_GAMESERVERINFO
+{
+  optional string	useraccount 	= 1;	//玩家的信息
+}
+
+//#Client Connect to GateServer
+//@GWC
+message GWC_REQUEST_GAMESERVERINFO_RET
+{
+  optional int32 gameserverid = 1;
+}
+
+//#client reconnect
+//@CGW
+message CGW_RECONNECT_GAMESERVER
+{
+  //断线重连
+  optional 	string 		account 	= 1;
+  optional 	int32		objid 		= 2;
+}
+//#Client Connect to GateServer
+//@GWC
+message GWC_HEART
+{
+  optional 	string	servertime 		= 1;
+}
+
+
+//#Client Connect to GateServer
+//@CGW
+message CGW_CLIENT_HEART
+{
+
+}
+
+
+//#Client Connect to GateServer
+//@GWC
+message GWC_CLIENT_HEART
+{
+
+}
+
+
+message DeviceInfoClient
+{
+  enum ChannelId
+  {
+    Channel_None = 1;
+    Channel_JJ = 2;
+  };
+
+  optional string deviceModel = 1;
+  optional string deviceHeight = 2;
+  optional string deviceWidth = 3;
+
+  optional string osName = 4;
+  optional string osVersion = 5;
+  optional string macAddress = 6;
+  optional string udid = 7;
+  optional string nation = 8;
+  optional string isp = 9;
+  optional string network = 10;
+
+
+
+  optional string appChannel = 11;
+  optional string appVersion = 12;
+  optional string imei = 13;
+  optional string HardwareInfo = 14;
+
+}
+
+
+//#Client Send Login to GateServer
+//@CGW
+message CGW_CLIENT_LOGIN
+{
+  enum LoginType
+  {
+    TEST_LOGIN = 1;
+    JJ_LOGIN = 2;
+    GM_LOGIN = 3;
+  };
+  required string	GameVersion 	= 1;
+  required int32	MaxPacketId	    = 2;
+  required DeviceInfoClient deviceInfo = 3;
+  optional string	Account 	    = 4;
+  required int32  type = 5;
+  optional string token = 6;
+  optional string uuid = 7;
+}
+
+//#Client Query Gate Info
+//@CGW
+message CGW_QUERY_GATE_INFO
+{
+}
+
+//#Gate Return Info To Client
+//@GWC
+message GWC_QUERY_GATE_INFO_RET
+{
+  required string address = 1;//gate ip
+  required uint32 port = 2;//gate port
+}

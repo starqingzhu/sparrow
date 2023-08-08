@@ -98,8 +98,22 @@ var cgwConnectGamesever = jsonSt{
 	ProtocolId: PACKET_CGW_CONNECT_GAMESERVER_PAK,
 	Data: pb.CGW_CONNECT_GAMESERVER{
 		Gameserverid: proto.Int32(gameServerId),
-		Isreconnect:  proto.Int32(1),
+		Isreconnect:  proto.Int32(0),
 	},
+}
+
+func GetCgwConnectGameserverReq(id int32) *jsonSt {
+	return &jsonSt{
+		ProtocolId: PACKET_CGW_CONNECT_GAMESERVER_PAK,
+		Data: pb.CGW_CONNECT_GAMESERVER{
+			Gameserverid: proto.Int32(id),
+			Isreconnect:  proto.Int32(1),
+		},
+	}
+}
+
+func UpdateCgwConnectGameserverReq(id int32) {
+	cgwConnectGamesever = *GetCgwConnectGameserverReq(id)
 }
 
 // "{\n    \"protocolId\":1,\n    \"data\":{\n        \"GameVersion\":0,\n        \"ProgramVersion\":108,\n        \"MaxPacketId\":253,\n        \"Account\":\"123xx69\",\n        \"sex\":0\n    }\n}"

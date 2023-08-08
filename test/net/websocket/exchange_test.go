@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/golang/protobuf/jsonpb"
 	"sparrow/pkg/log/zaplog"
 	"sparrow/pkg/net/webscok"
+	"sparrow/test/net/websocket/pb"
 	"sync"
 	"testing"
 	"time"
@@ -22,6 +24,7 @@ func TestExchange(t *testing.T) {
 	var wg sync.WaitGroup
 
 	var continueFlag = true
+	var moveCount = 0
 
 	// 测试 背包
 	var next = map[int64]int64{
@@ -30,6 +33,7 @@ func TestExchange(t *testing.T) {
 		PACKET_PC_ENTER_MATCH_ROOM_PAK:        PACKET_CGW_CONNECT_GAMESERVER_PAK,
 		PACKET_GWC_CONNECT_GAMESERVER_RET_PAK: PACKET_CG_LOGIN_PAK,
 		PACKET_GC_ENTER_SCENE_PAK:             PACKET_CG_ENTER_SCENE_OK_PAK,
+		PACKET_GC_MOVE_PAK:                    PACKET_CG_EXCHANGE_JJGOLD_PAK,
 	}
 
 	var idMsg = map[int64]interface{}{
@@ -84,7 +88,33 @@ func TestExchange(t *testing.T) {
 					return errors.New(fmt.Sprintf("next is not exist id:%d", id))
 				}
 
-				dstMsg = msgSend
+				if id == PACKET_PC_ENTER_MATCH_ROOM_PAK {
+					var matchRoomInfo pb.PC_ENTER_MATCH_ROOM
+					data, errData := json.Marshal(srcMsg.Data)
+					errData = jsonpb.UnmarshalString(string(data), &matchRoomInfo)
+					if errData != nil {
+						return errData
+					}
+
+					UpdateCgwConnectGameserverReq(matchRoomInfo.GetGServerId())
+					idMsg[PACKET_CGW_CONNECT_GAMESERVER_PAK] = cgwConnectGamesever
+					dstMsg = cgwConnectGamesever
+
+				} else if id == PACKET_GC_MOVE_PAK {
+					if moveCount != 1 {
+						dstMsg = nil
+					} else {
+						dstMsg = msgSend
+					}
+					moveCount++
+				} else {
+					dstMsg = msgSend
+				}
+
+				if dstMsg == nil {
+					return nil
+				}
+
 				sendBuf, sendErr := json.Marshal(dstMsg)
 				if sendErr != nil {
 					return sendErr

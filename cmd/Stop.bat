@@ -1,0 +1,1 @@
+taskkill /im main.exe /f

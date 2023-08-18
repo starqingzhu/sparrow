@@ -5,9 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"github.com/golang/protobuf/jsonpb"
+	"sparrow/internal/web"
+	"sparrow/internal/web/pb"
 	"sparrow/pkg/log/zaplog"
 	"sparrow/pkg/net/webscok"
-	"sparrow/test/net/websocket/pb"
 	"sync"
 	"testing"
 	"time"
@@ -28,22 +29,22 @@ func TestExchange(t *testing.T) {
 
 	// 测试 背包
 	var next = map[int64]int64{
-		PACKET_GWC_VERIFY_PAK:                 PACKET_CGW_CLIENT_LOGIN_PAK,
-		PACKET_PC_ENTER_WORLD_PAK:             PACKET_CP_ENROLL_MATCH_PAK,
-		PACKET_PC_ENTER_MATCH_ROOM_PAK:        PACKET_CGW_CONNECT_GAMESERVER_PAK,
-		PACKET_GWC_CONNECT_GAMESERVER_RET_PAK: PACKET_CG_LOGIN_PAK,
-		PACKET_GC_ENTER_SCENE_PAK:             PACKET_CG_ENTER_SCENE_OK_PAK,
-		PACKET_GC_MOVE_PAK:                    PACKET_CG_EXCHANGE_JJGOLD_PAK,
+		web.PACKET_GWC_VERIFY_PAK:                 web.PACKET_CGW_CLIENT_LOGIN_PAK,
+		web.PACKET_PC_ENTER_WORLD_PAK:             web.PACKET_CP_ENROLL_MATCH_PAK,
+		web.PACKET_PC_ENTER_MATCH_ROOM_PAK:        web.PACKET_CGW_CONNECT_GAMESERVER_PAK,
+		web.PACKET_GWC_CONNECT_GAMESERVER_RET_PAK: web.PACKET_CG_LOGIN_PAK,
+		web.PACKET_GC_ENTER_SCENE_PAK:             web.PACKET_CG_ENTER_SCENE_OK_PAK,
+		web.PACKET_GC_MOVE_PAK:                    web.PACKET_CG_EXCHANGE_JJGOLD_PAK,
 	}
 
 	var idMsg = map[int64]interface{}{
-		PACKET_CGW_VERIFY_PAK:             cgwVerify,
-		PACKET_CGW_CLIENT_LOGIN_PAK:       cgwLogin,
-		PACKET_CP_ENROLL_MATCH_PAK:        cpEnrollMatch,
-		PACKET_CGW_CONNECT_GAMESERVER_PAK: cgwConnectGamesever,
-		PACKET_CG_LOGIN_PAK:               cgLogin,
-		PACKET_CG_ENTER_SCENE_OK_PAK:      cgEnterSceneOk,
-		PACKET_CG_EXCHANGE_JJGOLD_PAK:     cgExchangeJJGold,
+		web.PACKET_CGW_VERIFY_PAK:             web.CgwVerify,
+		web.PACKET_CGW_CLIENT_LOGIN_PAK:       web.CgwLogin,
+		web.PACKET_CP_ENROLL_MATCH_PAK:        web.CpEnrollMatch,
+		web.PACKET_CGW_CONNECT_GAMESERVER_PAK: web.CgwConnectGamesever,
+		web.PACKET_CG_LOGIN_PAK:               web.CgLogin,
+		web.PACKET_CG_ENTER_SCENE_OK_PAK:      web.CgEnterSceneOk,
+		web.PACKET_CG_EXCHANGE_JJGOLD_PAK:     web.CgExchangeJJGold,
 	}
 	//var endId int64 = 0
 
@@ -61,7 +62,7 @@ func TestExchange(t *testing.T) {
 				break
 			}
 
-			var msg jsonSt
+			var msg web.JsonSt
 			err = json.Unmarshal(p, &msg)
 			if err != nil {
 				zaplog.LoggerSugar.Errorf("read errro, err:%s", err.Error())
@@ -74,7 +75,7 @@ func TestExchange(t *testing.T) {
 			zaplog.LoggerSugar.Infof("recv msg:%s", string(p))
 
 			//修改发送消息
-			err = func(id int64, srcMsg *jsonSt) error {
+			err = func(id int64, srcMsg *web.JsonSt) error {
 
 				idSend, ok := next[id]
 				if !ok {
@@ -88,7 +89,7 @@ func TestExchange(t *testing.T) {
 					return errors.New(fmt.Sprintf("next is not exist id:%d", id))
 				}
 
-				if id == PACKET_PC_ENTER_MATCH_ROOM_PAK {
+				if id == web.PACKET_PC_ENTER_MATCH_ROOM_PAK {
 					var matchRoomInfo pb.PC_ENTER_MATCH_ROOM
 					data, errData := json.Marshal(srcMsg.Data)
 					errData = jsonpb.UnmarshalString(string(data), &matchRoomInfo)
@@ -96,11 +97,11 @@ func TestExchange(t *testing.T) {
 						return errData
 					}
 
-					UpdateCgwConnectGameserverReq(matchRoomInfo.GetGServerId())
-					idMsg[PACKET_CGW_CONNECT_GAMESERVER_PAK] = cgwConnectGamesever
-					dstMsg = cgwConnectGamesever
+					web.UpdateCgwConnectGameserverReq(matchRoomInfo.GetGServerId())
+					idMsg[web.PACKET_CGW_CONNECT_GAMESERVER_PAK] = web.CgwConnectGamesever
+					dstMsg = web.CgwConnectGamesever
 
-				} else if id == PACKET_GC_MOVE_PAK {
+				} else if id == web.PACKET_GC_MOVE_PAK {
 					if moveCount != 1 {
 						dstMsg = nil
 					} else {
@@ -121,7 +122,7 @@ func TestExchange(t *testing.T) {
 				}
 				err = webClient.WriteTextMessage(sendBuf)
 				if err != nil {
-					zaplog.LoggerSugar.Errorf("send msg failed, id:%d, msg[%s]", id, msgSend)
+					zaplog.LoggerSugar.Errorf("send msg failed, id:%d, msg[%v]", id, msgSend)
 					return err
 				}
 
@@ -139,7 +140,7 @@ func TestExchange(t *testing.T) {
 	}()
 
 	// 主程序发送
-	sendVerify, sendErr := json.Marshal(cgwVerify)
+	sendVerify, sendErr := json.Marshal(web.CgwVerify)
 	if sendErr != nil {
 		wg.Done()
 		return

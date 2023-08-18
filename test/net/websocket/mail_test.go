@@ -2,6 +2,7 @@ package websocket
 
 import (
 	"encoding/json"
+	"sparrow/internal/web"
 	"sparrow/pkg/log/zaplog"
 	"sparrow/pkg/net/webscok"
 	"sync"
@@ -30,12 +31,12 @@ import (
 //	//	//13:    14,
 //	//}
 //	//var idMsg = map[int64]string{
-//	//	61001: cgwVerify,
-//	//	61012: cgwLogin,
-//	//	//384:   cpEnrollMatch,
-//	//	//61004: cgwConnectGamesever,
-//	//	//1:     cgLogin,
-//	//	//14:    cgEnterSceneOk,
+//	//	61001: CgwVerify,
+//	//	61012: CgwLogin,
+//	//	//384:   CpEnrollMatch,
+//	//	//61004: CgwConnectGamesever,
+//	//	//1:     CgLogin,
+//	//	//14:    CgEnterSceneOk,
 //	//}
 //
 //	// 测试 背包
@@ -45,9 +46,9 @@ import (
 //		321:   568,
 //	}
 //	var idMsg = map[int64]string{
-//		61001: cgwVerify,
-//		61012: cgwLogin,
-//		307:   cpGmEmail,
+//		61001: CgwVerify,
+//		61012: CgwLogin,
+//		307:   CpGmEmail,
 //		//568:   cpOnekeyFusion,
 //	}
 //	//var endId int64 = 0
@@ -65,7 +66,7 @@ import (
 //				break
 //			}
 //
-//			var msg jsonSt
+//			var msg JsonSt
 //			err = json.Unmarshal(p, &msg)
 //			if err != nil {
 //				zaplog.LoggerSugar.Errorf("read errro, err:%s", err.Error())
@@ -100,7 +101,7 @@ import (
 //	}()
 //
 //	// 主程序发送
-//	err = webClient.WriteTextMessage([]byte(cgwVerify))
+//	err = webClient.WriteTextMessage([]byte(CgwVerify))
 //	if err != nil {
 //		wg.Done()
 //	}
@@ -127,9 +128,9 @@ func TestClient2(t *testing.T) {
 		//321:   568,
 	}
 	var idMsg = map[int64]interface{}{
-		61001: cgwVerify,
-		61012: cgwLogin,
-		307:   cpGmEmail,
+		61001: web.CgwVerify,
+		61012: web.CgwLogin,
+		307:   web.CpGmEmail,
 		//568:   cpOnekeyFusion,
 	}
 	//var endId int64 = 0
@@ -147,7 +148,7 @@ func TestClient2(t *testing.T) {
 				break
 			}
 
-			var msg jsonSt
+			var msg web.JsonSt
 			err = json.Unmarshal(p, &msg)
 			if err != nil {
 				zaplog.LoggerSugar.Errorf("read errro, err:%s", err.Error())
@@ -176,7 +177,7 @@ func TestClient2(t *testing.T) {
 
 			err = webClient.WriteTextMessage(sendBuf)
 			if err != nil {
-				zaplog.LoggerSugar.Errorf("send msg failed, id:%d, msg[%s]", id, msgSend)
+				zaplog.LoggerSugar.Errorf("send msg failed, id:%d, msg[%v]", id, msgSend)
 				break
 			}
 
@@ -187,7 +188,7 @@ func TestClient2(t *testing.T) {
 	}()
 
 	// 主程序发送
-	sendVerify, sendErr := json.Marshal(cgwVerify)
+	sendVerify, sendErr := json.Marshal(web.CgwVerify)
 	if sendErr != nil {
 		wg.Done()
 		return

@@ -1,9 +1,9 @@
-package websocket
+package web
 
 import (
 	"fmt"
 	"google.golang.org/protobuf/proto"
-	"sparrow/test/net/websocket/pb"
+	"sparrow/internal/web/pb"
 )
 
 /*
@@ -50,25 +50,21 @@ import (
 */
 
 type (
-	jsonStRet struct {
+	JsonStRet struct {
 		ProtocolId int64  `json:"protocolId"`
 		Data       string `json:"data"`
-	}
-	jsonSt struct {
-		ProtocolId int64       `json:"protocolId"`
-		Data       interface{} `json:"data"`
 	}
 )
 
 // "{\n    \"protocolId\":61001,\n    \"data\":{\n        \"userinfo\":\"123xx69\",\n        \"isreconnect\":0,\n        \"centerid\":0\n    }\n}"
 var userInfo = "123xx70"
-var cgwVerify = jsonSt{
+var CgwVerify = JsonSt{
 	ProtocolId: PACKET_CGW_VERIFY_PAK,
 	Data:       map[string]interface{}{"userinfo": userInfo, "isreconnect": 0, "centerid": 0},
 }
 
 // "{\n    \"protocolId\":61012,\n    \"data\":{\n        \"GameVersion\":\"gameVersion=1.1.0&resVersion=1.1.0&patch=30\",\n        \"MaxPacketId\":575,\n        \"deviceInfo\":{\n\t\t\t\"appVersion\":\"1\"\n\t\t},\n        \"Account\":\"123xx69\",\n        \"type\":1,\n        \"token\":\"\",\n        \"uuid\":\"\"\n    }\n}\n"
-var cgwLogin = jsonSt{
+var CgwLogin = JsonSt{
 	ProtocolId: PACKET_CGW_CLIENT_LOGIN_PAK,
 	Data: pb.CGW_CLIENT_LOGIN{
 		GameVersion: proto.String("gameVersion=1.1.0&resVersion=1.1.0&patch=30"),
@@ -84,7 +80,7 @@ var cgwLogin = jsonSt{
 }
 
 // "{\n    \"protocolId\":384,\n    \"data\":{\n        \"matchId\":\"1111\",\n        \"tbId\":1\n    }\n}"
-var cpEnrollMatch = jsonSt{
+var CpEnrollMatch = JsonSt{
 	ProtocolId: PACKET_CP_ENROLL_MATCH_PAK,
 	Data: pb.CP_ENROLL_MATCH{
 		MatchId: proto.String(fmt.Sprintf("%d", 111)),
@@ -94,7 +90,7 @@ var cpEnrollMatch = jsonSt{
 
 // "{\n    \"protocolId\":61004,\n    \"data\":{\n        \"gameserverid\":5524,\n        \"isreconnect\":0\n    }\n}"
 var gameServerId int32 = 18021
-var cgwConnectGamesever = jsonSt{
+var CgwConnectGamesever = JsonSt{
 	ProtocolId: PACKET_CGW_CONNECT_GAMESERVER_PAK,
 	Data: pb.CGW_CONNECT_GAMESERVER{
 		Gameserverid: proto.Int32(gameServerId),
@@ -102,8 +98,8 @@ var cgwConnectGamesever = jsonSt{
 	},
 }
 
-func GetCgwConnectGameserverReq(id int32) *jsonSt {
-	return &jsonSt{
+func GetCgwConnectGameserverReq(id int32) *JsonSt {
+	return &JsonSt{
 		ProtocolId: PACKET_CGW_CONNECT_GAMESERVER_PAK,
 		Data: pb.CGW_CONNECT_GAMESERVER{
 			Gameserverid: proto.Int32(id),
@@ -113,14 +109,14 @@ func GetCgwConnectGameserverReq(id int32) *jsonSt {
 }
 
 func UpdateCgwConnectGameserverReq(id int32) {
-	cgwConnectGamesever = *GetCgwConnectGameserverReq(id)
+	CgwConnectGamesever = *GetCgwConnectGameserverReq(id)
 }
 
 // "{\n    \"protocolId\":1,\n    \"data\":{\n        \"GameVersion\":0,\n        \"ProgramVersion\":108,\n        \"MaxPacketId\":253,\n        \"Account\":\"123xx69\",\n        \"sex\":0\n    }\n}"
 var gameVersion int32 = 0
 var programVersion int32 = 108
 
-var cgLogin = jsonSt{
+var CgLogin = JsonSt{
 	ProtocolId: PACKET_CG_LOGIN_PAK,
 	Data: pb.CG_LOGIN{
 		GameVersion:    proto.Int32(gameVersion),
@@ -132,7 +128,7 @@ var cgLogin = jsonSt{
 }
 
 // "{\n    \"protocolId\":14,\n    \"data\":{\n        \"IsOK\":1\n    }\n}"
-var cgEnterSceneOk = jsonSt{
+var CgEnterSceneOk = JsonSt{
 	ProtocolId: PACKET_CG_ENTER_SCENE_OK_PAK,
 	Data: pb.CG_ENTER_SCENE_OK{
 		IsOK: proto.Int32(1),
@@ -140,7 +136,7 @@ var cgEnterSceneOk = jsonSt{
 }
 
 // "{\n    \"data\":{\n        \"command\":\"additem,1001,99\",\n        \"name\":\"123xx69\",\n        \"type\":4\n    },\n    \"protocolId\":307\n}"
-var cpGmItem = jsonSt{
+var cpGmItem = JsonSt{
 	ProtocolId: PACKET_CP_GM_COMMAND_PAK,
 	Data: pb.CP_GM_COMMAND{
 		Command: proto.String("additem,41010,55"),
@@ -150,7 +146,7 @@ var cpGmItem = jsonSt{
 }
 
 // "{\n    \"data\":{\n        \"command\":\"sendmail,title,content,1002,1\",\n        \"name\":\"123xx69\",\n        \"type\":1\n    },\n    \"protocolId\":307\n}"
-var cpGmEmail = jsonSt{
+var CpGmEmail = JsonSt{
 	ProtocolId: PACKET_CP_GM_COMMAND_PAK,
 	Data: pb.CP_GM_COMMAND{
 		Command: proto.String("sendmail,title,content,41010,20"),
@@ -159,7 +155,7 @@ var cpGmEmail = jsonSt{
 	},
 }
 
-var cpGmEmailAward = jsonSt{
+var CpGmEmailAward = JsonSt{
 	ProtocolId: PACKET_CP_EMAIL_AWARD_PAK,
 	Data: pb.CP_EMAIL_AWARD{
 		Guid: proto.String(fmt.Sprintf("%d", 0)),
@@ -167,7 +163,7 @@ var cpGmEmailAward = jsonSt{
 }
 
 // "{\n    \"data\":{\n        \"equipType\":-1\n    },\n    \"protocolId\":568\n}"
-var cpOnekeyFusion = jsonSt{
+var cpOnekeyFusion = JsonSt{
 	ProtocolId: PACKET_CP_ONEKEYFUSION_PAK,
 	Data: pb.CP_OneKeyFusion{
 		EquipType: proto.Int32(-1),
@@ -175,13 +171,13 @@ var cpOnekeyFusion = jsonSt{
 }
 
 // 奖池
-var cardDraw1 = jsonSt{
+var CardDraw1 = JsonSt{
 	ProtocolId: PACKET_CP_REQDRAW_PAK,
 	Data: pb.CP_ReqDraw{
 		Id: proto.Int32(1),
 	},
 }
-var cardDraw10 = jsonSt{
+var CardDraw10 = JsonSt{
 	ProtocolId: PACKET_CP_REQBATCHDRAW_PAK,
 	Data: pb.CP_ReqBatchDraw{
 		Id: proto.Int32(1),
@@ -189,14 +185,14 @@ var cardDraw10 = jsonSt{
 }
 
 // 签到
-var signReq = jsonSt{
+var SignReq = JsonSt{
 	ProtocolId: PACKET_CP_SEVENLOGIN_AWARD_PAK,
 	Data: pb.CP_SEVENLOGIN_AWARD{
 		Number: proto.Int32(0),
 	},
 }
 
-var signAfterReq = jsonSt{
+var SignAfterReq = JsonSt{
 	ProtocolId: PACKET_CP_AFTER_SIGNIN_PAK,
 	Data: pb.CP_AFTER_SIGNIN{
 		Number: proto.Int32(0),
@@ -204,7 +200,7 @@ var signAfterReq = jsonSt{
 }
 
 // 兑换
-var cgExchangeJJGold = jsonSt{
+var CgExchangeJJGold = JsonSt{
 	ProtocolId: PACKET_CG_EXCHANGE_JJGOLD_PAK,
 	Data: pb.CG_Exchange_JJGold{
 		Type: proto.Int32(1),

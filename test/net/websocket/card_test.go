@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"github.com/golang/protobuf/jsonpb"
 	"google.golang.org/protobuf/proto"
+	"sparrow/internal/web"
+	"sparrow/internal/web/pb"
 	"sparrow/pkg/log/zaplog"
 	"sparrow/pkg/net/webscok"
-	"sparrow/test/net/websocket/pb"
 	"sync"
 	"testing"
 	"time"
@@ -28,19 +29,19 @@ func TestCard(t *testing.T) {
 
 	// 测试 背包
 	var next = map[int64]int64{
-		61002:                     61012,
-		302:                       307,
-		351:                       354,
-		PACKET_PC_EMAIL_AWARD_PAK: PACKET_CP_REQDRAW_PAK,
+		61002:                         61012,
+		302:                           307,
+		351:                           354,
+		web.PACKET_PC_EMAIL_AWARD_PAK: web.PACKET_CP_REQDRAW_PAK,
 		//321:   568,
 	}
 	var idMsg = map[int64]interface{}{
-		61001:                      cgwVerify,
-		61012:                      cgwLogin,
-		307:                        cpGmEmail,
-		354:                        cpGmEmailAward,
-		PACKET_CP_REQDRAW_PAK:      cardDraw1,
-		PACKET_CP_REQBATCHDRAW_PAK: cardDraw10,
+		61001:                          web.CgwVerify,
+		61012:                          web.CgwLogin,
+		307:                            web.CpGmEmail,
+		354:                            web.CpGmEmailAward,
+		web.PACKET_CP_REQDRAW_PAK:      web.CardDraw1,
+		web.PACKET_CP_REQBATCHDRAW_PAK: web.CardDraw10,
 	}
 	//var endId int64 = 0
 
@@ -57,7 +58,7 @@ func TestCard(t *testing.T) {
 				break
 			}
 
-			var msg jsonSt
+			var msg web.JsonSt
 			err = json.Unmarshal(p, &msg)
 			if err != nil {
 				zaplog.LoggerSugar.Errorf("read errro, err:%s", err.Error())
@@ -70,7 +71,7 @@ func TestCard(t *testing.T) {
 			zaplog.LoggerSugar.Infof("recv msg:%s", string(p))
 
 			//修改发送消息
-			err = func(id int64, srcMsg *jsonSt) error {
+			err = func(id int64, srcMsg *web.JsonSt) error {
 
 				idSend, ok := next[id]
 				if !ok {
@@ -84,7 +85,7 @@ func TestCard(t *testing.T) {
 					return errors.New(fmt.Sprintf("next is not exist id:%d", id))
 				}
 
-				if id == PACKET_PC_EMAIL_INFO_PAK {
+				if id == web.PACKET_PC_EMAIL_INFO_PAK {
 					var emailInfo pb.PC_EMAIL_INFO
 					data, errData := json.Marshal(srcMsg.Data)
 					if errData != nil {
@@ -95,8 +96,8 @@ func TestCard(t *testing.T) {
 						return errData
 					}
 
-					dstMsg = jsonSt{
-						ProtocolId: PACKET_CP_EMAIL_AWARD_PAK,
+					dstMsg = web.JsonSt{
+						ProtocolId: web.PACKET_CP_EMAIL_AWARD_PAK,
 						Data: pb.CP_EMAIL_AWARD{
 							Guid: proto.String(emailInfo.Data.Head.GetGuid()),
 						},
@@ -111,7 +112,7 @@ func TestCard(t *testing.T) {
 				}
 				err = webClient.WriteTextMessage(sendBuf)
 				if err != nil {
-					zaplog.LoggerSugar.Errorf("send msg failed, id:%d, msg[%s]", id, msgSend)
+					zaplog.LoggerSugar.Errorf("send msg failed, id:%d, msg[%v]", id, msgSend)
 					return err
 				}
 
@@ -129,7 +130,7 @@ func TestCard(t *testing.T) {
 	}()
 
 	// 主程序发送
-	sendVerify, sendErr := json.Marshal(cgwVerify)
+	sendVerify, sendErr := json.Marshal(web.CgwVerify)
 	if sendErr != nil {
 		wg.Done()
 		return

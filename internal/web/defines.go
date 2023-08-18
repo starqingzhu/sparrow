@@ -1,4 +1,18 @@
-package websocket
+package web
+
+type JsonSt struct {
+	ProtocolId int64       `json:"protocolId"`
+	Data       interface{} `json:"data"`
+}
+
+var LoginNext = map[int64]int64{
+	PACKET_GWC_VERIFY_PAK: PACKET_CGW_CLIENT_LOGIN_PAK,
+}
+
+var LoginIdMsg = map[int64]interface{}{
+	PACKET_CGW_VERIFY_PAK:       CgwVerify,
+	PACKET_CGW_CLIENT_LOGIN_PAK: CgwLogin,
+}
 
 const (
 	PACKET_GWC_NONE                           = iota + 61000 // 0£¬¿Õ

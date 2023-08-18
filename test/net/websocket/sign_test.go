@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"github.com/golang/protobuf/jsonpb"
 	"google.golang.org/protobuf/proto"
+	"sparrow/internal/web"
+	"sparrow/internal/web/pb"
 	"sparrow/pkg/log/zaplog"
 	"sparrow/pkg/net/webscok"
-	"sparrow/test/net/websocket/pb"
 	"sync"
 	"testing"
 	"time"
@@ -28,16 +29,16 @@ func TestSign(t *testing.T) {
 
 	// 测试 背包
 	var next = map[int64]int64{
-		PACKET_GWC_VERIFY_PAK:               PACKET_CGW_CLIENT_LOGIN_PAK,
-		PACKET_PC_SEVENLOGIN_AWARD_INFO_PAK: PACKET_CP_SEVENLOGIN_AWARD_PAK,
-		PACKET_PC_SEVENLOGIN_AWARD_PAK:      PACKET_CP_AFTER_SIGNIN_PAK,
+		web.PACKET_GWC_VERIFY_PAK:               web.PACKET_CGW_CLIENT_LOGIN_PAK,
+		web.PACKET_PC_SEVENLOGIN_AWARD_INFO_PAK: web.PACKET_CP_SEVENLOGIN_AWARD_PAK,
+		web.PACKET_PC_SEVENLOGIN_AWARD_PAK:      web.PACKET_CP_AFTER_SIGNIN_PAK,
 	}
 
 	var idMsg = map[int64]interface{}{
-		PACKET_CGW_VERIFY_PAK:          cgwVerify,
-		PACKET_CGW_CLIENT_LOGIN_PAK:    cgwLogin,
-		PACKET_CP_SEVENLOGIN_AWARD_PAK: signReq,
-		PACKET_CP_AFTER_SIGNIN_PAK:     signAfterReq,
+		web.PACKET_CGW_VERIFY_PAK:          web.CgwVerify,
+		web.PACKET_CGW_CLIENT_LOGIN_PAK:    web.CgwLogin,
+		web.PACKET_CP_SEVENLOGIN_AWARD_PAK: web.SignReq,
+		web.PACKET_CP_AFTER_SIGNIN_PAK:     web.SignAfterReq,
 	}
 	//var endId int64 = 0
 
@@ -55,7 +56,7 @@ func TestSign(t *testing.T) {
 				break
 			}
 
-			var msg jsonSt
+			var msg web.JsonSt
 			err = json.Unmarshal(p, &msg)
 			if err != nil {
 				zaplog.LoggerSugar.Errorf("read errro, err:%s", err.Error())
@@ -68,7 +69,7 @@ func TestSign(t *testing.T) {
 			zaplog.LoggerSugar.Infof("recv msg:%s", string(p))
 
 			//修改发送消息
-			err = func(id int64, srcMsg *jsonSt) error {
+			err = func(id int64, srcMsg *web.JsonSt) error {
 
 				idSend, ok := next[id]
 				if !ok {
@@ -82,7 +83,7 @@ func TestSign(t *testing.T) {
 					return errors.New(fmt.Sprintf("next is not exist id:%d", id))
 				}
 
-				if id == PACKET_PC_SEVENLOGIN_AWARD_INFO_PAK {
+				if id == web.PACKET_PC_SEVENLOGIN_AWARD_INFO_PAK {
 					var signInfo pb.PC_SEVENLOGIN_AWARD_INFO
 					data, errData := json.Marshal(srcMsg.Data)
 					errData = jsonpb.UnmarshalString(string(data), &signInfo)
@@ -90,16 +91,16 @@ func TestSign(t *testing.T) {
 						return errData
 					}
 
-					dstMsg = jsonSt{
-						ProtocolId: PACKET_CP_SEVENLOGIN_AWARD_PAK,
+					dstMsg = web.JsonSt{
+						ProtocolId: web.PACKET_CP_SEVENLOGIN_AWARD_PAK,
 						Data: pb.CP_SEVENLOGIN_AWARD{
 							Number: proto.Int32(1),
 						},
 					}
 
-				} else if id == PACKET_PC_SEVENLOGIN_AWARD_PAK {
-					dstMsg = jsonSt{
-						ProtocolId: PACKET_CP_AFTER_SIGNIN_PAK,
+				} else if id == web.PACKET_PC_SEVENLOGIN_AWARD_PAK {
+					dstMsg = web.JsonSt{
+						ProtocolId: web.PACKET_CP_AFTER_SIGNIN_PAK,
 						Data: pb.CP_AFTER_SIGNIN{
 							Number: proto.Int32(1),
 						},
@@ -113,7 +114,7 @@ func TestSign(t *testing.T) {
 				}
 				err = webClient.WriteTextMessage(sendBuf)
 				if err != nil {
-					zaplog.LoggerSugar.Errorf("send msg failed, id:%d, msg[%s]", id, msgSend)
+					zaplog.LoggerSugar.Errorf("send msg failed, id:%d, msg[%v]", id, msgSend)
 					return err
 				}
 
@@ -131,7 +132,7 @@ func TestSign(t *testing.T) {
 	}()
 
 	// 主程序发送
-	sendVerify, sendErr := json.Marshal(cgwVerify)
+	sendVerify, sendErr := json.Marshal(web.CgwVerify)
 	if sendErr != nil {
 		wg.Done()
 		return

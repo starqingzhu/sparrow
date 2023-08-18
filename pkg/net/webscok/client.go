@@ -16,6 +16,12 @@ type (
 
 // addr:"localhost:8080"
 func Init(addr string) (*WebClient, error) {
+	defer func() {
+		if err := recover(); err != nil {
+			zaplog.LoggerSugar.Errorf("panic %s is disconnect, err:%v", addr, err)
+		}
+	}()
+
 	u := url.URL{Scheme: "ws", Host: addr, Path: "/ws"}
 	var err error
 
@@ -40,7 +46,9 @@ func (w *WebClient) Close() {
 	}
 
 	zaplog.LoggerSugar.Infof("%s close success", w.Conn.LocalAddr().String())
-	w.Conn.Close()
+	if err := w.Conn.Close(); err != nil {
+		zaplog.LoggerSugar.Errorf("%s close failed, err:%s", w.Conn.LocalAddr(), err.Error())
+	}
 	w.Conn = nil
 }
 

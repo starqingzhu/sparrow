@@ -1,3 +1,4 @@
 cmd/main.exe
+cmd/log/*
 test/output/*
 .idea/*

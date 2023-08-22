@@ -1,4 +1,4 @@
-package webscok
+package gorillaweb
 
 import (
 	"github.com/gorilla/websocket"
@@ -14,25 +14,24 @@ type (
 	}
 )
 
-var GWebClient *WebClient
-
-func init() {
-	GWebClient = &WebClient{}
-}
-
 // addr:"localhost:8080"
-func Init(addr string) error {
+func Client(addr string) (*WebClient, error) {
 	u := url.URL{Scheme: "ws", Host: addr, Path: "/ws"}
 	var err error
-	GWebClient.Conn, GWebClient.Res, err = websocket.DefaultDialer.Dial(u.String(), nil)
+
+	webClient := new(WebClient)
+	if webClient == nil {
+		zaplog.LoggerSugar.Fatal("Init new webclient failed")
+	}
+	webClient.Conn, webClient.Res, err = websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
 		zaplog.LoggerSugar.Fatal("net client failed", u.String())
-		return nil
+		return nil, nil
 	}
 
-	zaplog.LoggerSugar.Infof("%s open success, res:%v", GWebClient.Conn.LocalAddr().String(), *GWebClient.Res)
+	zaplog.LoggerSugar.Infof("%s open success, res:%v", webClient.Conn.LocalAddr().String(), *webClient.Res)
 
-	return nil
+	return webClient, nil
 }
 
 func (w *WebClient) Close() {

@@ -18,7 +18,7 @@ func TestLogin(t *testing.T) {
 		client := web.WebLoginClient{
 			Addr:     "192.168.59.184:9102",
 			UserInfo: clientUser,
-			WG:       &wg,
+			//WG:       &wg,
 		}
 		go client.Run()
 	}

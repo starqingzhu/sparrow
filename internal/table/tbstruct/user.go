@@ -5,6 +5,8 @@ import (
 	"sparrow/pkg/log/zaplog"
 )
 
+const createTablePre = `CREATE TABLE IF NOT EXISTS`
+
 type User struct {
 	Id   int64  `db:"id"`
 	Name string `db:"name"`

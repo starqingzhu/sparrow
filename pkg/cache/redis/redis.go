@@ -83,102 +83,102 @@ func (r *Redis) Close() error {
 }
 
 // 定义针对具体业务的方法
-func Init() {
-	var conf = RedisConfig{
-		RedisAddrs:       "192.168.59.177:1000",
-		RedisPasswd:      "",
-		RedisDBIndex:     0,
-		RedisMaxIdle:     3,
-		RedisMaxActive:   10,
-		RedisIdleTimeout: 240 * time.Second,
-	}
-	redisClient := NewRedis(conf)
-
-	if redisClient == nil {
-		panic("redis connect nil")
-	}
-
-	fmt.Println("redisClient:", redisClient.String())
-
-	//string
-	var key1 = "name"
-	redisClient.Set(key1, "jackson")
-
-	var key2 = "name2"
-	redisClient.SetEX(key2, 5*60, "jackson2")
-	redisClient.SetNX(key2, "jackson2b")
-
-	var key3 = "name3"
-	redisClient.SetNX(key3, "jackson3")
-
-	value, err := redisClient.Get(key1)
-	fmt.Println(value)
-
-	//set
-	var sKey = "sname"
-	//var retInt64 int64
-	setArr := []interface{}{"s1", "s2", "s3", "s4"}
-	//args := redis.Args{}.AddFlat(setArr)
-	_, err = redisClient.SAdd(
-		sKey, setArr...,
-	)
-	if err = checkNil(err); err != nil {
-		log.Fatal(err)
-	}
-
-	var mKVs = map[string]string{
-		"kv_key1": "kv_val1",
-		"kv_key2": "kv_val2",
-		"kv_key3": "kv_val3",
-		"kv_key4": "kv_val4",
-		"kv_key5": "kv_val5",
-		"kv_key6": "kv_val6",
-	}
-
-	kvArgsArr := make([]interface{}, 0)
-	kvArgsArr2 := make([]interface{}, 0)
-	kArgsArr := make([]interface{}, 0)
-	for k, v := range mKVs {
-		kvArgsArr = append(kvArgsArr, k)
-		kvArgsArr = append(kvArgsArr, v)
-
-		kvArgsArr2 = append(kvArgsArr2, k)
-		kvArgsArr2 = append(kvArgsArr2, v+"xx")
-
-		kArgsArr = append(kArgsArr, k)
-	}
-
-	redisClient.MSet(kvArgsArr...)
-	redisClient.MSetNX(kvArgsArr2...)
-	redisClient.MGet(kArgsArr...)
-
-	countKey1 := "countKey1"
-	redisClient.Incr(countKey1)
-	redisClient.Incrby(countKey1, 2)
-	redisClient.Decr(countKey1)
-	redisClient.Decrby(countKey1, 2)
-
-	//redisClient.SCard(sKey)
-	//redisClient.SPop(sKey)
-	//redisClient.SCard(sKey)
-	//redisClient.SMembers(sKey)
-	//redisClient.SIsMember(sKey, "s1")
-	//redisClient.SRem(sKey, "s2")
-	//redisClient.SRandMember(sKey, 2)
-	//zset
-	zsetKey := "zsetKey"
-	redisClient.ZAdd(zsetKey, float64(1.1), "mem1")
-	//list
-	//hash
-	//key操作
-	//redisClient.Del(key1)
-	redisClient.Exists(sKey)
-	redisClient.ExpireAt(sKey, time.Now().Add(time.Second*(5*60)).Unix())
-	redisClient.Expire(sKey, 5*60)
-	redisClient.TTL(sKey)
-	redisClient.Persist(sKey)
-	redisClient.PTTL(sKey)
-	redisClient.Scan(0, "*", 1)
-
-	redisClient.Close()
-}
+//func Init() {
+//	var conf = RedisConfig{
+//		RedisAddrs:       "192.168.59.177:1000",
+//		RedisPasswd:      "",
+//		RedisDBIndex:     0,
+//		RedisMaxIdle:     3,
+//		RedisMaxActive:   10,
+//		RedisIdleTimeout: 240 * time.Second,
+//	}
+//	redisClient := NewRedis(conf)
+//
+//	if redisClient == nil {
+//		panic("redis connect nil")
+//	}
+//
+//	fmt.Println("redisClient:", redisClient.String())
+//
+//	//string
+//	var key1 = "name"
+//	redisClient.Set(key1, "jackson")
+//
+//	var key2 = "name2"
+//	redisClient.SetEX(key2, 5*60, "jackson2")
+//	redisClient.SetNX(key2, "jackson2b")
+//
+//	var key3 = "name3"
+//	redisClient.SetNX(key3, "jackson3")
+//
+//	value, err := redisClient.Get(key1)
+//	fmt.Println(value)
+//
+//	//set
+//	var sKey = "sname"
+//	//var retInt64 int64
+//	setArr := []interface{}{"s1", "s2", "s3", "s4"}
+//	//args := redis.Args{}.AddFlat(setArr)
+//	_, err = redisClient.SAdd(
+//		sKey, setArr...,
+//	)
+//	if err = checkNil(err); err != nil {
+//		log.Fatal(err)
+//	}
+//
+//	var mKVs = map[string]string{
+//		"kv_key1": "kv_val1",
+//		"kv_key2": "kv_val2",
+//		"kv_key3": "kv_val3",
+//		"kv_key4": "kv_val4",
+//		"kv_key5": "kv_val5",
+//		"kv_key6": "kv_val6",
+//	}
+//
+//	kvArgsArr := make([]interface{}, 0)
+//	kvArgsArr2 := make([]interface{}, 0)
+//	kArgsArr := make([]interface{}, 0)
+//	for k, v := range mKVs {
+//		kvArgsArr = append(kvArgsArr, k)
+//		kvArgsArr = append(kvArgsArr, v)
+//
+//		kvArgsArr2 = append(kvArgsArr2, k)
+//		kvArgsArr2 = append(kvArgsArr2, v+"xx")
+//
+//		kArgsArr = append(kArgsArr, k)
+//	}
+//
+//	redisClient.MSet(kvArgsArr...)
+//	redisClient.MSetNX(kvArgsArr2...)
+//	redisClient.MGet(kArgsArr...)
+//
+//	countKey1 := "countKey1"
+//	redisClient.Incr(countKey1)
+//	redisClient.Incrby(countKey1, 2)
+//	redisClient.Decr(countKey1)
+//	redisClient.Decrby(countKey1, 2)
+//
+//	//redisClient.SCard(sKey)
+//	//redisClient.SPop(sKey)
+//	//redisClient.SCard(sKey)
+//	//redisClient.SMembers(sKey)
+//	//redisClient.SIsMember(sKey, "s1")
+//	//redisClient.SRem(sKey, "s2")
+//	//redisClient.SRandMember(sKey, 2)
+//	//zset
+//	zsetKey := "zsetKey"
+//	redisClient.ZAdd(zsetKey, float64(1.1), "mem1")
+//	//list
+//	//hash
+//	//key操作
+//	//redisClient.Del(key1)
+//	redisClient.Exists(sKey)
+//	redisClient.ExpireAt(sKey, time.Now().Add(time.Second*(5*60)).Unix())
+//	redisClient.Expire(sKey, 5*60)
+//	redisClient.TTL(sKey)
+//	redisClient.Persist(sKey)
+//	redisClient.PTTL(sKey)
+//	redisClient.Scan(0, "*", 1)
+//
+//	redisClient.Close()
+//}

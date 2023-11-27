@@ -13,11 +13,20 @@ type XDBTestSuite struct {
 
 // run before the tests in the suite are run.
 func (suite *XDBTestSuite) SetupSuite() {
-	suite.T().Log("before all tests")
+	//suite.T().Log("before all tests")
+	//var conf = xdb.XDbConf{
+	//	User:         "root",
+	//	Password:     "Ab@123456",
+	//	ServerIp:     "192.168.59.177",
+	//	Port:         3306,
+	//	DataBase:     "xdb_user",
+	//	MaxOpenConns: 10,
+	//	MaxIdleConns: 5,
+	//}
 	var conf = xdb.XDbConf{
 		User:         "root",
-		Password:     "Ab@123456",
-		ServerIp:     "192.168.59.177",
+		Password:     "123456",
+		ServerIp:     "127.0.0.1",
 		Port:         3306,
 		DataBase:     "xdb_user",
 		MaxOpenConns: 10,
@@ -29,7 +38,11 @@ func (suite *XDBTestSuite) SetupSuite() {
 
 func (suite *XDBTestSuite) TearDownSuite() {
 	suite.T().Log("after all test")
-	suite.r.Close()
+	if suite.r != nil {
+		suite.r.CloseWrapper()
+		suite.r = nil
+	}
+
 }
 
 func (suite *XDBTestSuite) SetupTest() {

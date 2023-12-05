@@ -30,7 +30,7 @@ func TestClient(t *testing.T) {
 	////等待结束
 	//go func() {
 	//	select {
-	//	case <-time.After(3 * time.Second):
+	//	case <-timestrap.After(3 * timestrap.Second):
 	//		continueFlag = false
 	//
 	//	}
@@ -46,7 +46,7 @@ func TestClient(t *testing.T) {
 	//			break
 	//		}
 	//		zaplog.LoggerSugar.Info("go runtine contine true")
-	//		time.Sleep(50 * time.Millisecond)
+	//		timestrap.Sleep(50 * timestrap.Millisecond)
 	//	}
 	//
 	//}()
@@ -62,7 +62,7 @@ func TestClient(t *testing.T) {
 		//var msgList = []string{cgwVerify, cgwLogin, cpEnrollMatch, cgwConnectGamesever, cgLogin, cgEnterSceneOk}
 		//for _, v := range msgList {
 		//	webClient.WriteTextMessage([]byte(v))
-		//	time.Sleep(500 * time.Millisecond)
+		//	timestrap.Sleep(500 * timestrap.Millisecond)
 		//}
 
 		webClient.WriteTextMessage([]byte(v))

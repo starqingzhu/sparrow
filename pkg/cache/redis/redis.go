@@ -90,7 +90,7 @@ func (r *Redis) Close() error {
 //		RedisDBIndex:     0,
 //		RedisMaxIdle:     3,
 //		RedisMaxActive:   10,
-//		RedisIdleTimeout: 240 * time.Second,
+//		RedisIdleTimeout: 240 * timestrap.Second,
 //	}
 //	redisClient := NewRedis(conf)
 //
@@ -173,7 +173,7 @@ func (r *Redis) Close() error {
 //	//key操作
 //	//redisClient.Del(key1)
 //	redisClient.Exists(sKey)
-//	redisClient.ExpireAt(sKey, time.Now().Add(time.Second*(5*60)).Unix())
+//	redisClient.ExpireAt(sKey, timestrap.Now().Add(timestrap.Second*(5*60)).Unix())
 //	redisClient.Expire(sKey, 5*60)
 //	redisClient.TTL(sKey)
 //	redisClient.Persist(sKey)

@@ -102,7 +102,7 @@ func (r *Redis) SRem(key string, members ...interface{}) (int64, error) {
 //
 //	func (r *Redis) SDiff(keys ...string) ([]string, error) {
 //		counterIncr("SDiff")
-//		startTime := time.Now()
+//		startTime := timestrap.Now()
 //		success := true
 //		defer func() {
 //			cmdLatency("SDiff", startTime, success)
@@ -120,7 +120,7 @@ func (r *Redis) SRem(key string, members ...interface{}) (int64, error) {
 //
 //	func (r *Redis) SDiffStore(destination string, keys ...string) (int64, error) {
 //		counterIncr("SDiffStore")
-//		startTime := time.Now()
+//		startTime := timestrap.Now()
 //		success := true
 //		defer func() {
 //			cmdLatency("SDiffStore", startTime, success)
@@ -148,7 +148,7 @@ func (r *Redis) SRem(key string, members ...interface{}) (int64, error) {
 //
 //	func (r *Redis) SInter(keys ...string) ([]string, error) {
 //		counterIncr("SInter")
-//		startTime := time.Now()
+//		startTime := timestrap.Now()
 //		success := true
 //		defer func() {
 //			cmdLatency("SInter", startTime, success)
@@ -166,7 +166,7 @@ func (r *Redis) SRem(key string, members ...interface{}) (int64, error) {
 //
 //	func (r *Redis) SInterStore(destination string, keys ...string) (int64, error) {
 //		counterIncr("SInterStore")
-//		startTime := time.Now()
+//		startTime := timestrap.Now()
 //		success := true
 //		defer func() {
 //			cmdLatency("SInterStore", startTime, success)
@@ -194,7 +194,7 @@ func (r *Redis) SRem(key string, members ...interface{}) (int64, error) {
 //
 //	func (r *Redis) SMove(source, destination string, member interface{}) (bool, error) {
 //		counterIncr("SMove")
-//		startTime := time.Now()
+//		startTime := timestrap.Now()
 //		success := true
 //		defer func() {
 //			cmdLatency("SMove", startTime, success)
@@ -212,7 +212,7 @@ func (r *Redis) SRem(key string, members ...interface{}) (int64, error) {
 //
 //	func (r *Redis) SUnion(keys ...string) ([]string, error) {
 //		counterIncr("SUnion")
-//		startTime := time.Now()
+//		startTime := timestrap.Now()
 //		success := true
 //		defer func() {
 //			cmdLatency("SUnion", startTime, success)
@@ -236,7 +236,7 @@ func (r *Redis) SRem(key string, members ...interface{}) (int64, error) {
 //
 //	func (r *Redis) SUnionStore(destination string, keys ...string) (int64, error) {
 //		counterIncr("SUnionStore")
-//		startTime := time.Now()
+//		startTime := timestrap.Now()
 //		success := true
 //		defer func() {
 //			cmdLatency("SUnionStore", startTime, success)

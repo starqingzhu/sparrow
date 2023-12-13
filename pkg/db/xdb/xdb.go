@@ -39,7 +39,7 @@ func Init(conf *XDbConf) (*XDB, error) {
 	}
 	// 构建 DSN
 	dsn := fmt.Sprintf("%s:%s@%s(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		conf.User, conf.Password, "tcp", conf.ServerIp, conf.Port, conf.DataBase)
+		conf.User, conf.Password, "link", conf.ServerIp, conf.Port, conf.DataBase)
 
 	// 连接数据库
 	db, err := sqlx.Connect("mysql", dsn)

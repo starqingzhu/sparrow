@@ -45,7 +45,7 @@ func NewRedis(cfg RedisConfig) *Redis {
 			MaxActive:   cfg.RedisMaxActive,
 			IdleTimeout: cfg.RedisIdleTimeout,
 			Dial: func() (redis.Conn, error) {
-				c, err := redis.Dial("tcp", cfg.RedisAddrs)
+				c, err := redis.Dial("link", cfg.RedisAddrs)
 				if err = checkNil(err); err != nil {
 					return nil, err
 				}

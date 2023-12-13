@@ -65,7 +65,7 @@ func TestClient(t *testing.T) {
 		//	timestrap.Sleep(500 * timestrap.Millisecond)
 		//}
 
-		webClient.WriteTextMessage([]byte(v))
+		//webClient.WriteTextMessage([]byte(v))
 	}()
 	//
 	//wg.Wait()

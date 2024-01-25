@@ -8,7 +8,7 @@ import (
 
 func TestClient(t *testing.T) {
 	//var addr = "192.168.59.35:9102"
-	var addr = "127.0.0.1:8000"
+	var addr = "127.0.0.1:8080"
 	webClient, err := gorillaweb.Client(addr)
 	if err != nil {
 		panic("init failed")

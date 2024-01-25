@@ -1,9 +1,13 @@
-syntax = "proto3";
+syntax = "proto2";
 
 option go_package = "./user/";
 
 message Person {
-string name = 1;
-int32 age = 2;
-bool is_student = 3;
+optional string name = 1;
+optional int32 age = 2;
+optional bool is_student = 3;
+}
+
+message Login {
+  required string name = 1;
 }

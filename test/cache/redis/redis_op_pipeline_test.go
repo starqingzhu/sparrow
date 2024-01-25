@@ -35,7 +35,7 @@ const pipeKeyExpire = 60 * 20
 //		RedisDBIndex:     0,
 //		RedisMaxIdle:     3,
 //		RedisMaxActive:   10,
-//		RedisIdleTimeout: 240 * time.Second,
+//		RedisIdleTimeout: 240 * timestrap.Second,
 //	}
 //	redis.InitMainRedis(conf)
 //

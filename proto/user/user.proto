@@ -1,0 +1,21 @@
+syntax = "proto2";
+
+package user;
+
+message Person {
+  optional string name = 1;
+  optional int32 age = 2;
+  optional bool is_student = 3;
+}
+
+message Login {
+  optional string name = 1;
+}
+
+message Match {
+  optional string name = 1;
+}
+
+message Enter {
+  optional string  name = 1;
+}
